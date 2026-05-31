@@ -4125,6 +4125,11 @@ document.addEventListener('DOMContentLoaded', () => {
           trafficSection.classList.remove('hidden');
           const card = trafficSection.querySelector('.store-traffic-card');
           if (card) {
+            const container = document.getElementById('onboarding-page-container');
+            const isCompleted = container && container.classList.contains('onboarding-completed');
+            if (container && !isCompleted) {
+              document.querySelectorAll('.dash-card').forEach(c => c.classList.remove('expanded'));
+            }
             card.classList.add('expanded');
           }
         }
@@ -4206,6 +4211,11 @@ document.addEventListener('DOMContentLoaded', () => {
           trafficSection.classList.remove('hidden');
           const card = trafficSection.querySelector('.store-traffic-card');
           if (card) {
+            const container = document.getElementById('onboarding-page-container');
+            const isCompleted = container && container.classList.contains('onboarding-completed');
+            if (container && !isCompleted) {
+              document.querySelectorAll('.dash-card').forEach(c => c.classList.remove('expanded'));
+            }
             card.classList.add('expanded');
           }
         }
@@ -4354,8 +4364,24 @@ document.addEventListener('DOMContentLoaded', () => {
         const card = header.closest('.dash-card');
         if (!card) return;
 
-        // Toggle only the clicked card independently
-        card.classList.toggle('expanded');
+        const isCompleted = container.classList.contains('onboarding-completed');
+
+        if (!isCompleted) {
+          const isCurrentlyExpanded = card.classList.contains('expanded');
+          
+          // Collapse all cards first
+          document.querySelectorAll('.dash-card').forEach(c => {
+            c.classList.remove('expanded');
+          });
+
+          // Expand the clicked card if it was collapsed
+          if (!isCurrentlyExpanded) {
+            card.classList.add('expanded');
+          }
+        } else {
+          // Toggle only the clicked card independently if onboarding is completed
+          card.classList.toggle('expanded');
+        }
       });
     });
   }
