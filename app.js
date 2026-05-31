@@ -1059,6 +1059,21 @@ document.addEventListener('DOMContentLoaded', () => {
       startY = e.touches[0].clientY;
     }, { passive: true });
 
+    showcaseContainer.addEventListener('touchmove', (e) => {
+      if (!startX || !startY) return;
+      const currentX = e.touches[0].clientX;
+      const currentY = e.touches[0].clientY;
+      const diffX = currentX - startX;
+      const diffY = currentY - startY;
+
+      // If horizontal swiping is dominant, prevent vertical scroll
+      if (Math.abs(diffX) > Math.abs(diffY)) {
+        if (e.cancelable) {
+          e.preventDefault();
+        }
+      }
+    }, { passive: false });
+
     showcaseContainer.addEventListener('touchend', (e) => {
       const endX = e.changedTouches[0].clientX;
       const endY = e.changedTouches[0].clientY;
@@ -1076,6 +1091,13 @@ document.addEventListener('DOMContentLoaded', () => {
           setActiveCarouselCard(nextIdx);
         }
       }
+      startX = 0;
+      startY = 0;
+    }, { passive: true });
+
+    showcaseContainer.addEventListener('touchcancel', () => {
+      startX = 0;
+      startY = 0;
     }, { passive: true });
 
     // Mouse drag swipe listeners for desktop
