@@ -16,8 +16,25 @@ exports.handler = async (event, context) => {
   }
 
   // Load API key securely from Netlify environment variables
-  const apiKey = process.env.EVOLINK_API_KEY;
+  const apiKey = process.env.EVOLINK_API_KEY || process.env.OPENAI_API_KEY;
   const baseTarget = "https://api.evolink.ai";
+
+  if (!apiKey) {
+    console.error("[Proxy Config Error] Evolink API Key is not configured on Netlify. Please define EVOLINK_API_KEY or OPENAI_API_KEY in your site settings.");
+    return {
+      statusCode: 500,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS"
+      },
+      body: JSON.stringify({
+        error: "Configuration Error",
+        message: "Evolink API Key is not configured on Netlify. Please define EVOLINK_API_KEY or OPENAI_API_KEY in your site settings."
+      })
+    };
+  }
 
   // The request is proxied from /api/* to this function.
   // The path inside event.path will be "/api/v1/audios/generations" or "/.netlify/functions/evolink-proxy/v1/..."
