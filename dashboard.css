@@ -2747,7 +2747,7 @@ ul {
 
 .weekdays-pills {
   display: flex;
-  gap: 6px;
+  gap: 10px;
   flex-wrap: wrap;
 }
 
