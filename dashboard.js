@@ -2188,7 +2188,7 @@ document.addEventListener('DOMContentLoaded', () => {
         step2.querySelector('.step-icon-wrapper').style.borderColor = '#10b981';
         step2.querySelector('.step-content').innerHTML = `
           <h3>Find Your Sound</h3>
-          <p><span style="color:#10b981; font-weight:500;">✓ Soundscapes Auditioned!</span><br>AI curation models trained. Operating parameters generated.</p>
+          <p><span style="color:#10b981; font-weight:500;">✓ Soundscapes Selected</span><br>AI curation models trained. Operating parameters generated.</p>
         `;
       }
       
@@ -7036,7 +7036,7 @@ document.addEventListener('DOMContentLoaded', () => {
           if (content) {
             content.innerHTML = `
               <h3>Find Your Sound</h3>
-              <p><span style="color:#10b981; font-weight:500;">✓ Soundscapes Auditioned!</span><br>AI curation models trained. Operating parameters generated.</p>
+              <p><span style="color:#10b981; font-weight:500;">✓ Soundscapes Selected</span><br>AI curation models trained. Operating parameters generated.</p>
             `;
           }
         }
