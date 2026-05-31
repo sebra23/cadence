@@ -2770,9 +2770,9 @@ document.addEventListener('DOMContentLoaded', () => {
           const container = document.getElementById('onboarding-page-container');
           if (container) {
             container.classList.add('onboarding-completed');
-            // By default, collapse all cards
+            // By default, keep all cards open/expanded
             document.querySelectorAll('.onboarding-completed .dash-card').forEach(c => {
-              c.classList.remove('expanded');
+              c.classList.add('expanded');
             });
           }
           updateAccordionSummaries();
@@ -4068,9 +4068,6 @@ document.addEventListener('DOMContentLoaded', () => {
           trafficSection.classList.remove('hidden');
           const card = trafficSection.querySelector('.store-traffic-card');
           if (card) {
-            document.querySelectorAll('.onboarding-completed .dash-card').forEach(c => {
-              c.classList.remove('expanded');
-            });
             card.classList.add('expanded');
           }
         }
@@ -4152,9 +4149,6 @@ document.addEventListener('DOMContentLoaded', () => {
           trafficSection.classList.remove('hidden');
           const card = trafficSection.querySelector('.store-traffic-card');
           if (card) {
-            document.querySelectorAll('.onboarding-completed .dash-card').forEach(c => {
-              c.classList.remove('expanded');
-            });
             card.classList.add('expanded');
           }
         }
@@ -4303,17 +4297,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const card = header.closest('.dash-card');
         if (!card) return;
 
-        const isExpanded = card.classList.contains('expanded');
-
-        // Collapse all accordion cards
-        document.querySelectorAll('.onboarding-completed .dash-card').forEach(c => {
-          c.classList.remove('expanded');
-        });
-
-        // Toggle the clicked one
-        if (!isExpanded) {
-          card.classList.add('expanded');
-        }
+        // Toggle only the clicked card independently
+        card.classList.toggle('expanded');
       });
     });
   }
@@ -6888,6 +6873,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('onboarding-page-container');
     if (trafficScheduleActive) {
       if (container) container.classList.add('onboarding-completed');
+      // Ensure all cards are expanded by default
+      document.querySelectorAll('.onboarding-completed .dash-card').forEach(c => {
+        c.classList.add('expanded');
+      });
       updateAccordionSummaries();
     } else {
       if (container) container.classList.remove('onboarding-completed');
