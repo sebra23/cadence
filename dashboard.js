@@ -2199,7 +2199,7 @@ document.addEventListener('DOMContentLoaded', () => {
         step3.querySelector('.step-content').innerHTML = `
           <span class="step-badge">Active Step</span>
           <h3>Connect Your Store</h3>
-          <p>Link foot-traffic sensors or point-of-sale data to dynamically adjust playlists.</p>
+          <p>Link Add your first store and foot-traffic data to dynamically create playlists.</p>
         `;
       }
       
@@ -7053,7 +7053,7 @@ document.addEventListener('DOMContentLoaded', () => {
             content.innerHTML = `
               <span class="step-badge">Active Step</span>
               <h3>Connect Your Store</h3>
-              <p>Link foot-traffic sensors or point-of-sale data to dynamically adjust playlists.</p>
+              <p>Link Add your first store and foot-traffic data to dynamically create playlists.</p>
             `;
           }
         }
