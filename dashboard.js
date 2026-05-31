@@ -896,7 +896,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderDnaResults();
   }
 
-  function renderDnaResults() {
+  function renderDnaResults(skipGeneration = false) {
     // Set widths of visual fills
     document.getElementById('bar-result-soph').style.width = `${generatedBrandDna.soph}%`;
     document.getElementById('bar-result-nrg').style.width = `${generatedBrandDna.nrg}%`;
@@ -929,8 +929,10 @@ document.addEventListener('DOMContentLoaded', () => {
       curationCard.classList.add('expanded'); // Expand Step 2 sound finding
     }
 
-    // Trigger live Evolink API track generation for step 2
-    generateStep1AuditionTracks(false);
+    // Trigger live Evolink API track generation for step 2 only if not skipping
+    if (!skipGeneration) {
+      generateStep1AuditionTracks(false);
+    }
     
     // Smoothly scroll down to show curation card
     setTimeout(() => {
@@ -6827,7 +6829,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (savedDna) {
         Object.assign(generatedBrandDna, JSON.parse(savedDna));
         console.log("Loaded saved brand DNA:", generatedBrandDna);
-        renderDnaResults();
+        renderDnaResults(true);
       } else {
         // Fallback: If suno-persona exists but brand-dna doesn't, reconstruct base DNA from vibe/tempo
         const savedPersona = localStorage.getItem(getScopedKey('cady-suno-persona'));
@@ -6835,7 +6837,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const parsed = JSON.parse(savedPersona);
           generatedBrandDna.bpm = parsed.tempo || 110;
           generatedBrandDna.archetype = parsed.vibe === 'warm' ? 'Warm Inviting' : parsed.vibe === 'cool' ? 'Cool Modern' : parsed.vibe === 'bold' ? 'Bold Dynamic' : 'Sophisticated Premium';
-          renderDnaResults();
+          renderDnaResults(true);
         }
       }
     } catch (e) {
