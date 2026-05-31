@@ -2146,6 +2146,16 @@ document.addEventListener('DOMContentLoaded', () => {
       // Reveal Store Traffic Section
       storeTrafficSection.classList.remove('hidden');
       
+      // Close Step 2 accordion and open Step 3 accordion
+      const curationCard = document.querySelector('.curation-card');
+      if (curationCard) {
+        curationCard.classList.remove('expanded');
+      }
+      const trafficCard = document.querySelector('.store-traffic-card');
+      if (trafficCard) {
+        trafficCard.classList.add('expanded');
+      }
+      
       // Update Step 2 in Roadmap
       const step2 = document.getElementById('step-roadmap-2');
       const step3 = document.getElementById('step-roadmap-3');
