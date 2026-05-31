@@ -885,6 +885,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const affinityLabel = document.getElementById('lbl-affinity-archetype');
     generatedBrandDna.archetype = affinityLabel ? affinityLabel.textContent : "The Progressive Leader";
 
+    // Save brand DNA results to localStorage
+    try {
+      localStorage.setItem(getScopedKey('cady-brand-dna'), JSON.stringify(generatedBrandDna));
+    } catch (e) {
+      console.error("Failed to save brand DNA to localStorage", e);
+    }
+
     // Display the computed values on the dashboard DNA Preview Card
     renderDnaResults();
   }
@@ -6758,6 +6765,27 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error("Failed to load saved persona_id", e);
     }
 
+    // Load brand DNA results
+    try {
+      const savedDna = localStorage.getItem(getScopedKey('cady-brand-dna'));
+      if (savedDna) {
+        Object.assign(generatedBrandDna, JSON.parse(savedDna));
+        console.log("Loaded saved brand DNA:", generatedBrandDna);
+        renderDnaResults();
+      } else {
+        // Fallback: If suno-persona exists but brand-dna doesn't, reconstruct base DNA from vibe/tempo
+        const savedPersona = localStorage.getItem(getScopedKey('cady-suno-persona'));
+        if (savedPersona) {
+          const parsed = JSON.parse(savedPersona);
+          generatedBrandDna.bpm = parsed.tempo || 110;
+          generatedBrandDna.archetype = parsed.vibe === 'warm' ? 'Warm Inviting' : parsed.vibe === 'cool' ? 'Cool Modern' : parsed.vibe === 'bold' ? 'Bold Dynamic' : 'Sophisticated Premium';
+          renderDnaResults();
+        }
+      }
+    } catch (e) {
+      console.error("Failed to load saved brand DNA", e);
+    }
+
     // 2. Load locations
     locations = [];
     try {
@@ -6873,10 +6901,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('onboarding-page-container');
     if (trafficScheduleActive) {
       if (container) container.classList.add('onboarding-completed');
-      // Ensure all cards are expanded by default
+      
+      // Step 1: Reveal the brand identity section (remove hidden)
+      const dnaSection = document.getElementById('generated-dna-section');
+      if (dnaSection) dnaSection.classList.remove('hidden');
+
+      // Make sure curation (Step 2) and traffic (Step 3) are visible
+      const curationSection = document.querySelector('.curation-card');
+      if (curationSection) curationSection.classList.remove('hidden');
+      const trafficSection = document.querySelector('.traffic-card');
+      if (trafficSection) trafficSection.classList.remove('hidden');
+
+      // Expand curation (Step 2) and traffic (Step 3) by default, and keep Step 1 closed (collapsed)
       document.querySelectorAll('.onboarding-completed .dash-card').forEach(c => {
-        c.classList.add('expanded');
+        if (c.classList.contains('dna-reveal-card')) {
+          c.classList.remove('expanded'); // closed/collapsed
+        } else {
+          c.classList.add('expanded'); // open/expanded
+        }
       });
+
       updateAccordionSummaries();
     } else {
       if (container) container.classList.remove('onboarding-completed');
