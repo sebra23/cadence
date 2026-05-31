@@ -457,13 +457,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const step1Desc = document.getElementById('roadmap-step1-desc');
     const step1Actions = document.getElementById('step1-actions-box');
 
-    step1Desc.innerHTML = `<span style="color:#10b981; font-weight:500;">✓ Consultation scheduled!</span><br>Meeting with Jordan is set for **${selectedDate}** at **${selectedTime}**. Zoom link sent to email.`;
+    step1Desc.innerHTML = `<span style="color:#10b981; font-weight:500;">✓ Consultation scheduled!</span><br>Meeting with Cady is set for **${selectedDate}** at **${selectedTime}**. Zoom link sent to email.`;
     step1Actions.style.display = 'none';
 
     closeModal(modals.consultation);
 
     // Show beautiful toast notification
-    showToast("Consultation Scheduled!", `Meeting with Jordan is set for ${selectedDate} at ${selectedTime}.`, "success");
+    showToast("Consultation Scheduled!", `Meeting with Cady is set for ${selectedDate} at ${selectedTime}.`, "success");
   });
 
   // ==========================================
@@ -958,7 +958,7 @@ document.addEventListener('DOMContentLoaded', () => {
     step2.querySelector('.step-content').innerHTML = `
       <span class="step-badge">Active Step</span>
       <h3>Find Your Sound</h3>
-      <p>Jordan is compiling your sound profiles! Algorithm training has begun using your brand DNA parameters: <strong>${generatedBrandDna.archetype} (${generatedBrandDna.bpm} BPM)</strong>.</p>
+      <p>Cady is compiling your sound profiles! Algorithm training has begun using your brand DNA parameters: <strong>${generatedBrandDna.archetype} (${generatedBrandDna.bpm} BPM)</strong>.</p>
     `;
 
     closeModal(modals.dnaForm);
