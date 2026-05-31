@@ -20,7 +20,10 @@ exports.handler = async (event, context) => {
   const baseTarget = "https://api.evolink.ai";
 
   if (!apiKey) {
-    console.error("[Proxy Config Error] Evolink API Key is not configured on Netlify. Please define EVOLINK_API_KEY or OPENAI_API_KEY in your site settings.");
+    const envKeys = Object.keys(process.env).filter(k => 
+      k.includes("API") || k.includes("KEY") || k.includes("EVOLINK") || k.includes("OPENAI")
+    );
+    console.error("[Proxy Config Error] Evolink API Key is not configured on Netlify. Visible keys:", envKeys);
     return {
       statusCode: 500,
       headers: {
@@ -31,7 +34,8 @@ exports.handler = async (event, context) => {
       },
       body: JSON.stringify({
         error: "Configuration Error",
-        message: "Evolink API Key is not configured on Netlify. Please define EVOLINK_API_KEY or OPENAI_API_KEY in your site settings."
+        message: "Evolink API Key is not configured on Netlify. Please define EVOLINK_API_KEY or OPENAI_API_KEY in your site settings.",
+        visibleEnvKeys: envKeys
       })
     };
   }
@@ -97,16 +101,25 @@ exports.handler = async (event, context) => {
       body: responseText
     };
   } catch (error) {
+    const envKeys = Object.keys(process.env).filter(k => 
+      k.includes("API") || k.includes("KEY") || k.includes("EVOLINK") || k.includes("OPENAI")
+    );
     console.error("[Proxy Error] Request failed:", error);
     return {
       statusCode: 500,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS"
       },
       body: JSON.stringify({
         error: "Failed to proxy request to Evolink API",
-        message: error.message
+        message: error.message,
+        targetUrl: targetUrl,
+        apiKeyLength: apiKey ? apiKey.length : 0,
+        apiKeyPrefix: apiKey ? apiKey.substring(0, 7) + "..." : "none",
+        visibleEnvKeys: envKeys
       })
     };
   }

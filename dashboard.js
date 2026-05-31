@@ -1496,6 +1496,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let finished = [false, false, false, false];
     let failed = [false, false, false, false];
     let finishedCount = 0;
+    let lastErrorMsg = "";
 
     function checkCompletion() {
       if (finishedCount === 4) {
@@ -1574,8 +1575,15 @@ document.addEventListener('DOMContentLoaded', () => {
       fetch(`${EVOLINK_BASE_URL}/v1/tasks/${taskIds[index]}`, {
         headers: { "Authorization": `Bearer ${EVOLINK_API_KEY}` }
       })
-      .then(res => {
-        if (!res.ok) throw new Error("HTTP Status " + res.status);
+      .then(async res => {
+        if (!res.ok) {
+          let errMsg = `HTTP Status ${res.status}`;
+          try {
+            const errData = await res.json();
+            if (errData && errData.message) errMsg = errData.message;
+          } catch (e) {}
+          throw new Error(errMsg);
+        }
         return res.json();
       })
       .then(data => {
@@ -1599,6 +1607,7 @@ document.addEventListener('DOMContentLoaded', () => {
       })
       .catch(err => {
         console.error(`Error polling Task ${index + 1}:`, err);
+        lastErrorMsg = err.message || err;
         failed[index] = true;
         finished[index] = true;
         finishedCount++;
@@ -1613,7 +1622,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const allFailed = failed.every((f, idx) => f || !tracks[idx]);
       if (allFailed) {
         console.warn("Evolink audition track generation failed. Using default mock track set.");
-        showToast("Generation Failed", "Could not connect to Evolink API. Loaded local fallback tracks.", "warning");
+        showToast("Generation Failed", `Could not connect to Evolink API (${lastErrorMsg || "Connection error"}). Loaded local fallback tracks.`, "warning");
         
         updateTrackCards(useAlt ? 'B' : 'A');
         curationTracksGenerated = true;
@@ -1675,8 +1684,15 @@ document.addEventListener('DOMContentLoaded', () => {
           prompt: task.prompt
         })
       })
-      .then(res => {
-        if (!res.ok) throw new Error("HTTP Status " + res.status);
+      .then(async res => {
+        if (!res.ok) {
+          let errMsg = `HTTP Status ${res.status}`;
+          try {
+            const errData = await res.json();
+            if (errData && errData.message) errMsg = errData.message;
+          } catch (e) {}
+          throw new Error(errMsg);
+        }
         return res.json();
       })
       .then(data => {
@@ -1685,6 +1701,7 @@ document.addEventListener('DOMContentLoaded', () => {
       })
       .catch(err => {
         console.error(`Task ${idx + 1} generation failed:`, err);
+        lastErrorMsg = err.message || err;
         failed[idx] = true;
         finished[idx] = true;
         finishedCount++;
