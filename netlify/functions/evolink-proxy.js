@@ -16,12 +16,12 @@ exports.handler = async (event, context) => {
   }
 
   // Load API key securely from Netlify environment variables
-  const apiKey = process.env.EVOLINK_API_KEY || process.env.OPENAI_API_KEY;
+  const apiKey = process.env.EVOLINK_API_KEY || process.env.OPENAI_API_KEY || process.env.Evolink || process.env.EVOLINK;
   const baseTarget = "https://api.evolink.ai";
 
   if (!apiKey) {
     const envKeys = Object.keys(process.env).filter(k => 
-      k.includes("API") || k.includes("KEY") || k.includes("EVOLINK") || k.includes("OPENAI")
+      k.includes("API") || k.includes("KEY") || k.includes("EVOLINK") || k.includes("OPENAI") || k.toLowerCase().includes("evolink")
     );
     console.error("[Proxy Config Error] Evolink API Key is not configured on Netlify. Visible keys:", envKeys);
     return {
@@ -102,7 +102,7 @@ exports.handler = async (event, context) => {
     };
   } catch (error) {
     const envKeys = Object.keys(process.env).filter(k => 
-      k.includes("API") || k.includes("KEY") || k.includes("EVOLINK") || k.includes("OPENAI")
+      k.includes("API") || k.includes("KEY") || k.includes("EVOLINK") || k.includes("OPENAI") || k.toLowerCase().includes("evolink")
     );
     console.error("[Proxy Error] Request failed:", error);
     return {
