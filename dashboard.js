@@ -911,17 +911,31 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('label-result-archetype').textContent = generatedBrandDna.archetype;
     document.getElementById('label-result-bpm').textContent = `${generatedBrandDna.bpm} BPM avg`;
 
+    // Save onboarding step 2
+    try {
+      localStorage.setItem(getScopedKey('cady-onboarding-step'), '2');
+    } catch (e) {}
+
     // Reveal DNA card section
     const dnaSection = document.getElementById('generated-dna-section');
-    dnaSection.classList.remove('hidden');
+    if (dnaSection) dnaSection.classList.remove('hidden');
     
+    // Toggle accordion classes for onboarding transition
+    const dnaCard = document.querySelector('.dna-reveal-card');
+    if (dnaCard) dnaCard.classList.remove('expanded'); // Collapse Step 1 brand discovery results
+    const curationCard = document.querySelector('.curation-card');
+    if (curationCard) {
+      curationCard.classList.remove('hidden');
+      curationCard.classList.add('expanded'); // Expand Step 2 sound finding
+    }
+
     // Trigger live Evolink API track generation for step 2
     generateStep1AuditionTracks(false);
     
-    // Smoothly scroll down to show the generated DNA
+    // Smoothly scroll down to show curation card
     setTimeout(() => {
-      if (dnaSection && typeof dnaSection.scrollIntoView === 'function') {
-        dnaSection.scrollIntoView({ behavior: 'smooth' });
+      if (curationCard && typeof curationCard.scrollIntoView === 'function') {
+        curationCard.scrollIntoView({ behavior: 'smooth' });
       }
     }, 150);
 
@@ -2142,6 +2156,13 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnContinueToTraffic && storeTrafficSection) {
     btnContinueToTraffic.addEventListener('click', () => {
       stopAuditionTrack();
+      
+      // Save active onboarding step as 3
+      try {
+        localStorage.setItem(getScopedKey('cady-onboarding-step'), '3');
+      } catch (e) {
+        console.error("Failed to save onboarding step to localStorage", e);
+      }
       
       // Reveal Store Traffic Section
       storeTrafficSection.classList.remove('hidden');
@@ -4326,7 +4347,7 @@ document.addEventListener('DOMContentLoaded', () => {
     headers.forEach(header => {
       header.addEventListener('click', () => {
         const container = document.getElementById('onboarding-page-container');
-        if (!container || !container.classList.contains('onboarding-completed')) return;
+        if (!container) return;
 
         const card = header.closest('.dash-card');
         if (!card) return;
@@ -6864,6 +6885,14 @@ document.addEventListener('DOMContentLoaded', () => {
       } catch (e) {}
     }
     curationTracksGenerated = trafficScheduleActive;
+    if (!curationTracksGenerated) {
+      try {
+        const savedTracks = localStorage.getItem(getScopedKey('cady-audition-tracks'));
+        if (savedTracks) {
+          curationTracksGenerated = true;
+        }
+      } catch (e) {}
+    }
 
     // 4. Load audition tracks
     const sunoUrls = [
@@ -6936,14 +6965,14 @@ document.addEventListener('DOMContentLoaded', () => {
       // Make sure curation (Step 2) and traffic (Step 3) are visible
       const curationSection = document.querySelector('.curation-card');
       if (curationSection) curationSection.classList.remove('hidden');
-      const trafficSection = document.querySelector('.traffic-card');
+      const trafficSection = document.getElementById('store-traffic-section');
       if (trafficSection) trafficSection.classList.remove('hidden');
 
       // Expand curation (Step 2) and traffic (Step 3) by default, and keep Step 1 closed (collapsed)
-      document.querySelectorAll('.onboarding-completed .dash-card').forEach(c => {
+      document.querySelectorAll('.dash-card').forEach(c => {
         if (c.classList.contains('dna-reveal-card')) {
           c.classList.remove('expanded'); // closed/collapsed
-        } else {
+        } else if (c.classList.contains('curation-card') || c.classList.contains('store-traffic-card')) {
           c.classList.add('expanded'); // open/expanded
         }
       });
@@ -6951,12 +6980,76 @@ document.addEventListener('DOMContentLoaded', () => {
       updateAccordionSummaries();
     } else {
       if (container) container.classList.remove('onboarding-completed');
-      const step1Card = document.querySelector('.discovery-card[data-step="1"]');
-      if (step1Card) step1Card.classList.remove('collapsed');
-      const step2Card = document.querySelector('.curation-card');
-      if (step2Card) step2Card.classList.add('collapsed');
-      const step3Card = document.querySelector('.traffic-card');
-      if (step3Card) step3Card.classList.add('collapsed');
+      
+      // Onboarding Step State Management
+      const onboardingStep = localStorage.getItem(getScopedKey('cady-onboarding-step')) || '1';
+      
+      const dnaSection = document.getElementById('generated-dna-section');
+      const curationSection = document.querySelector('.curation-card');
+      const trafficSection = document.getElementById('store-traffic-section');
+
+      const dnaCard = document.querySelector('.dna-reveal-card');
+      const curationCard = document.querySelector('.curation-card');
+      const trafficCard = document.querySelector('.store-traffic-card');
+
+      if (onboardingStep === '1') {
+        if (dnaSection) dnaSection.classList.add('hidden');
+        if (curationSection) curationSection.classList.add('hidden');
+        if (trafficSection) trafficSection.classList.add('hidden');
+      } else if (onboardingStep === '2') {
+        if (dnaSection) dnaSection.classList.remove('hidden');
+        if (curationSection) curationSection.classList.remove('hidden');
+        if (trafficSection) trafficSection.classList.add('hidden');
+
+        // Collapse Step 1, expand Step 2
+        if (dnaCard) dnaCard.classList.remove('expanded');
+        if (curationCard) curationCard.classList.add('expanded');
+      } else if (onboardingStep === '3') {
+        if (dnaSection) dnaSection.classList.remove('hidden');
+        if (curationSection) curationSection.classList.remove('hidden');
+        if (trafficSection) trafficSection.classList.remove('hidden');
+
+        // Collapse Step 1 and 2, expand Step 3
+        if (dnaCard) dnaCard.classList.remove('expanded');
+        if (curationCard) curationCard.classList.remove('expanded');
+        if (trafficCard) trafficCard.classList.add('expanded');
+        
+        // Update Step 2 Roadmap to complete checked state
+        const step2 = document.getElementById('step-roadmap-2');
+        if (step2) {
+          step2.classList.remove('active');
+          const wrapper = step2.querySelector('.step-icon-wrapper');
+          if (wrapper) {
+            wrapper.style.backgroundColor = '#10b981';
+            wrapper.style.borderColor = '#10b981';
+            wrapper.innerHTML = '✓';
+          }
+          const content = step2.querySelector('.step-content');
+          if (content) {
+            content.innerHTML = `
+              <h3>Find Your Sound</h3>
+              <p><span style="color:#10b981; font-weight:500;">✓ Soundscapes Auditioned!</span><br>AI curation models trained. Operating parameters generated.</p>
+            `;
+          }
+        }
+        
+        // Update Step 3 Roadmap to active
+        const step3 = document.getElementById('step-roadmap-3');
+        if (step3) {
+          step3.classList.remove('locked');
+          step3.classList.add('active');
+          const wrapper = step3.querySelector('.step-icon-wrapper');
+          if (wrapper) wrapper.innerHTML = '3';
+          const content = step3.querySelector('.step-content');
+          if (content) {
+            content.innerHTML = `
+              <span class="step-badge">Active Step</span>
+              <h3>Connect Your Stores</h3>
+              <p>Link foot-traffic sensors or point-of-sale data to dynamically adjust playlists.</p>
+            `;
+          }
+        }
+      }
     }
 
     // Update sidebars & layouts

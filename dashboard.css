@@ -4287,9 +4287,87 @@ ul {
   cursor: pointer;
 }
 
-/* Accordion Styling for Onboarding Completed State */
+/* Accordion Styling (Active both during and after onboarding) */
 .onboarding-accordion-header {
-  display: none; /* Hidden during onboarding */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  cursor: pointer;
+  user-select: none;
+  background: rgba(255, 255, 255, 0.02);
+  transition: background 0.2s ease;
+}
+
+.onboarding-accordion-header:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.acc-title-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.acc-step {
+  background: rgba(168, 85, 247, 0.15);
+  color: #c084fc;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.onboarding-accordion-header h3 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+}
+
+.acc-summary {
+  color: var(--color-text-secondary);
+  font-size: 0.82rem;
+  font-weight: 400;
+}
+
+.acc-chevron {
+  color: var(--color-text-secondary);
+  transition: transform 0.3s ease;
+  font-size: 0.75rem;
+}
+
+.onboarding-accordion-body {
+  display: none !important;
+  padding: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Expanded Card State */
+.dash-card.expanded .onboarding-accordion-body {
+  display: block !important;
+}
+
+.dash-card.expanded .onboarding-accordion-header {
+  background: rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.dash-card.expanded .acc-chevron {
+  transform: rotate(180deg);
+}
+
+/* Specific styling for the three onboarding cards to reset padding and behave as accordions */
+.dna-reveal-card,
+.curation-card,
+.store-traffic-card {
+  padding: 0 !important;
+  overflow: hidden;
+  margin-bottom: 16px;
+  transition: all 0.3s ease;
 }
 
 .onboarding-completed .dashboard-hero-card,
@@ -4305,78 +4383,6 @@ ul {
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: var(--border-radius-md);
   transition: all 0.3s ease;
-}
-
-.onboarding-completed .onboarding-accordion-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 24px;
-  cursor: pointer;
-  user-select: none;
-  background: rgba(255, 255, 255, 0.02);
-  transition: background 0.2s ease;
-}
-
-.onboarding-completed .onboarding-accordion-header:hover {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.onboarding-completed .acc-title-group {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.onboarding-completed .acc-step {
-  background: rgba(168, 85, 247, 0.15);
-  color: #c084fc;
-  font-size: 0.7rem;
-  font-weight: 600;
-  padding: 3px 8px;
-  border-radius: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.onboarding-completed .onboarding-accordion-header h3 {
-  font-size: 1.05rem;
-  font-weight: 600;
-  color: #fff;
-  margin: 0;
-}
-
-.onboarding-completed .acc-summary {
-  color: var(--color-text-secondary);
-  font-size: 0.82rem;
-  font-weight: 400;
-}
-
-.onboarding-completed .acc-chevron {
-  color: var(--color-text-secondary);
-  transition: transform 0.3s ease;
-  font-size: 0.75rem;
-}
-
-.onboarding-completed .onboarding-accordion-body {
-  display: none !important;
-  padding: 24px;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-/* Expanded Card State */
-.onboarding-completed .dash-card.expanded .onboarding-accordion-body {
-  display: block !important;
-}
-
-.onboarding-completed .dash-card.expanded .onboarding-accordion-header {
-  background: rgba(255, 255, 255, 0.04);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.onboarding-completed .dash-card.expanded .acc-chevron {
-  transform: rotate(180deg);
 }
 
 /* ==========================================
