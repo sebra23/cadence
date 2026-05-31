@@ -1,0 +1,22 @@
+# Netlify Configuration File
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+# Clean URLs redirect configurations
+[[redirects]]
+  from = "/dashboard"
+  to = "/dashboard.html"
+  status = 200
+
+[[redirects]]
+  from = "/player"
+  to = "/player.html"
+  status = 200
+
+# Proxy Evolink API calls through Netlify Serverless Function to keep API Key secure
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/evolink-proxy/:splat"
+  status = 200
+  force = true

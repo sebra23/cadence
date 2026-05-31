@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cady | AI-Powered Adaptive Music for Stores</title>
+  <meta name="description" content="AI-generated music that adapts to your stores in real-time. No royalties, no licensing headaches. Just your brand's perfect soundtrack.">
+  
+  <!-- Preconnect and Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://app.cal.com">
+  <link rel="preload" href="https://app.cal.com/embed/embed.js" as="script">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="style.css?v=2.1">
+</head>
+<body>
+
+  <!-- Background glow effects -->
+  <div class="glow-bg glow-hero"></div>
+  <div class="glow-bg glow-dna"></div>
+
+  <!-- Header Navigation -->
+  <header id="main-header" class="site-header">
+    <div class="header-container">
+      <a href="#" class="logo">
+        <svg class="logo-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM9.5 16.5V7.5L16.5 12L9.5 16.5Z" fill="currentColor"/>
+          <path d="M12 4C7.58 4 4 7.58 4 12C4 16.42 7.58 20 12 20C16.42 20 20 16.42 20 12C20 7.58 16.42 4 12 4ZM12 6C15.31 6 18 8.69 18 12C18 15.31 15.31 18 12 18C8.69 18 6 15.31 6 12C6 8.69 8.69 6 12 6Z" fill="currentColor" fill-opacity="0.3"/>
+        </svg>
+        <span>cady</span>
+      </a>
+      
+      <nav class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="#sonic-identity">Sonic Identity</a>
+        <a href="#pricing">Pricing</a>
+      </nav>
+      
+      <div class="header-actions">
+        <a href="dashboard.html" class="btn-text">Sign In</a>
+        <a href="dashboard.html" class="btn-primary">Get Started</a>
+      </div>
+      
+      <!-- Mobile menu toggle -->
+      <button class="mobile-menu-toggle" aria-label="Toggle Navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Nav Overlay -->
+  <div class="mobile-nav-overlay">
+    <nav class="mobile-nav-links">
+      <a href="#features">Features</a>
+      <a href="#how-it-works">How It Works</a>
+      <a href="#sonic-identity">Sonic Identity</a>
+      <a href="#pricing">Pricing</a>
+      <hr>
+      <a href="dashboard.html" class="btn-text">Sign In</a>
+      <a href="dashboard.html" class="btn-primary">Get Started</a>
+    </nav>
+  </div>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <!-- Staggered background audio visualizer bars (100% GPU-accelerated) -->
+      <div class="hero-bg-bars-container">
+        <div class="hero-bg-bar"></div>
+        <div class="hero-bg-bar"></div>
+        <div class="hero-bg-bar"></div>
+        <div class="hero-bg-bar"></div>
+        <div class="hero-bg-bar"></div>
+        <div class="hero-bg-bar"></div>
+        <div class="hero-bg-bar"></div>
+        <div class="hero-bg-bar"></div>
+        <div class="hero-bg-bar"></div>
+        <div class="hero-bg-bar"></div>
+        <div class="hero-bg-bar"></div>
+        <div class="hero-bg-bar"></div>
+        <div class="hero-bg-bar"></div>
+        <div class="hero-bg-bar"></div>
+        <div class="hero-bg-bar"></div>
+        <div class="hero-bg-bar"></div>
+        <div class="hero-bg-bar"></div>
+        <div class="hero-bg-bar"></div>
+        <div class="hero-bg-bar"></div>
+        <div class="hero-bg-bar"></div>
+        <div class="hero-bg-bar"></div>
+        <div class="hero-bg-bar"></div>
+        <div class="hero-bg-bar"></div>
+        <div class="hero-bg-bar"></div>
+        <div class="hero-bg-bar"></div>
+        <div class="hero-bg-bar"></div>
+        <div class="hero-bg-bar"></div>
+        <div class="hero-bg-bar"></div>
+        <div class="hero-bg-bar"></div>
+        <div class="hero-bg-bar"></div>
+        <div class="hero-bg-bar"></div>
+        <div class="hero-bg-bar"></div>
+        <div class="hero-bg-bar"></div>
+        <div class="hero-bg-bar"></div>
+        <div class="hero-bg-bar"></div>
+      </div>
+
+      <div class="container hero-container text-center">
+
+        <!-- Hero Titles -->
+        <h1 class="hero-title">
+          Your Brand Has a Voice.<br>
+          <span class="gradient-text">Let's Hear It.</span>
+        </h1>
+        
+        <!-- Hero Description -->
+        <p class="hero-subtitle">
+          Cady creates original, royalty-free music for your brand — then learns what drive sales and plays more of it.
+        </p>
+        
+        <!-- Hero CTAs -->
+        <div class="hero-ctas">
+          <a href="javascript:void(0)" class="btn-primary btn-large" data-cal-link="cady.fm/30minute-discovery-session-cady" data-cal-namespace="30minute-discovery-session-cady" data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true","theme":"dark"}'>Get Started</a>
+          <button id="btn-play-demo" class="btn-secondary btn-large">
+            <svg class="icon-play" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M8 5V19L19 12L8 5Z" fill="currentColor"/>
+            </svg>
+            <span class="demo-btn-text">Play</span>
+          </button>
+        </div>
+        
+        <!-- AuraFlow Three-Card Brand DNA Showcase Widget -->
+        <div class="brand-dna-showcase scroll-reveal">
+          
+          <!-- Card 1: Starbucks (Left, Smaller) -->
+          <div class="mock-window-card side-card canvas-card has-video" data-preset="1">
+            <div class="mock-window-header">
+              <div class="mock-window-dots">
+                <span class="dot-red"></span>
+                <span class="dot-yellow"></span>
+                <span class="dot-green"></span>
+              </div>
+              <div class="mock-window-title">Concept Engine</div>
+            </div>
+            
+            <div class="mock-window-body">
+              <div class="brand-image-wrapper">
+                <img src="starbucks_poster.jpg" alt="Starbucks" class="brand-cover-image">
+                <video class="brand-cover-video" loop muted playsinline preload="metadata" poster="starbucks_poster.jpg">
+                  <source src="Starbucks_video.mp4" type="video/mp4">
+                </video>
+              </div>
+              
+              <div class="slide-content">
+                <div class="brand-info">
+                  <span class="brand-tag">Accustic tribute:</span>
+                  <h3 class="brand-title">Starbucks</h3>
+                  <p class="brand-desc">Cozy, inviting acoustic coffeehouse soundtrack designed to increase customer dwell times.</p>
+                  <div class="brand-metrics">
+                    <span>Sophistication: 65%</span>
+                    <span>Energy: 45%</span>
+                    <span>Warmth: 85%</span>
+                  </div>
+                  <!-- Track Progress Bar -->
+                  <div class="track-progress-container">
+                    <span class="progress-time current-time">0:00</span>
+                    <div class="progress-bar-rail">
+                      <div class="progress-bar-fill"></div>
+                    </div>
+                    <span class="progress-time total-time">0:30</span>
+                  </div>
+                </div>
+              </div>
+
+              <button class="btn-brand-play" data-preset="1">
+                <svg class="icon-play-state" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M8 5V19L19 12L8 5Z" fill="currentColor"/>
+                </svg>
+              </button>
+              
+              <div class="mock-window-visualizer">
+                <div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div>
+                <div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div>
+                <div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div>
+                <div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div>
+                <div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div>
+                <div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Nike (Center, Big) -->
+          <div class="mock-window-card center-card canvas-card has-video" data-preset="0">
+            <div class="mock-window-header">
+              <div class="mock-window-dots">
+                <span class="dot-red"></span>
+                <span class="dot-yellow"></span>
+                <span class="dot-green"></span>
+              </div>
+              <div class="mock-window-title">Concept Engine</div>
+            </div>
+            
+            <div class="mock-window-body">
+              <div class="brand-image-wrapper">
+                <img src="nike_poster.jpg" alt="Nike" class="brand-cover-image">
+                <video class="brand-cover-video" loop muted playsinline preload="metadata" poster="nike_poster.jpg">
+                  <source src="nike_compressed.mp4" type="video/mp4">
+                </video>
+              </div>
+              
+              <div class="slide-content">
+                <div class="brand-info">
+                  <span class="brand-tag">Accustic tribute:</span>
+                  <h3 class="brand-title">Nike</h3>
+                  <p class="brand-desc">High-energy, driving athletic soundtrack designed to motivate and accelerate shopping momentum.</p>
+                  <div class="brand-metrics">
+                    <span>Sophistication: 50%</span>
+                    <span>Energy: 90%</span>
+                    <span>Warmth: 40%</span>
+                  </div>
+                  <!-- Track Progress Bar -->
+                  <div class="track-progress-container">
+                    <span class="progress-time current-time">0:00</span>
+                    <div class="progress-bar-rail">
+                      <div class="progress-bar-fill"></div>
+                    </div>
+                    <span class="progress-time total-time">0:30</span>
+                  </div>
+                </div>
+              </div>
+
+              <button class="btn-brand-play" data-preset="0">
+                <svg class="icon-play-state" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M8 5V19L19 12L8 5Z" fill="currentColor"/>
+                </svg>
+              </button>
+              
+              <div class="mock-window-visualizer">
+                <div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div>
+                <div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div>
+                <div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div>
+                <div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div>
+                <div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div>
+                <div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div>
+                <div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div>
+                <div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div>
+                <div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3: Apple (Right, Smaller) -->
+          <div class="mock-window-card side-card canvas-card has-video" data-preset="2">
+            <div class="mock-window-header">
+              <div class="mock-window-dots">
+                <span class="dot-red"></span>
+                <span class="dot-yellow"></span>
+                <span class="dot-green"></span>
+              </div>
+              <div class="mock-window-title">Concept Engine</div>
+            </div>
+            
+            <div class="mock-window-body">
+              <div class="brand-image-wrapper">
+                <img src="apple_poster.jpg" alt="Apple" class="brand-cover-image">
+                <video class="brand-cover-video" loop muted playsinline preload="metadata" poster="apple_poster.jpg">
+                  <source src="Apple_video.mp4" type="video/mp4">
+                </video>
+              </div>
+              
+              <div class="slide-content">
+                <div class="brand-info">
+                  <span class="brand-tag">Accustic tribute:</span>
+                  <h3 class="brand-title">Apple</h3>
+                  <p class="brand-desc">Minimalist, premium ambient electronic soundscapes reflecting clarity and innovation.</p>
+                  <div class="brand-metrics">
+                    <span>Sophistication: 95%</span>
+                    <span>Energy: 35%</span>
+                    <span>Warmth: 60%</span>
+                  </div>
+                  <!-- Track Progress Bar -->
+                  <div class="track-progress-container">
+                    <span class="progress-time current-time">0:00</span>
+                    <div class="progress-bar-rail">
+                      <div class="progress-bar-fill"></div>
+                    </div>
+                    <span class="progress-time total-time">0:30</span>
+                  </div>
+                </div>
+              </div>
+
+              <button class="btn-brand-play" data-preset="2">
+                <svg class="icon-play-state" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M8 5V19L19 12L8 5Z" fill="currentColor"/>
+                </svg>
+              </button>
+              
+              <div class="mock-window-visualizer">
+                <div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div>
+                <div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div>
+                <div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div>
+                <div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div>
+                <div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div>
+                <div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4: Swarovski (Right, Smaller) -->
+          <div class="mock-window-card side-card canvas-card has-video" data-preset="3">
+            <div class="mock-window-header">
+              <div class="mock-window-dots">
+                <span class="dot-red"></span>
+                <span class="dot-yellow"></span>
+                <span class="dot-green"></span>
+              </div>
+              <div class="mock-window-title">Concept Engine</div>
+            </div>
+            
+            <div class="mock-window-body">
+              <div class="brand-image-wrapper">
+                <img src="swarowski_poster.jpg" alt="Swarovski" class="brand-cover-image">
+                <video class="brand-cover-video" loop muted playsinline preload="metadata" poster="swarowski_poster.jpg">
+                  <source src="swarowski_video.mp4" type="video/mp4">
+                </video>
+              </div>
+              
+              <div class="slide-content">
+                <div class="brand-info">
+                  <span class="brand-tag">Accustic tribute:</span>
+                  <h3 class="brand-title">Swarovski</h3>
+                  <p class="brand-desc">Elegantly shimmering soundscapes designed to match the brilliance of luxury crystal retail environments.</p>
+                  <div class="brand-metrics">
+                    <span>Sophistication: 90%</span>
+                    <span>Energy: 55%</span>
+                    <span>Warmth: 70%</span>
+                  </div>
+                  <!-- Track Progress Bar -->
+                  <div class="track-progress-container">
+                    <span class="progress-time current-time">0:00</span>
+                    <div class="progress-bar-rail">
+                      <div class="progress-bar-fill"></div>
+                    </div>
+                    <span class="progress-time total-time">0:30</span>
+                  </div>
+                </div>
+              </div>
+
+              <button class="btn-brand-play" data-preset="3">
+                <svg class="icon-play-state" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M8 5V19L19 12L8 5Z" fill="currentColor"/>
+                </svg>
+              </button>
+              
+              <div class="mock-window-visualizer">
+                <div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div>
+                <div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div>
+                <div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div>
+                <div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div>
+                <div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div>
+                <div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        
+        <!-- Logo Wall / Trusted By -->
+        <div class="trusted-section">
+          <h2 class="trusted-title">Trusted by Leading Brands</h2>
+          <div class="logo-marquee-container">
+            <div class="logo-marquee-track">
+              <div class="logo-marquee-content">
+                <span class="brand-logo">Nike</span>
+                <span class="brand-logo">Starbucks</span>
+                <span class="brand-logo">Apple</span>
+                <span class="brand-logo">EcoStyle</span>
+                <span class="brand-logo">Nordic Home</span>
+              </div>
+              <div class="logo-marquee-content" aria-hidden="true">
+                <span class="brand-logo">Nike</span>
+                <span class="brand-logo">Starbucks</span>
+                <span class="brand-logo">Apple</span>
+                <span class="brand-logo">EcoStyle</span>
+                <span class="brand-logo">Nordic Home</span>
+              </div>
+              <div class="logo-marquee-content" aria-hidden="true">
+                <span class="brand-logo">Nike</span>
+                <span class="brand-logo">Starbucks</span>
+                <span class="brand-logo">Apple</span>
+                <span class="brand-logo">EcoStyle</span>
+                <span class="brand-logo">Nordic Home</span>
+              </div>
+              <div class="logo-marquee-content" aria-hidden="true">
+                <span class="brand-logo">Nike</span>
+                <span class="brand-logo">Starbucks</span>
+                <span class="brand-logo">Apple</span>
+                <span class="brand-logo">EcoStyle</span>
+                <span class="brand-logo">Nordic Home</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- Features Section -->
+    <section id="features" class="section-padding">
+      <div class="container">
+        <div class="section-header text-center">
+          <span class="section-label">Features</span>
+          <h2 class="section-title">Own your sound. Never pay a royalty again.</h2>
+          <p class="section-desc">Royalty-free playlists built around your brand, steer up to 10,000 stores from one dashboard, and automatically create more of what drives sales.</p>
+        </div>
+        
+        <div class="features-grid">
+          <!-- Feature Card 1 -->
+          <div class="feature-card scroll-reveal">
+            <div class="icon-box">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 3L14.5 9.5L21 12L14.5 14.5L12 21L9.5 14.5L3 12L9.5 9.5L12 3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M5 5L6 7.5L8.5 8.5L6 9.5L5 12L4 9.5L1.5 8.5L4 7.5L5 5Z" fill="currentColor" opacity="0.5"/>
+              </svg>
+            </div>
+            <h3>AI Music Generation</h3>
+            <p>Your brand gets its own sound. Unlimited original tracks that are never repeated, never shared, and never mistaken for anyone else.</p>
+          </div>
+
+          <!-- Feature Card 2 -->
+          <div class="feature-card scroll-reveal">
+            <div class="icon-box">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2ZM12 11.5C10.62 11.5 9.5 10.38 9.5 9C9.5 7.62 10.62 6.5 12 6.5C13.38 6.5 14.5 7.62 14.5 9C14.5 10.38 13.38 11.5 12 11.5Z" stroke="currentColor" stroke-width="2" fill="none"/>
+              </svg>
+            </div>
+            <h3>Multi-Location Control</h3>
+            <p>You run every store from one place. Set the sound, shift the vibe, and keep every location on brand without touching a single one individually.</p>
+          </div>
+
+          <!-- Feature Card 3: Combined Traffic & Time Adaptive Playlists -->
+          <div class="feature-card scroll-reveal">
+            <div class="icon-box">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M17 18C17.55 18 18 17.55 18 17C18 16.45 17.55 16 17 16C16.45 16 16 16.45 16 17C16 17.55 16.45 18 17 18Z" fill="currentColor"/>
+                <path d="M7 18C7.55 18 8 17.55 8 17C8 16.45 7.55 16 7 16C6.45 16 6 16.45 6 17C6 17.55 6.45 18 7 18Z" fill="currentColor"/>
+                <path d="M17 14C18.66 14 20 12.66 20 11C20 9.34 18.66 8 17 8C15.34 8 14 9.34 14 11C14 12.66 15.34 14 17 14Z" stroke="currentColor" stroke-width="2"/>
+                <path d="M7 14C8.66 14 10 12.66 10 11C10 9.34 8.66 8 7 8C5.34 8 4 9.34 4 11C4 12.66 5.34 14 7 14Z" stroke="currentColor" stroke-width="2"/>
+                <path d="M12 21C12 21 16 18 16 16.5C16 15 12 15 12 15C12 15 8 15 8 16.5C8 18 12 21 12 21Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <h3>Traffic-Adaptive Playlists</h3>
+            <p>Your music moves with your customers. Slower when the morning crowd eases in, building through the afternoon, peaking when your floor is at its busiest.</p>
+          </div>
+
+          <!-- Feature Card 4: New Music Weekly -->
+          <div class="feature-card scroll-reveal">
+            <div class="icon-box">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19 4H5C3.9 4 3 4.9 3 6V20C3 21.1 3.9 22 5 22H19C20.1 22 21 21.1 21 20V6C21 4.9 20.1 4 19 4Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M16 2V6M8 2V6M3 10H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M12 13V17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="10" cy="17" r="2" stroke="currentColor" stroke-width="2"/>
+              </svg>
+            </div>
+            <h3>New Music Weekly</h3>
+            <p>Every week, fresh tracks built from what your sales data says actually works — more of what keeps shoppers spending, automatically.</p>
+          </div>
+
+          <!-- Feature Card 5 -->
+          <div class="feature-card scroll-reveal">
+            <div class="icon-box">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="2" y="5" width="20" height="14" rx="2" stroke="currentColor" stroke-width="2"/>
+                <path d="M2 10H22M6 15H10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <h3>Zero Royalties</h3>
+            <p>You own every track outright — no PRO fees, no licensing bills, no audits. What you save goes straight back into your business.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="section-padding bg-darker">
+      <div class="container max-w-md">
+        <div class="section-header text-center">
+          <span class="section-label">How It Works</span>
+          <h2 class="section-title font-outfit">You're live across every store in four steps</h2>
+        </div>
+        
+        <div class="timeline">
+          <!-- Step 1 -->
+          <div class="timeline-item scroll-reveal">
+            <div class="timeline-number">01</div>
+            <div class="timeline-content">
+              <h3>Brand Discovery</h3>
+              <p>You tell us who you are. <a href="javascript:void(0)" class="text-link" style="color: var(--color-purple-light); text-decoration: underline;" data-cal-link="cady.fm/30minute-discovery-session-cady" data-cal-namespace="30minute-discovery-session-cady" data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true","theme":"dark"}'>Connect with a sonic strategist</a> or complete our Sonic Identity form and we translate your brand into a music and playlists that's entirely your own.</p>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="timeline-item scroll-reveal">
+            <div class="timeline-number">02</div>
+            <div class="timeline-content">
+              <h3>Find Your Sound</h3>
+              <p>You choose what feels right. We generate custom sample tracks built around your brand profile. You listen, you pick, and your signature sound is locked in.</p>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="timeline-item scroll-reveal">
+            <div class="timeline-number">03</div>
+            <div class="timeline-content">
+              <h3>Connect Your Stores</h3>
+              <p>You plug in your data or link your POS in real time so we can adjust tempo, energy, and scheduling to match your crowd automatically.</p>
+            </div>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="timeline-item scroll-reveal">
+            <div class="timeline-number">04</div>
+            <div class="timeline-content">
+              <h3>Go Live</h3>
+              <p>You launch. Every store, every location, every time zone playing adaptive, royalty-free music that updates in real time and gets smarter about driving sales every single day.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sonic Identity Section -->
+    <section id="sonic-identity" class="section-padding">
+      <div class="container dna-grid-layout">
+        <!-- Left Side Details -->
+        <div class="dna-details scroll-reveal">
+          <span class="section-label text-left">Sonic Identity</span>
+          <h2 class="section-title text-left">Your brand has a sound.<br>We help you find it.</h2>
+          <p class="section-desc text-left">Our experts maps your brand's personality to musical attributes. The result is a unique sonic identity that resonates with your audience.</p>
+          
+          <ul class="dna-bullets">
+            <li>
+              <svg class="icon-check" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Brand archetype alignment
+            </li>
+            <li>
+              <svg class="icon-check" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Competitor sonic differentiation
+            </li>
+            <li>
+              <svg class="icon-check" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Customer demographic matching
+            </li>
+            <li>
+              <svg class="icon-check" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Emotional response optimization
+            </li>
+          </ul>
+        </div>
+        
+        <!-- Right Side Interactive Panel -->
+        <div class="dna-interactive-panel scroll-reveal">
+          <!-- Swarovski Static Player Card -->
+          <div class="mock-window-card canvas-card has-video static-player-card" data-preset="3">
+            <div class="mock-window-header">
+              <div class="mock-window-dots">
+                <span class="dot-red"></span>
+                <span class="dot-yellow"></span>
+                <span class="dot-green"></span>
+              </div>
+              <div class="mock-window-title">Concept Engine</div>
+            </div>
+            
+            <div class="mock-window-body">
+              <div class="brand-image-wrapper">
+                <img src="swarowski_poster.jpg" alt="Swarovski" class="brand-cover-image" loading="lazy">
+                <video class="brand-cover-video" loop muted playsinline preload="metadata" poster="swarowski_poster.jpg">
+                  <source src="swarowski_video.mp4" type="video/mp4">
+                </video>
+              </div>
+              
+              <div class="slide-content">
+                <div class="brand-info">
+                  <span class="brand-tag">Accustic tribute:</span>
+                  <h3 class="brand-title">Swarovski</h3>
+                  <p class="brand-desc">Elegantly shimmering soundscapes designed to match the brilliance of luxury crystal retail environments.</p>
+                  <div class="brand-metrics">
+                    <span>Sophistication: 90%</span>
+                    <span>Energy: 55%</span>
+                    <span>Warmth: 70%</span>
+                  </div>
+                  <!-- Track Progress Bar -->
+                  <div class="track-progress-container">
+                    <span class="progress-time current-time">0:00</span>
+                    <div class="progress-bar-rail">
+                      <div class="progress-bar-fill"></div>
+                    </div>
+                    <span class="progress-time total-time">0:30</span>
+                  </div>
+                </div>
+              </div>
+
+              <button class="btn-brand-play" data-preset="3">
+                <svg class="icon-play-state" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M8 5V19L19 12L8 5Z" fill="currentColor"/>
+                </svg>
+              </button>
+              
+              <div class="mock-window-visualizer">
+                <div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div>
+                <div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div>
+                <div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div>
+                <div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div>
+                <div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div>
+                <div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="section-padding bg-darker">
+      <div class="container">
+        <div class="section-header text-center">
+          <span class="section-label">Pricing</span>
+          <h2 class="section-title">Simple, transparent pricing</h2>
+          <p class="section-desc">No hidden fees. Cancel anytime.</p>
+        </div>
+        
+        <div class="pricing-grid">
+          <!-- Starter Tier -->
+          <div class="pricing-card scroll-reveal">
+            <div class="pricing-header">
+              <h3>Starter</h3>
+              <p class="tier-desc">For single locations</p>
+              <div class="price-container">
+                <span class="currency">$</span>
+                <span class="price-value">99</span>
+                <span class="price-period">/month</span>
+              </div>
+            </div>
+            
+            <ul class="pricing-features">
+              <li>
+                <svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                1 store location
+              </li>
+              <li>
+                <svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                1 Adaptive playlist
+              </li>
+              <li>
+                <svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Basic analytics
+              </li>
+              <li>
+                <svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Email support
+              </li>
+            </ul>
+            
+            <div class="pricing-cta">
+              <a href="javascript:void(0)" class="btn-outline w-full text-center" data-cal-link="cady.fm/30minute-discovery-session-cady" data-cal-namespace="30minute-discovery-session-cady" data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true","theme":"dark"}'>Get Started</a>
+            </div>
+          </div>
+
+          <!-- Professional Tier (Most Popular) -->
+          <div class="pricing-card premium scroll-reveal">
+            <div class="premium-badge">Most Popular</div>
+            <div class="pricing-header">
+              <h3>Professional</h3>
+              <p class="tier-desc">For growing brands</p>
+              <div class="price-container">
+                <span class="currency">$</span>
+                <span class="price-value">299</span>
+                <span class="price-period">/month</span>
+              </div>
+            </div>
+            
+            <ul class="pricing-features">
+              <li>
+                <svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Up to 4 locations
+              </li>
+              <li>
+                <svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                4 Adaptive playlists
+              </li>
+              <li>
+                <svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Advanced analytics
+              </li>
+              <li>
+                <svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Weather adaptation
+              </li>
+              <li>
+                <svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                New Music Weekly
+              </li>
+              <li>
+                <svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Priority support
+              </li>
+            </ul>
+            
+            <div class="pricing-cta">
+              <a href="javascript:void(0)" class="btn-primary w-full text-center" data-cal-link="cady.fm/30minute-discovery-session-cady" data-cal-namespace="30minute-discovery-session-cady" data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true","theme":"dark"}'>Get Started</a>
+            </div>
+          </div>
+
+          <!-- Enterprise Tier -->
+          <div class="pricing-card scroll-reveal">
+            <div class="pricing-header">
+              <h3>Enterprise</h3>
+              <p class="tier-desc">For global brands</p>
+              <div class="price-container">
+                <span class="price-value custom-price">Custom</span>
+              </div>
+            </div>
+            
+            <ul class="pricing-features">
+              <li>
+                <svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Unlimited locations
+              </li>
+              <li>
+                <svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Custom AI training
+              </li>
+              <li>
+                <svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                SSO & SAML
+              </li>
+              <li>
+                <svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Dedicated CSM
+              </li>
+              <li>
+                <svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                API access
+              </li>
+              <li>
+                <svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                SLA guarantee
+              </li>
+            </ul>
+            
+            <div class="pricing-cta">
+              <a href="javascript:void(0)" class="btn-outline w-full text-center" data-cal-link="cady.fm/30minute-discovery-session-cady" data-cal-namespace="30minute-discovery-session-cady" data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true","theme":"dark"}'>Contact Sales</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bottom CTA Section -->
+    <section class="bottom-cta-section text-center section-padding">
+      <div class="container max-w-sm scroll-reveal">
+        <h2 class="section-title">Ready to find your sound?</h2>
+        <p class="section-desc">Join 2,400+ brands using Cady to create unforgettable in-store experiences.</p>
+        
+        <div class="cta-actions">
+          <a href="dashboard.html" class="btn-primary btn-large">Get Started</a>
+        </div>
+        <p class="cta-caption">Free 14-day trial. No credit card required.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="glow-bg glow-cta"></div>
+    <div class="container footer-container">
+      <div class="footer-brand">
+        <a href="#" class="logo">
+          <svg class="logo-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM9.5 16.5V7.5L16.5 12L9.5 16.5Z" fill="currentColor"/>
+            <path d="M12 4C7.58 4 4 7.58 4 12C4 16.42 7.58 20 12 20C16.42 20 20 16.42 20 12C20 7.58 16.42 4 12 4ZM12 6C15.31 6 18 8.69 18 12C18 15.31 15.31 18 12 18C8.69 18 6 15.31 6 12C6 8.69 8.69 6 12 6Z" fill="currentColor" fill-opacity="0.3"/>
+          </svg>
+          <span>cady</span>
+        </a>
+        <p class="brand-bio">AI-powered adaptive music for retail and hospitality brands.</p>
+      </div>
+      
+      <div class="footer-links-grid">
+        <!-- Col 1 -->
+        <div class="footer-col">
+          <h4>Product</h4>
+          <ul>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="#">API</a></li>
+            <li><a href="#">Changelog</a></li>
+          </ul>
+        </div>
+        <!-- Col 2 -->
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="javascript:void(0)" data-cal-link="cady.fm/30minute-discovery-session-cady" data-cal-namespace="30minute-discovery-session-cady" data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true","theme":"dark"}'>Contact</a></li>
+          </ul>
+        </div>
+        <!-- Col 3 -->
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#">Privacy</a></li>
+            <li><a href="#">Terms</a></li>
+            <li><a href="#">Licenses</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <div class="container footer-bottom">
+      <p class="copyright">&copy; 2025 Cady.fm. All rights reserved.</p>
+      <div class="social-links">
+        <a href="#">Twitter</a>
+        <a href="#">LinkedIn</a>
+        <a href="#">Instagram</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Cal element-click embed code begins -->
+  <script type="text/javascript">
+  (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if(typeof namespace === "string"){cal.ns[namespace] = cal.ns[namespace] || api;p(cal.ns[namespace], ar);p(cal, ["initNamespace", namespace]);} else p(cal, ar); return;} p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
+  Cal("init", "30minute-discovery-session-cady", {origin:"https://app.cal.com"});
+
+  Cal.ns["30minute-discovery-session-cady"]("ui", {
+    "theme": "dark",
+    "cssVarsPerTheme": {
+      "dark": {
+        "cal-brand": "#fff"
+      }
+    },
+    "hideEventTypeDetails": false,
+    "layout": "month_view"
+  });
+  Cal.ns["30minute-discovery-session-cady"]("preload", {calLink: "cady.fm/30minute-discovery-session-cady"});
+  </script>
+  <!-- Cal element-click embed code ends -->
+
+  <!-- Interactive JS -->
+  <script src="app.js"></script>
+</body>
+</html>

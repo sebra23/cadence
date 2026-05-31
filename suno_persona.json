@@ -1,0 +1,21 @@
+{
+  "persona_id": "persona-lsvl8e5pg",
+  "brand_name": "Cady",
+  "vibe": "warm",
+  "genres": [
+    "Jazz",
+    "Ambient"
+  ],
+  "tempo": 80,
+  "instrumentation": [
+    "Guitar",
+    "Synth"
+  ],
+  "references": {
+    "spotify": "",
+    "youtube": "",
+    "competitor": ""
+  },
+  "forbidden_sounds": "",
+  "created_at": "2026-05-31T15:29:58.239Z"
+}

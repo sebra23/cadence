@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cady Store Player</title>
+  <!-- Outfit & Inter Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-bg: #040406;
+      --color-card-bg: rgba(13, 12, 18, 0.45);
+      --color-border: rgba(255, 255, 255, 0.05);
+      --color-purple-primary: #7c3aed;
+      --color-purple-light: #a78bfa;
+      --color-text-primary: #f3f4f6;
+      --color-text-secondary: #9ca3af;
+      --color-text-muted: #6b7280;
+      
+      --color-calm: #06b6d4;
+      --color-flow: #10b981;
+      --color-drive: #8b5cf6;
+      --color-after: #ec4899;
+      --color-closed: #64748b;
+      
+      --border-radius-lg: 16px;
+      --border-radius-md: 10px;
+      --border-radius-sm: 6px;
+      --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--color-bg);
+      color: var(--color-text-primary);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(124, 58, 237, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(236, 72, 153, 0.06) 0%, transparent 40%);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 900px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Header Brand Glow */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .brand-logo {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-logo span {
+      background: linear-gradient(135deg, var(--color-purple-light), #f472b6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .node-badge {
+      background: rgba(124, 58, 237, 0.12);
+      border: 1px solid rgba(124, 58, 237, 0.25);
+      color: var(--color-purple-light);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      box-shadow: 0 0 15px rgba(124, 58, 237, 0.1);
+    }
+
+    /* Player Card Glass */
+    .player-card {
+      background: var(--color-card-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius-lg);
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .player-card::before {
+      content: '';
+      position: absolute;
+      top: -150px;
+      right: -150px;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(124, 58, 237, 0.12) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .player-layout {
+      display: flex;
+      gap: 32px;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    @media (max-width: 768px) {
+      .player-layout {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+
+    /* Cover Art & Glow */
+    .cover-art-container {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .cover-art {
+      width: 180px;
+      height: 180px;
+      border-radius: var(--border-radius-lg);
+      background: linear-gradient(135deg, #1e1b4b, #311042);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-family: 'Outfit', sans-serif;
+      font-size: 5rem;
+      font-weight: 800;
+      color: rgba(255, 255, 255, 0.8);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+      transition: var(--transition-smooth);
+    }
+
+    .cover-glow {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: var(--border-radius-lg);
+      background: inherit;
+      filter: blur(25px);
+      opacity: 0.45;
+      z-index: -1;
+      transition: var(--transition-smooth);
+    }
+
+    /* Song details */
+    .player-info {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .store-location-title {
+      font-size: 0.85rem;
+      color: var(--color-purple-light);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+    }
+
+    .song-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .song-artist {
+      font-size: 1.1rem;
+      color: var(--color-text-secondary);
+    }
+
+    /* Badges Row */
+    .badges-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 4px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 768px) {
+      .badges-row {
+        justify-content: center;
+      }
+    }
+
+    .badge {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      text-transform: uppercase;
+    }
+
+    .vibe-badge.calm { background: rgba(6, 182, 212, 0.1); border: 1px solid rgba(6, 182, 212, 0.2); color: var(--color-calm); }
+    .vibe-badge.flow { background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); color: var(--color-flow); }
+    .vibe-badge.drive { background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.2); color: var(--color-drive); }
+    .vibe-badge.after { background: rgba(236, 72, 153, 0.1); border: 1px solid rgba(236, 72, 153, 0.2); color: var(--color-after); }
+    .vibe-badge.closed { background: rgba(100, 116, 139, 0.1); border: 1px solid rgba(100, 116, 139, 0.2); color: var(--color-closed); }
+
+    .schedule-badge {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--color-text-secondary);
+    }
+
+    /* Controls Deck */
+    .controls-deck {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+      padding-top: 20px;
+    }
+
+    .scrubber-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .time-label {
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+      width: 35px;
+      font-family: monospace;
+    }
+
+    .scrubber-bar {
+      flex-grow: 1;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 4px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .scrubber-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--color-purple-primary), var(--color-purple-light));
+      border-radius: 4px;
+      transition: width 0.1s linear;
+    }
+
+    .buttons-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .btn-group-main {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .btn-control {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--color-text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition-smooth);
+    }
+
+    .btn-control:hover {
+      color: #fff;
+    }
+
+    .btn-control.btn-prev svg, .btn-control.btn-next svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .btn-play-pause {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: #fff;
+      color: var(--color-bg);
+      box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-play-pause:hover {
+      transform: scale(1.05);
+      background: #fff;
+      color: var(--color-bg);
+      box-shadow: 0 4px 20px rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-play-pause svg {
+      width: 24px;
+      height: 24px;
+      fill: currentColor;
+    }
+
+    .btn-play-pause .pause-icon {
+      display: none;
+    }
+
+    .btn-play-pause.playing .play-icon {
+      display: none;
+    }
+
+    .btn-play-pause.playing .pause-icon {
+      display: block;
+    }
+
+    .volume-control {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 150px;
+    }
+
+    .volume-icon {
+      color: var(--color-text-secondary);
+      display: flex;
+      align-items: center;
+    }
+
+    .volume-slider {
+      flex-grow: 1;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 2px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .volume-fill {
+      height: 100%;
+      width: 60%;
+      background: var(--color-text-secondary);
+      border-radius: 2px;
+    }
+
+    /* Visualizer Canvas */
+    .visualizer-container {
+      width: 100%;
+      height: 60px;
+      border-radius: var(--border-radius-md);
+      overflow: hidden;
+      position: relative;
+    }
+
+    #visualizer-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Playlist Table */
+    .playlist-section {
+      background: var(--color-card-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius-lg);
+      padding: 24px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .playlist-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .playlist-header h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .playlist-count {
+      font-size: 0.8rem;
+      color: var(--color-text-muted);
+    }
+
+    .tracks-table-wrapper {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    th {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 10px 12px;
+    }
+
+    td {
+      padding: 12px;
+      font-size: 0.85rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+      transition: var(--transition-smooth);
+      color: var(--color-text-secondary);
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+      color: #fff;
+      cursor: pointer;
+    }
+
+    tr.active-track td {
+      background: rgba(124, 58, 237, 0.08);
+      color: var(--color-purple-light);
+    }
+
+    .col-index { width: 40px; text-align: center; }
+    .col-title { font-weight: 500; color: #fff; }
+    .col-artist {}
+    .col-vibe { width: 100px; }
+    .col-bpm { width: 80px; font-family: monospace; }
+    .col-duration { width: 70px; text-align: right; font-family: monospace; }
+
+    tr.active-track .col-title {
+      color: var(--color-purple-light);
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Explanation overlay */
+    .closed-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(4, 4, 6, 0.85);
+      backdrop-filter: blur(6px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      z-index: 10;
+      border-radius: var(--border-radius-lg);
+      padding: 30px;
+      text-align: center;
+    }
+
+    .closed-overlay h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+
+    .closed-overlay p {
+      color: var(--color-text-secondary);
+      font-size: 0.9rem;
+      max-width: 400px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand-logo">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#logo-grad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <defs>
+            <linearGradient id="logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#a78bfa" />
+              <stop offset="100%" stop-color="#ec4899" />
+            </linearGradient>
+          </defs>
+          <path d="M12 2v20M17 5v14M22 9v6M7 8v8M2 10v4"/>
+        </svg>
+        <span>CADY</span> Store Node
+      </div>
+      <div class="node-badge" id="node-status-badge">AuraFlow Node #01</div>
+    </header>
+
+    <main class="player-card">
+      <!-- Store Closed Overlay -->
+      <div id="closed-store-overlay" class="closed-overlay hidden">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--color-closed)" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+        </svg>
+        <h3>Store Closed</h3>
+        <p>The operating schedule indicates this location is currently closed. Dynamic arpeggiation and playlist playback are in standby mode.</p>
+      </div>
+
+      <div class="player-layout">
+        <div class="cover-art-container">
+          <div class="cover-art" id="player-cover-art">C</div>
+          <div class="cover-glow" id="player-cover-glow"></div>
+        </div>
+        
+        <div class="player-info">
+          <div class="store-location-title" id="lbl-store-name">London Soho (Flagship)</div>
+          <h1 class="song-title" id="lbl-track-title">Quiet Dawn</h1>
+          <div class="song-artist" id="lbl-track-artist">Ambient Focus</div>
+          
+          <div class="badges-row">
+            <span class="badge vibe-badge calm" id="lbl-active-vibe">Calm Vibe</span>
+            <span class="badge schedule-badge" id="lbl-timezone-time">GMT • 9:00 AM</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Reactive Soundwaves visualizer -->
+      <div class="visualizer-container">
+        <canvas id="visualizer-canvas"></canvas>
+      </div>
+
+      <div class="controls-deck">
+        <div class="scrubber-wrapper">
+          <span class="time-label" id="lbl-time-current">0:00</span>
+          <div class="scrubber-bar" id="player-scrubber-bar">
+            <div class="scrubber-fill" id="player-scrubber-fill"></div>
+          </div>
+          <span class="time-label" id="lbl-time-total">3:24</span>
+        </div>
+
+        <div class="buttons-row">
+          <!-- Standby controls -->
+          <div class="volume-control">
+            <span class="volume-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5zM15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+            </span>
+            <div class="volume-slider" id="player-volume-slider">
+              <div class="volume-fill" id="player-volume-fill"></div>
+            </div>
+          </div>
+
+          <div class="btn-group-main">
+            <button class="btn-control btn-prev" id="btn-player-prev" title="Previous Track">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/></svg>
+            </button>
+            <button class="btn-control btn-play-pause" id="btn-player-play" title="Play / Pause">
+              <svg class="play-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              <svg class="pause-icon" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+            </button>
+            <button class="btn-control btn-next" id="btn-player-next" title="Next Track">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
+            </button>
+          </div>
+
+          <!-- Empty spacer to align items nicely -->
+          <div style="width: 150px; display: flex; justify-content: flex-end;">
+            <span id="playback-schedule-summary" style="font-size: 0.72rem; color: var(--color-text-muted);">Looping Node Synth</span>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <section class="playlist-section">
+      <div class="playlist-header">
+        <h3 id="lbl-playlist-title">London Soho Adaptive Playlist</h3>
+        <span class="playlist-count">50 Tracks Adaptable</span>
+      </div>
+      <div class="tracks-table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th class="col-index">#</th>
+              <th>Title</th>
+              <th>Artist</th>
+              <th class="col-vibe">Vibe Vibe</th>
+              <th class="col-bpm">Tempo</th>
+              <th class="col-duration">Duration</th>
+            </tr>
+          </thead>
+          <tbody id="playlist-tracks-body">
+            <!-- Populated dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // Mock Artist database based on Vibe
+    const seedArtists = {
+      calm: ["Bon Iver", "Brian Eno", "Sigur Rós", "Hammock", "Marconi Union", "Aphex Twin", "Moby", "Tycho", "Olafur Arnalds", "Nils Frahm"],
+      flow: ["Khruangbin", "Four Tet", "Bonobo", "Emancipator", "Real Estate", "Toro y Moi", "Poolside", "Leon Bridges", "Air", "Zero 7"],
+      drive: ["Daft Punk", "The Chemical Brothers", "LCD Soundsystem", "Disclosure", "RÜFÜS DU SOL", "Kaytranada", "Justice", "Fred again..", "Peggy Gou", "Moderat"],
+      after: ["Cigarettes After Sex", "Norah Jones", "Chet Baker", "Portishead", "Massive Attack", "Lana Del Rey", "Sade", "Rhye", "Beach House", "St. Germain"]
+    };
+
+    const seedSongNouns = {
+      calm: ["Luminous Horizon", "Quiet Dawn", "Soft Whisper", "Misty Valley", "First Light", "Serene Meadow", "Gentle Breeze", "Resting Mind", "Still Waters", "Silent Echo"],
+      flow: ["Ocean Breeze", "Smooth Transition", "Midday Wanderer", "Warm Sunlight", "Cosmic Groove", "Urban Pulse", "Summer Drift", "Golden Hour", "Steady Pace", "Floating Cloud"],
+      drive: ["Neon Lights", "Midnight Drive", "High Energy", "Fast Track", "Electric Heartbeat", "Rhythm Engine", "Peak Flow", "Ignition", "Velocity Shift", "Club Fever"],
+      after: ["Velvet Shadows", "Midnight Whispers", "Late Lounge", "Soft Glow", "Moonlit Dance", "Slow Motion", "Dusk Till Dawn", "Deep Echo", "Nightfall", "Dream State"]
+    };
+
+    const seedAlbumNouns = {
+      calm: ["Ethereal", "Serenity", "Tranquil Space", "Soft Echoes", "Misty Hills", "First Light", "Peaceful Drift", "Quiet Mind", "Stillness", "Silence"],
+      flow: ["Transitions", "Groove Theory", "Solar Waves", "Golden Haze", "Daily Motions", "Warm Breeze", "Coastline", "Summer Haze", "Steady State", "Skyline"],
+      drive: ["Velocity", "Ignition", "Engine Start", "Neon Beats", "Midnight Pulse", "Power Grid", "Active Shopper", "Momentum", "Rush Hour", "Dynamic Peak"],
+      after: ["Shadows", "After Hours", "Velvet Night", "Dusk", "Late Session", "Warm Glow", "Cozy Corner", "Intimate Jazz", "Winding Down", "Midnight Lounge"]
+    };
+
+    // Parse URL store parameters & local storage
+    const urlParams = new URLSearchParams(window.location.search);
+    const storeId = urlParams.get('store');
+    const emailParam = urlParams.get('email') || localStorage.getItem('cady-active-email') || '';
+    
+    let companyName = "Cady";
+    if (emailParam) {
+      const atIndex = emailParam.lastIndexOf("@");
+      if (atIndex !== -1) {
+        const domain = emailParam.substring(atIndex + 1);
+        const dotIndex = domain.lastIndexOf(".");
+        const brand = dotIndex !== -1 ? domain.substring(0, dotIndex) : domain;
+        if (brand) {
+          companyName = brand.charAt(0).toUpperCase() + brand.slice(1);
+        }
+      }
+    }
+
+    function getScopedKey(key) {
+      if (!emailParam) {
+        return key;
+      }
+      const email = emailParam.toLowerCase().trim();
+      if (key.startsWith('cady-')) {
+        return `cady-${email}-${key.substring(5)}`;
+      }
+      if (key.startsWith('cadence-')) {
+        return `cady-${email}-${key.substring(8)}`;
+      }
+      return `${email}-${key}`;
+    }
+    
+    let locations = [];
+    try {
+      locations = JSON.parse(localStorage.getItem(getScopedKey('cady-locations'))) || [];
+    } catch (e) {
+      console.error(e);
+    }
+
+    // Fallback if none in local storage or matches ID
+    let activeStore = locations.find(l => l.id === storeId);
+    if (!activeStore) {
+      activeStore = locations[0] || {
+        id: 'london-flagship',
+        name: 'London Soho (Flagship)',
+        address: '45 Wardour St, London',
+        timezone: 'GMT',
+        status: 'deployed',
+        schedules: {
+          Mon: { open: true, start: 8, end: 21, calmStart: 8, calmEnd: 11, flowStart: 11, flowEnd: 15, driveStart: 15, driveEnd: 19, afterStart: 19, afterEnd: 21 },
+          Tue: { open: true, start: 8, end: 21, calmStart: 8, calmEnd: 11, flowStart: 11, flowEnd: 15, driveStart: 15, driveEnd: 19, afterStart: 19, afterEnd: 21 },
+          Wed: { open: true, start: 8, end: 21, calmStart: 8, calmEnd: 11, flowStart: 11, flowEnd: 15, driveStart: 15, driveEnd: 19, afterStart: 19, afterEnd: 21 },
+          Thu: { open: true, start: 8, end: 21, calmStart: 8, calmEnd: 11, flowStart: 11, flowEnd: 15, driveStart: 15, driveEnd: 19, afterStart: 19, afterEnd: 21 },
+          Fri: { open: true, start: 8, end: 21, calmStart: 8, calmEnd: 11, flowStart: 11, flowEnd: 15, driveStart: 15, driveEnd: 19, afterStart: 19, afterEnd: 21 },
+          Sat: { open: true, start: 9, end: 18, calmStart: 9, calmEnd: 11, flowStart: 11, flowEnd: 14, driveStart: 14, driveEnd: 16, afterStart: 16, afterEnd: 18 },
+          Sun: { open: false, start: 10, end: 17, calmStart: 10, calmEnd: 11, flowStart: 11, flowEnd: 14, driveStart: 14, driveEnd: 15, afterStart: 15, afterEnd: 17 }
+        }
+      };
+    }
+
+    // Set UI metadata
+    document.title = `${activeStore.name} - Cady Player`;
+    document.getElementById('lbl-store-name').textContent = activeStore.name;
+    document.getElementById('lbl-playlist-title').textContent = `${activeStore.name} Adaptive Playlist`;
+    document.getElementById('node-status-badge').textContent = `Node: ${activeStore.id.slice(0, 15)}`;
+
+    // Generate mock playlist seeded by store name
+    function generateMockPlaylist(brand) {
+      let currentPersonaId = "persona-abc123";
+      try {
+        const savedPersona = localStorage.getItem(getScopedKey('cady-suno-persona'));
+        if (savedPersona) {
+          const parsed = JSON.parse(savedPersona);
+          if (parsed.persona_id) {
+            currentPersonaId = parsed.persona_id;
+          }
+        }
+      } catch (e) {
+        console.error("Failed to load persona", e);
+      }
+
+      const rawSongs = [
+        // Morning Calm (12 songs)
+        { id: 1, title: "Morning Calm #01", bpm: 68, category: "calm", artist: "Brian Eno", album: "First Light", basePrompt: "Gentle ambient intro, soft Rhodes piano melody emerging, minimal brush drums at 0:30. Warm, inviting, like the first light of day.", imageId: "1518241353330-0f7941c2d9b5" },
+        { id: 2, title: "Morning Calm #02", bpm: 72, category: "calm", artist: "Hammock", album: "Quiet Reflections", basePrompt: "Acoustic guitar + Rhodes duet, soft bassline, no drums for first 45 seconds. Peaceful, contemplative.", imageId: "1447752875215-b2761acb3c5d" },
+        { id: 3, title: "Morning Calm #03", bpm: 65, category: "calm", artist: "Ludovico Einaudi", album: "Zen Spaces", basePrompt: "Solo Rhodes piano piece, reverb-heavy, sparse. Meditation-like quality. Single note melody with space between phrases.", imageId: "1497250681960-ef046c08a56e" },
+        { id: 4, title: "Morning Calm #04", bpm: 76, category: "calm", artist: "Marconi Union", album: "Floating World", basePrompt: "Warm synth pad drone, Rhodes melody floating on top, brushed cymbals. Ethereal, floating.", imageId: "1506126613408-eca07ce68773" },
+        { id: 5, title: "Morning Calm #05", bpm: 70, category: "calm", artist: "Bill Evans Trio", album: "Morning Espresso", basePrompt: "Upright bass walking line, soft Rhodes chords, minimal percussion. Jazz-lounge feel, very relaxed.", imageId: "1485182708500-e8f17318ac7c" },
+        { id: 6, title: "Morning Calm #06", bpm: 74, category: "calm", artist: "Olafur Arnalds", album: "Cinematic Dawn", basePrompt: "Cello + Rhodes harmony, no percussion for 60 seconds, then gentle kick enters. Cinematic warmth.", imageId: "1464822759023-fed622ff2c3b" },
+        { id: 7, title: "Morning Calm #07", bpm: 66, category: "calm", artist: "Helios", album: "Nature Echoes", basePrompt: "Soft electric piano, nylon guitar textures, ambient bird-like synth sounds. Nature-inspired calm.", imageId: "1441974231531-c6227db76b6e" },
+        { id: 8, title: "Morning Calm #08", bpm: 78, category: "calm", artist: "Goldmund", album: "Analog Waves", basePrompt: "Rhodes piano with tape delay effect, subtle vinyl crackle texture, warm bass. Nostalgic, analog feel.", imageId: "1470225620780-dba8ba36b745" },
+        { id: 9, title: "Morning Calm #09", bpm: 71, category: "calm", artist: "Eluvium", album: "Hypnotic Dream", basePrompt: "Minimalist piano pattern, single repeating Rhodes motif that slowly evolves. Meditative, hypnotic.", imageId: "1518609878373-06d740f60d8b" },
+        { id: 10, title: "Morning Calm #10", bpm: 75, category: "calm", artist: "Brian Eno", album: "Acoustic Shadows", basePrompt: "Soft Rhodes + ambient pad, distant reverberated percussion, like music heard from another room.", imageId: "1501854140801-50d01698950b" },
+        { id: 11, title: "Morning Calm #11", bpm: 67, category: "calm", artist: "Olafur Arnalds", album: "Zen Spaces", basePrompt: "Solo instrument (Rhodes), very slow melody, lots of space between notes. Contemplative, sparse.", imageId: "1475113548554-5a36f1f523d6" },
+        { id: 12, title: "Morning Calm #12", bpm: 73, category: "calm", artist: "Helios", album: "First Light", basePrompt: "Warm Rhodes chords, soft brushed snare, bass that pulses gently. Comfortable, like a favorite sweater.", imageId: "1507525428034-b723cf961d3e" },
+
+        // Midday Flow (14 songs)
+        { id: 13, title: "Midday Flow #01", bpm: 88, category: "flow", artist: "Khruangbin", album: "Urban Grooves", basePrompt: "Confident groove, Rhodes piano theme, walking bass, light percussion. Effortless, smooth.", imageId: "1488646953014-85cb44e25828" },
+        { id: 14, title: "Midday Flow #02", bpm: 92, category: "flow", artist: "Toro y Moi", album: "Modern Sun", basePrompt: "Upbeat lounge, Rhodes + electric guitar interplay, four-on-the-floor kick, hi-hat. Positive momentum.", imageId: "1528605248644-14dd04022da1" },
+        { id: 15, title: "Midday Flow #03", bpm: 86, category: "flow", artist: "Leon Bridges", album: "Approachable Soul", basePrompt: "Soulful Rhodes chords, funky bassline, claps on 2 and 4. Warm, human, approachable.", imageId: "1511671782779-c97d3d27a1d4" },
+        { id: 16, title: "Midday Flow #04", bpm: 95, category: "flow", artist: "Tycho", album: "Forward Horizons", basePrompt: "Bright Rhodes melody, driving bass, shakers and light percussion. Forward-moving, optimistic.", imageId: "1500485035595-cbe6f645feb1" },
+        { id: 17, title: "Midday Flow #05", bpm: 90, category: "flow", artist: "Men I Trust", album: "Lounge Jazz", basePrompt: "Jazzy Rhodes improv over steady groove, upright bass, brushed drums with occasional ride cymbal.", imageId: "1459749411175-04bf5292ceea" },
+        { id: 18, title: "Midday Flow #06", bpm: 87, category: "flow", artist: "Poolside", album: "Modern Sun", basePrompt: "Rhodes + soft synth pad layers, gentle electronic beat underneath. Modern lounge feel.", imageId: "1501386761578-eac5c94b800a" },
+        { id: 19, title: "Midday Flow #07", bpm: 93, category: "flow", artist: "Khruangbin", album: "Urban Grooves", basePrompt: "Funk-influenced Rhodes, slap bass, tight drum groove. Energetic but sophisticated.", imageId: "1514525253161-7a46d19cd819" },
+        { id: 20, title: "Midday Flow #08", bpm: 89, category: "flow", artist: "Real Estate", album: "Story Arc", basePrompt: "Melodic Rhodes theme that develops over 2 minutes, bass and drums build gradually. Story arc.", imageId: "1490730141103-6cac27aaab94" },
+        { id: 21, title: "Midday Flow #09", bpm: 96, category: "flow", artist: "Toro y Moi", album: "Latin Montunos", basePrompt: "Latin-influenced percussion, Rhodes montuno patterns, warm bass. Exotic, worldly sophistication.", imageId: "1506157786151-b8491531f063" },
+        { id: 22, title: "Midday Flow #10", bpm: 91, category: "flow", artist: "Tycho", album: "Forward Horizons", basePrompt: "Rhodes piano with delay effects, syncopated bass, light electronic beat. Contemporary, fresh.", imageId: "1518495973542-4542c06a5843" },
+        { id: 23, title: "Midday Flow #11", bpm: 85, category: "flow", artist: "Mac DeMarco", album: "Intimate Grooves", basePrompt: "Minimal Rhodes + bass duo, very few drums. Intimate but with forward motion. Less is more.", imageId: "1495446815901-a7297e633e8d" },
+        { id: 24, title: "Midday Flow #12", bpm: 94, category: "flow", artist: "Poolside", album: "Modern Sun", basePrompt: "Rhodes over house-inspired beat, filtered synth pads, warm production. Danceable but refined.", imageId: "1470229722913-7c0e2dbbafd3" },
+        { id: 25, title: "Midday Flow #13", bpm: 88, category: "flow", artist: "Men I Trust", album: "Lounge Jazz", basePrompt: "Call-and-response between Rhodes and bass, light percussion fill between phrases. Conversational.", imageId: "1483821838846-899ee6942741" },
+        { id: 26, title: "Midday Flow #14", bpm: 98, category: "flow", artist: "Real Estate", album: "Story Arc", basePrompt: "Bright, major-key Rhodes melody, driving groove, optimistic energy. Peak of midday optimism.", imageId: "1473496191134-8b59079e54a5" },
+
+        // Peak Drive (10 songs)
+        { id: 27, title: "Peak Drive #01", bpm: 110, category: "drive", artist: "Daft Punk", album: "Ignition", basePrompt: "Driving lounge beat, Rhodes piano stabs, punchy bass, energetic but refined. Four-on-the-floor.", imageId: "1514525253161-7a46d19cd819" },
+        { id: 28, title: "Peak Drive #02", bpm: 115, category: "drive", artist: "KAYTRANADA", album: "Club Fever", basePrompt: "Upbeat nu-disco, Rhodes chords, funky bassline, hand percussion. Dance-floor energy, retail polish.", imageId: "1470225620780-dba8ba36b745" },
+        { id: 29, title: "Peak Drive #03", bpm: 108, category: "drive", artist: "Disclosure", album: "Velocity Shift", basePrompt: "Groovy house beat, Rhodes melody, warm synth stabs, driving bass. Momentum without aggression.", imageId: "1511671782779-c97d3d27a1d4" },
+        { id: 30, title: "Peak Drive #04", bpm: 118, category: "drive", artist: "Empire of the Sun", album: "Peak Flow", basePrompt: "Fast-paced lounge, Rhodes running melody, tight rhythm section. Efficient, purposeful energy.", imageId: "1506157786151-b8491531f063" },
+        { id: 31, title: "Peak Drive #05", bpm: 112, category: "drive", artist: "Chvrches", album: "Electric Heartbeat", basePrompt: "Rhodes over breakbeat-influenced drums, sub-bass, filtered pads. Edgy but sophisticated.", imageId: "1518495973542-4542c06a5843" },
+        { id: 32, title: "Peak Drive #06", bpm: 105, category: "drive", artist: "Daft Punk", album: "Ignition", basePrompt: "Disco-inspired Rhodes, walking bass, four-on-the-floor, string stabs. Retro energy, modern production.", imageId: "1488646953014-85cb44e25828" },
+        { id: 33, title: "Peak Drive #07", bpm: 116, category: "drive", artist: "KAYTRANADA", album: "Club Fever", basePrompt: "High-energy Rhodes, driving electronic beat, side-chained pads. Maximum tempo, still refined.", imageId: "1528605248644-14dd04022da1" },
+        { id: 34, title: "Peak Drive #08", bpm: 109, category: "drive", artist: "Disclosure", album: "Velocity Shift", basePrompt: "Funk-house hybrid, Rhodes + bass locked groove, energetic percussion. Body-moving energy.", imageId: "1490730141103-6cac27aaab94" },
+        { id: 35, title: "Peak Drive #09", bpm: 114, category: "drive", artist: "Justice", album: "High Energy", basePrompt: "Rhodes piano riff, deep house beat, warm bass, atmospheric pads. Club energy, boutique polish.", imageId: "1500485035595-cbe6f645feb1" },
+        { id: 36, title: "Peak Drive #10", bpm: 120, category: "drive", artist: "Justice", album: "High Energy", basePrompt: "Maximum energy, fast Rhodes runs, driving beat, punchy bass. The brand at full throttle. Still no aggression.", imageId: "1473496191134-8b59079e54a5" },
+
+        // After Hours (14 songs)
+        { id: 37, title: "After Hours #01", bpm: 78, category: "after", artist: "Sade", album: "Late Lounge", basePrompt: "Intimate Rhodes ballad, soft upright bass, minimal brushed drums. Candlelight elegance.", imageId: "1514525253161-7a46d19cd819" },
+        { id: 38, title: "After Hours #02", bpm: 82, category: "after", artist: "Cigarettes After Sex", album: "Midnight Whispers", basePrompt: "Sultry lounge, Rhodes with subtle tremolo, warm bass, soft beat. Seductive, sophisticated.", imageId: "1518241353330-0f7941c2d9b5" },
+        { id: 39, title: "After Hours #03", bpm: 75, category: "after", artist: "Miles Davis", album: "Smoky Jazz", basePrompt: "Late-night jazz, Rhodes improv, walking bass, ride cymbal. smoky club atmosphere.", imageId: "1459749411175-04bf5292ceea" },
+        { id: 40, title: "After Hours #04", bpm: 80, category: "after", artist: "Bonobo", album: "Cinematic Evening", basePrompt: "Rhodes + soft strings pad, no drums for first 60s, then gentle groove enters. Cinematic.", imageId: "1506126613408-eca07ce68773" },
+        { id: 41, title: "After Hours #05", bpm: 73, category: "after", artist: "Zero 7", album: "Velvet Shadows", basePrompt: "Minimal Rhodes, deep bass, reverb-drenched atmosphere. Spacious, contemplative luxury.", imageId: "1447752875215-b2761acb3c5d" },
+        { id: 42, title: "After Hours #06", bpm: 85, category: "after", artist: "Cigarettes After Sex", album: "Midnight Whispers", basePrompt: "Sophisticated groove, Rhodes stabs, funky bass, understated drums. Confident evening energy.", imageId: "1470229722913-7c0e2dbbafd3" },
+        { id: 43, title: "After Hours #07", bpm: 76, category: "after", artist: "Bill Evans Trio", album: "Smoky Jazz", basePrompt: "Solo Rhodes with heavy reverb and delay, like a jazz pianist in an empty room. Vulnerable, beautiful.", imageId: "1497250681960-ef046c08a56e" },
+        { id: 44, title: "After Hours #08", bpm: 83, category: "after", artist: "Sade", album: "Late Lounge", basePrompt: "Rhodes + wordless female vocal textures, warm bass, soft beat. Ethereal, human warmth.", imageId: "1483821838846-899ee6942741" },
+        { id: 45, title: "After Hours #09", bpm: 74, category: "after", artist: "Thievery Corporation", album: "Bossa Nova", basePrompt: "Bossa-nova influenced, Rhodes with nylon guitar textures, soft percussion. Global sophistication.", imageId: "1507525428034-b723cf961d3e" },
+        { id: 46, title: "After Hours #10", bpm: 87, category: "after", artist: "Bonobo", album: "Cinematic Evening", basePrompt: "Driving but smooth, Rhodes over soft house beat, warm pads. Evening momentum without rush.", imageId: "1490730141103-6cac27aaab94" },
+        { id: 47, title: "After Hours #11", bpm: 77, category: "after", artist: "Miles Davis", album: "Smoky Jazz", basePrompt: "Rhodes + soft saxophone (if persona allows), jazz quartet feel. Classic, timeless.", imageId: "1485182708500-e8f17318ac7c" },
+        { id: 48, title: "After Hours #12", bpm: 81, category: "after", artist: "John Coltrane", album: "Nostalgic Tapes", basePrompt: "Melancholic but beautiful Rhodes melody, sparse arrangement. Emotional depth.", imageId: "1495446815901-a7297e633e8d" },
+        { id: 49, title: "After Hours #13", bpm: 79, category: "after", artist: "Zero 7", album: "Velvet Shadows", basePrompt: "Rhodes with tape saturation, vinyl texture, nostalgic warmth. Memory-laden, comforting.", imageId: "1475113548554-5a36f1f523d6" },
+        { id: 50, title: "After Hours #14", bpm: 84, category: "after", artist: "Air", album: "Coming Home", basePrompt: "The brand's most beautiful track. Rhodes theme that feels like coming home. Perfect ending note.", imageId: "1501854140801-50d01698950b" }
+      ];
+
+      return rawSongs.map(song => {
+        const promptText = `brand="${brand}" + prompt="[PERSONA: ${currentPersonaId}] ${song.basePrompt}"`;
+        const durationSeconds = 210;
+        const durationString = "3:30";
+        return {
+          id: song.id,
+          title: song.title,
+          artist: song.artist,
+          album: song.album + " " + song.category.charAt(0).toUpperCase() + song.category.slice(1),
+          category: song.category,
+          bpm: song.bpm,
+          duration: durationString,
+          durationSeconds: durationSeconds,
+          prompt: promptText,
+          coverUrl: `https://images.unsplash.com/photo-${song.imageId}?q=80&w=150&auto=format&fit=crop`
+        };
+      });
+    }
+
+    const playlistSongs = generateMockPlaylist(activeStore.name);
+    let activeTrack = playlistSongs[0];
+    let isPlaying = false;
+    let playbackSeconds = 0;
+    let playbackInterval = null;
+    let volumeLevel = 0.6;
+
+    // Timezone local clock calculations
+    function getStoreTimeDetails(timezone) {
+      const d = new Date();
+      let timeZoneName = 'UTC';
+      if (timezone === 'GMT') timeZoneName = 'Europe/London';
+      else if (timezone === 'CET') timeZoneName = 'Europe/Paris';
+      else if (timezone === 'EST') timeZoneName = 'America/New_York';
+      else if (timezone === 'PST') timeZoneName = 'America/Los_Angeles';
+      
+      try {
+        const timeString = d.toLocaleString('en-US', { timeZone: timeZoneName });
+        const localDate = new Date(timeString);
+        const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        return {
+          day: dayNames[localDate.getDay()],
+          hour: localDate.getHours(),
+          minutes: localDate.getMinutes(),
+          formattedTime: localDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })
+        };
+      } catch (err) {
+        const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        return {
+          day: dayNames[d.getDay()],
+          hour: d.getHours(),
+          minutes: d.getMinutes(),
+          formattedTime: d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })
+        };
+      }
+    }
+
+    function getActiveScheduleBlock(storeObj) {
+      const details = getStoreTimeDetails(storeObj.timezone);
+      const schedule = storeObj.schedules[details.day];
+      
+      if (!schedule || !schedule.open) {
+        return 'closed';
+      }
+      
+      const hour = details.hour;
+      if (hour >= schedule.calmStart && hour < schedule.calmEnd) return 'calm';
+      if (hour >= schedule.flowStart && hour < schedule.flowEnd) return 'flow';
+      if (hour >= schedule.driveStart && hour < schedule.driveEnd) return 'drive';
+      if (hour >= schedule.afterStart && hour < schedule.afterEnd) return 'after';
+      
+      return 'closed';
+    }
+
+    // UI state render
+    function updatePlayerStateUI() {
+      const titleEl = document.getElementById('lbl-track-title');
+      const artistEl = document.getElementById('lbl-track-artist');
+      const coverArt = document.getElementById('player-cover-art');
+      const coverGlow = document.getElementById('player-cover-glow');
+      const lblActiveVibe = document.getElementById('lbl-active-vibe');
+      const lblTimezoneTime = document.getElementById('lbl-timezone-time');
+      const closedOverlay = document.getElementById('closed-store-overlay');
+      const timeTotal = document.getElementById('lbl-time-total');
+      const timeCurrent = document.getElementById('lbl-time-current');
+      const scrubberFill = document.getElementById('player-scrubber-fill');
+      
+      // Active track info
+      titleEl.textContent = activeTrack.title;
+      artistEl.textContent = activeTrack.artist;
+      timeTotal.textContent = activeTrack.duration;
+      timeCurrent.textContent = formatTime(playbackSeconds);
+      scrubberFill.style.width = `${(playbackSeconds / activeTrack.durationSeconds) * 100}%`;
+      
+      // Cover Art background
+      let gradient = 'linear-gradient(135deg, #1e1b4b, #311042)';
+      if (activeTrack.category === 'calm') gradient = 'linear-gradient(135deg, #06b6d4, #0891b2)';
+      else if (activeTrack.category === 'flow') gradient = 'linear-gradient(135deg, #10b981, #059669)';
+      else if (activeTrack.category === 'drive') gradient = 'linear-gradient(135deg, #8b5cf6, #7c3aed)';
+      else if (activeTrack.category === 'after') gradient = 'linear-gradient(135deg, #ec4899, #db2777)';
+      
+      coverArt.style.background = gradient;
+      coverArt.textContent = activeTrack.category.charAt(0).toUpperCase();
+      coverGlow.style.background = gradient;
+      
+      // Calculate active store schedules
+      const currentBlock = getActiveScheduleBlock(activeStore);
+      const timeDetails = getStoreTimeDetails(activeStore.timezone);
+      
+      lblTimezoneTime.textContent = `${activeStore.timezone} • ${timeDetails.formattedTime}`;
+      
+      // Active Vibe Badge
+      lblActiveVibe.className = `badge vibe-badge ${currentBlock}`;
+      lblActiveVibe.textContent = `${currentBlock.charAt(0).toUpperCase() + currentBlock.slice(1)} Vibe`;
+      
+      // Overlay if store is closed
+      if (currentBlock === 'closed') {
+        closedOverlay.classList.remove('hidden');
+      } else {
+        closedOverlay.classList.add('hidden');
+      }
+
+      // Check rows highlight
+      const rows = document.querySelectorAll('#playlist-tracks-body tr');
+      rows.forEach(row => {
+        const id = parseInt(row.dataset.id);
+        if (id === activeTrack.id) {
+          row.className = 'active-track';
+          const indexCol = row.querySelector('.col-index');
+          if (indexCol) {
+            indexCol.innerHTML = isPlaying ? '🎵' : id;
+          }
+        } else {
+          row.className = '';
+          const indexCol = row.querySelector('.col-index');
+          if (indexCol) {
+            indexCol.innerHTML = id;
+          }
+        }
+      });
+
+      // Play button active
+      const playBtn = document.getElementById('btn-player-play');
+      if (isPlaying) {
+        playBtn.classList.add('playing');
+      } else {
+        playBtn.classList.remove('playing');
+      }
+    }
+
+    function formatTime(secs) {
+      const totalSeconds = Math.floor(secs || 0);
+      const m = Math.floor(totalSeconds / 60);
+      const s = totalSeconds % 60;
+      return `${m}:${s < 10 ? '0' + s : s}`;
+    }
+
+    // Load track rows in DOM
+    const tbody = document.getElementById('playlist-tracks-body');
+    playlistSongs.forEach(track => {
+      const tr = document.createElement('tr');
+      tr.dataset.id = track.id;
+      tr.innerHTML = `
+        <td class="col-index">${track.id}</td>
+        <td class="col-title">${track.title}</td>
+        <td class="col-artist">${track.artist} • <span class="track-company" style="color: var(--color-primary, #c084fc); opacity: 0.8; font-weight: 500;">${companyName}</span></td>
+        <td class="col-vibe">
+          <span class="badge vibe-badge ${track.category}" style="font-size: 0.65rem; padding: 2px 6px;">
+            ${track.category}
+          </span>
+        </td>
+        <td class="col-bpm">${track.bpm} BPM</td>
+        <td class="col-duration">${track.duration}</td>
+      `;
+      tr.addEventListener('click', () => {
+        playTrack(track);
+      });
+      tbody.appendChild(tr);
+    });
+
+    // Synth engine arpeggiator
+    const synthEngine = {
+      audioCtx: null,
+      isPlaying: false,
+      schedulerInterval: null,
+      nextNoteTime: 0.0,
+      currentBeat: 0,
+      nodes: {},
+      chordIndex: 0,
+      majorScale: [130.81, 146.83, 164.81, 196.00, 220.00, 261.63, 293.66, 329.63, 392.00, 440.00, 523.25], 
+      minorScale: [110.00, 146.83, 164.81, 220.00, 293.66, 329.63, 440.00, 587.33, 659.25],
+      majorChords: [
+        [130.81, 196.00, 261.63, 329.63], 
+        [174.61, 261.63, 349.23, 440.00], 
+        [196.00, 293.66, 392.00, 493.88], 
+        [130.81, 196.00, 261.63, 329.63]
+      ],
+      minorChords: [
+        [110.00, 164.81, 220.00, 261.63], 
+        [146.83, 220.00, 293.66, 349.23], 
+        [174.61, 261.63, 349.23, 440.00], 
+        [164.81, 246.94, 329.63, 392.00]
+      ],
+
+      init() {
+        const AudioCtxClass = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtxClass) return;
+        this.audioCtx = new AudioCtxClass();
+        
+        this.nodes.filter = this.audioCtx.createBiquadFilter();
+        this.nodes.filter.type = 'lowpass';
+        
+        this.nodes.delay = this.audioCtx.createDelay(1.0);
+        this.nodes.delayFeedback = this.audioCtx.createGain();
+        this.nodes.delayGain = this.audioCtx.createGain();
+        
+        this.nodes.delay.delayTime.value = 0.4;
+        this.nodes.delayFeedback.gain.value = 0.35;
+        this.nodes.delayGain.gain.value = 0.15;
+        
+        this.nodes.delay.connect(this.nodes.delayFeedback);
+        this.nodes.delayFeedback.connect(this.nodes.delay);
+        
+        this.nodes.masterVolume = this.audioCtx.createGain();
+        this.nodes.masterVolume.gain.value = volumeLevel * 0.22;
+        
+        this.nodes.analyser = this.audioCtx.createAnalyser();
+        this.nodes.analyser.fftSize = 64;
+        
+        this.nodes.compressor = this.audioCtx.createDynamicsCompressor();
+
+        // Connections
+        this.nodes.filter.connect(this.nodes.masterVolume);
+        this.nodes.filter.connect(this.nodes.delay);
+        this.nodes.delay.connect(this.nodes.delayGain);
+        this.nodes.delayGain.connect(this.nodes.masterVolume);
+        
+        this.nodes.masterVolume.connect(this.nodes.analyser);
+        this.nodes.analyser.connect(this.nodes.compressor);
+        this.nodes.compressor.connect(this.audioCtx.destination);
+      },
+
+      updateVolume() {
+        if (this.nodes.masterVolume) {
+          this.nodes.masterVolume.gain.value = volumeLevel * 0.22;
+        }
+      },
+
+      playTone(frequency, time, duration, type = 'triangle', volume = 0.1) {
+        if (!this.audioCtx) return;
+        
+        const osc = this.audioCtx.createOscillator();
+        const gainNode = this.audioCtx.createGain();
+        
+        osc.type = type;
+        osc.frequency.setValueAtTime(frequency, time);
+        
+        gainNode.gain.setValueAtTime(0, time);
+        gainNode.gain.linearRampToValueAtTime(volume, time + 0.05);
+        gainNode.gain.setValueAtTime(volume, time + duration - 0.1);
+        gainNode.gain.exponentialRampToValueAtTime(0.0001, time + duration);
+        
+        osc.connect(gainNode);
+        gainNode.connect(this.nodes.filter);
+        
+        osc.start(time);
+        osc.stop(time + duration);
+      },
+
+      scheduler() {
+        const lookahead = 0.25;
+        const bpm = Math.max(10, activeTrack.bpm || 80);
+        const beatDuration = 60.0 / bpm;
+
+        while (this.nextNoteTime < this.audioCtx.currentTime + lookahead) {
+          this.scheduleBeat(this.currentBeat, this.nextNoteTime, beatDuration);
+          this.nextNoteTime += beatDuration / 2;
+          this.currentBeat++;
+        }
+      },
+
+      scheduleBeat(beat, time, beatDuration) {
+        // Setup block-dependent synth characters
+        let soph = 0.7;
+        let nrg = 0.5;
+        let wrm = 0.6;
+        
+        const block = activeTrack.category;
+        if (block === 'calm') { soph = 0.65; nrg = 0.35; wrm = 0.88; }
+        else if (block === 'flow') { soph = 0.78; nrg = 0.42; wrm = 0.60; }
+        else if (block === 'drive') { soph = 0.45; nrg = 0.82; wrm = 0.35; }
+        else if (block === 'after') { soph = 0.88; nrg = 0.28; wrm = 0.75; }
+
+        const isWarm = wrm > 0.6;
+        const chords = isWarm ? this.majorChords : this.minorChords;
+        const scale = isWarm ? this.majorScale : this.minorScale;
+
+        // Dynamic filtering sweep
+        const targetCutoff = 350 + (1 - wrm) * 1300;
+        this.nodes.filter.frequency.setTargetAtTime(targetCutoff, time, 0.1);
+        this.nodes.filter.Q.setTargetAtTime(1 + (wrm * 3), time, 0.1);
+
+        const targetDelay = 0.5 - (nrg * 0.25);
+        this.nodes.delay.delayTime.setTargetAtTime(targetDelay, time, 0.2);
+
+        // Drone note triggering
+        if (beat % 8 === 0) {
+          this.chordIndex = (this.chordIndex + 1) % chords.length;
+          const currentChord = chords[this.chordIndex];
+          this.playTone(currentChord[0] / 2, time, beatDuration * 4.2, 'sine', 0.08);
+          this.playTone(currentChord[1], time, beatDuration * 4.0, 'triangle', 0.03);
+        }
+
+        // Arpeggiator lead notes
+        let shouldPlay = false;
+        const threshold = 0.4 + (1 - nrg) * 0.45;
+        if (beat % 2 === 0) {
+          shouldPlay = Math.random() > threshold;
+        }
+        if (shouldPlay) {
+          const noteIdx = Math.floor(Math.random() * scale.length);
+          const freq = scale[noteIdx];
+          const duration = beatDuration * (0.2 + (1 - nrg) * 0.8);
+          this.playTone(freq, time, duration, wrm > 0.65 ? 'sine' : 'triangle', 0.035);
+        }
+      },
+
+      start() {
+        if (this.isPlaying) return;
+        if (!this.audioCtx) this.init();
+        if (!this.audioCtx) return;
+        
+        if (this.audioCtx.state === 'suspended') {
+          this.audioCtx.resume();
+        }
+        
+        this.isPlaying = true;
+        this.nextNoteTime = this.audioCtx.currentTime + 0.1;
+        this.currentBeat = 0;
+        this.schedulerInterval = setInterval(() => this.scheduler(), 100);
+      },
+
+      stop() {
+        if (!this.isPlaying) return;
+        clearInterval(this.schedulerInterval);
+        this.isPlaying = false;
+      }
+    };
+
+    // HTML5 canvas dynamic frequency visualizer
+    const canvas = document.getElementById('visualizer-canvas');
+    const canvasCtx = canvas.getContext('2d');
+    
+    // Set explicit size
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+
+    window.addEventListener('resize', () => {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+    });
+
+    function drawVisualizer() {
+      requestAnimationFrame(drawVisualizer);
+      
+      const width = canvas.width;
+      const height = canvas.height;
+      
+      if (!isPlaying || !synthEngine.nodes.analyser) {
+        // Flat static baseline wave
+        canvasCtx.clearRect(0, 0, width, height);
+        canvasCtx.beginPath();
+        canvasCtx.strokeStyle = 'rgba(255,255,255,0.06)';
+        canvasCtx.lineWidth = 2;
+        canvasCtx.moveTo(0, height / 2);
+        canvasCtx.lineTo(width, height / 2);
+        canvasCtx.stroke();
+        return;
+      }
+
+      const analyser = synthEngine.nodes.analyser;
+      const bufferLength = analyser.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
+      analyser.getByteFrequencyData(dataArray);
+
+      canvasCtx.clearRect(0, 0, width, height);
+
+      const barWidth = (width / bufferLength) * 1.6;
+      let barHeight;
+      let x = 0;
+
+      for (let i = 0; i < bufferLength; i++) {
+        barHeight = (dataArray[i] / 255) * height * 0.85;
+        
+        // Dynamic category color gradient
+        const gradient = canvasCtx.createLinearGradient(0, height, 0, 0);
+        if (activeTrack.category === 'calm') {
+          gradient.addColorStop(0, 'rgba(6, 182, 212, 0.02)');
+          gradient.addColorStop(1, 'rgba(6, 182, 212, 0.8)');
+        } else if (activeTrack.category === 'flow') {
+          gradient.addColorStop(0, 'rgba(16, 185, 129, 0.02)');
+          gradient.addColorStop(1, 'rgba(16, 185, 129, 0.8)');
+        } else if (activeTrack.category === 'drive') {
+          gradient.addColorStop(0, 'rgba(124, 58, 237, 0.02)');
+          gradient.addColorStop(1, 'rgba(167, 139, 250, 0.8)');
+        } else {
+          gradient.addColorStop(0, 'rgba(236, 72, 153, 0.02)');
+          gradient.addColorStop(1, 'rgba(236, 72, 153, 0.8)');
+        }
+
+        canvasCtx.fillStyle = gradient;
+        canvasCtx.fillRect(x, height - barHeight, barWidth - 3, barHeight);
+
+        x += barWidth;
+      }
+    }
+
+    drawVisualizer();
+
+    // Playback state controller
+    function playTrack(track) {
+      stopPlayback();
+      activeTrack = track;
+      playbackSeconds = 0;
+      isPlaying = true;
+      
+      synthEngine.start();
+      
+      // Update arpeggiator parameters instantly
+      if (synthEngine.audioCtx) {
+        // Trigger parameters update
+      }
+
+      playbackInterval = setInterval(() => {
+        if (playbackSeconds < activeTrack.durationSeconds) {
+          playbackSeconds++;
+          document.getElementById('lbl-time-current').textContent = formatTime(playbackSeconds);
+          document.getElementById('player-scrubber-fill').style.width = `${(playbackSeconds / activeTrack.durationSeconds) * 100}%`;
+        } else {
+          playNext();
+        }
+      }, 1000);
+
+      updatePlayerStateUI();
+    }
+
+    function stopPlayback() {
+      isPlaying = false;
+      clearInterval(playbackInterval);
+      synthEngine.stop();
+      updatePlayerStateUI();
+    }
+
+    function resumePlayback() {
+      if (isPlaying) return;
+      isPlaying = true;
+      
+      synthEngine.start();
+
+      playbackInterval = setInterval(() => {
+        if (playbackSeconds < activeTrack.durationSeconds) {
+          playbackSeconds++;
+          document.getElementById('lbl-time-current').textContent = formatTime(playbackSeconds);
+          document.getElementById('player-scrubber-fill').style.width = `${(playbackSeconds / activeTrack.durationSeconds) * 100}%`;
+        } else {
+          playNext();
+        }
+      }, 1000);
+
+      updatePlayerStateUI();
+    }
+
+    function playNext() {
+      const idx = playlistSongs.findIndex(s => s.id === activeTrack.id);
+      if (idx !== -1 && idx < playlistSongs.length - 1) {
+        playTrack(playlistSongs[idx + 1]);
+      } else {
+        // Replay songs based on user, location, time of day and store traffic data
+        const block = getActiveScheduleBlock(activeStore);
+        const targetCategory = (block === 'closed' || block === 'Store Closed') ? 'calm' : block;
+        const matchingSongs = playlistSongs.filter(s => s.category === targetCategory);
+        if (matchingSongs.length > 0) {
+          playTrack(matchingSongs[0]);
+        } else {
+          playTrack(playlistSongs[0]);
+        }
+      }
+    }
+
+    function playPrev() {
+      const idx = playlistSongs.findIndex(s => s.id === activeTrack.id);
+      if (idx > 0) {
+        playTrack(playlistSongs[idx - 1]);
+      } else {
+        playTrack(playlistSongs[playlistSongs.length - 1]);
+      }
+    }
+
+    // Bind Player Controls Click
+    const btnPlay = document.getElementById('btn-player-play');
+    btnPlay.addEventListener('click', () => {
+      if (isPlaying) {
+        stopPlayback();
+      } else {
+        resumePlayback();
+      }
+    });
+
+    document.getElementById('btn-player-next').addEventListener('click', playNext);
+    document.getElementById('btn-player-prev').addEventListener('click', playPrev);
+
+    // Volume Slider Adjust
+    const volumeSlider = document.getElementById('player-volume-slider');
+    const volumeFill = document.getElementById('player-volume-fill');
+    volumeSlider.addEventListener('click', (e) => {
+      const rect = volumeSlider.getBoundingClientRect();
+      const pct = (e.clientX - rect.left) / rect.width;
+      volumeLevel = Math.max(0, Math.min(1, pct));
+      volumeFill.style.width = `${volumeLevel * 100}%`;
+      synthEngine.updateVolume();
+    });
+
+    // Scrubber Adjust
+    const scrubberBar = document.getElementById('player-scrubber-bar');
+    scrubberBar.addEventListener('click', (e) => {
+      if (!isPlaying) return;
+      const rect = scrubberBar.getBoundingClientRect();
+      const pct = (e.clientX - rect.left) / rect.width;
+      playbackSeconds = Math.round(pct * activeTrack.durationSeconds);
+      document.getElementById('lbl-time-current').textContent = formatTime(playbackSeconds);
+      document.getElementById('player-scrubber-fill').style.width = `${pct * 100}%`;
+    });
+
+    // Clock Interval to update clocks and schedules dynamically
+    setInterval(() => {
+      updatePlayerStateUI();
+    }, 5000);
+
+    // Initial load
+    updatePlayerStateUI();
+  </script>
+</body>
+</html>

@@ -1,0 +1,2257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cady | Onboarding Dashboard</title>
+  <meta name="description" content="Manage your brand's sonic identity and store acoustics.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Dashboard Styling -->
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body class="dashboard-body">
+
+  <!-- ==========================================
+     1. SLEEK LOGIN TRANSITION PANEL
+     ========================================== -->
+  <div id="login-overlay" class="login-overlay">
+    <div class="login-glow"></div>
+    <div class="login-card">
+      <div class="login-logo">
+        <svg class="logo-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM9.5 16.5V7.5L16.5 12L9.5 16.5Z" fill="currentColor"/>
+          <path d="M12 4C7.58 4 4 7.58 4 12C4 16.42 7.58 20 12 20C16.42 20 20 16.42 20 12C20 7.58 16.42 4 12 4ZM12 6C15.31 6 18 8.69 18 12C18 15.31 15.31 18 12 18C8.69 18 6 15.31 6 12C6 8.69 8.69 6 12 6Z" fill="currentColor" fill-opacity="0.3"/>
+        </svg>
+        <span>cady</span>
+      </div>
+      <h2>Welcome back</h2>
+      <p>Log in to access your Sonic Onboarding Dashboard</p>
+      
+      <form id="login-form" onsubmit="event.preventDefault();">
+        <div class="form-group">
+          <label for="login-email">Email Address</label>
+          <input type="email" id="login-email" required value="seb@cady.fm" placeholder="name@company.com">
+        </div>
+        <div class="form-group">
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" required value="••••••••" placeholder="Password">
+        </div>
+        <button type="submit" id="btn-login-submit" class="btn-primary w-full">
+          <span>Sign In to Studio</span>
+        </button>
+      </form>
+      <div class="login-footer">
+        <a href="#">Forgot password?</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+     2. DASHBOARD MAIN INTERFACE
+     ========================================== -->
+  <div class="dashboard-container">
+    
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-top">
+        <a href="index.html" class="sidebar-logo" title="Back to Home Page">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM9.5 16.5V7.5L16.5 12L9.5 16.5Z" fill="currentColor"/>
+          </svg>
+        </a>
+        
+        <nav class="sidebar-nav">
+          <a href="#" class="sidebar-link active" id="sidebar-link-dashboard" title="Dashboard">
+            <!-- Grid icon -->
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          </a>
+          <a href="#" class="sidebar-link" id="sidebar-link-library" title="Music Library">
+            <!-- Music icon -->
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+          </a>
+          <a href="#" class="sidebar-link" id="sidebar-link-players" title="Live Players">
+            <!-- Antenna icon -->
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 0 1 10 10c0 2.22-.73 4.26-1.96 5.92"/><path d="M2.23 6.08A10 10 0 0 0 2 12c0 2.22.73 4.26 1.96 5.92"/><circle cx="12" cy="12" r="2"/><path d="M12 6a6 6 0 0 1 6 6c0 1.33-.44 2.56-1.18 3.56"/><path d="M7.18 8.44A6 6 0 0 0 6 12c0 1.33.44 2.56 1.18 3.56"/></svg>
+          </a>
+          <a href="#" class="sidebar-link" title="Sonic Identity Layers">
+            <!-- Layers icon -->
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polygon points="2 17 12 22 22 17"/><polygon points="2 12 12 17 22 12"/></svg>
+          </a>
+          <a href="#" class="sidebar-link" title="Acoustic Analytics">
+            <!-- Graph icon -->
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/></svg>
+          </a>
+          <a href="#" class="sidebar-link" id="sidebar-link-settings" title="Settings">
+            <!-- Settings icon -->
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          </a>
+        </nav>
+      </div>
+      
+      <div class="sidebar-bottom">
+        <a href="#" class="sidebar-link" title="Help Centre">
+          <!-- Question circle -->
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </a>
+        <div class="user-avatar" title="User Profile">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&h=100&q=80" alt="Seb">
+        </div>
+      </div>
+    </aside>
+    
+    <!-- MAIN CONTENT AREA -->
+    <main class="main-dashboard">
+      <div class="dashboard-scroll-body">
+        <div id="onboarding-page-container">
+        
+        <!-- Welcome Hero Banner Card -->
+        <section class="dashboard-hero-card">
+          <div class="hero-card-glow"></div>
+          <div class="hero-card-waves">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+          
+          <div class="hero-card-content">
+            <span class="hero-badge">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 3L14.5 9.5L21 12L14.5 14.5L12 21L9.5 14.5L3 12L9.5 9.5L12 3Z" fill="currentColor"/>
+              </svg>
+              Phase 1: Onboarding
+            </span>
+            <h1>Welcome to Your Sonic Identity</h1>
+            <p>In 3 simple steps, every store will sound unmistakably like you. Our AI-driven engine and curation experts are ready to translate your brand into sound.</p>
+            
+            <div class="hero-buttons-row">
+              <button class="btn-primary btn-consultation-trigger">
+                <span>Schedule My Sonic Consultation</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+              
+              <button class="btn-outline btn-form-trigger">
+                <span>Start Sonic Identity Form Yourself</span>
+              </button>
+            </div>
+          </div>
+        </section>
+        
+        <!-- 3-Card Row: Prepare, Strategist, Timeline -->
+        <section class="dashboard-cards-grid">
+          <!-- Card 1: What to Prepare -->
+          <div class="dash-card">
+            <div class="dash-card-header">
+              <div class="dash-card-icon-box">
+                <!-- Briefcase / prepare icon -->
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+              </div>
+              <h3>What to Prepare</h3>
+            </div>
+            <div class="dash-card-body">
+              <ul class="prepare-checklist">
+                <li>
+                  <span class="chk-icon checked"></span>
+                  <span>Brand guidelines & mood boards (PDF/Link)</span>
+                </li>
+                <li>
+                  <span class="chk-icon checked"></span>
+                  <span>List of 3 songs that embody your brand vibe</span>
+                </li>
+                <li>
+                  <span class="chk-icon checked"></span>
+                  <span>Store traffic pattern data (peak hours)</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          
+          <!-- Card 2: Curation Expert Profile -->
+          <div class="dash-card strategist-card text-center">
+            <div class="dash-card-body">
+              <div class="strategist-avatar-wrapper">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&h=150&q=80" alt="Jordan">
+                <div class="online-indicator"></div>
+              </div>
+              <h3>Jordan</h3>
+              <p class="strategist-title">Senior Sonic Strategist</p>
+              
+              <a href="#" class="view-profile-link">
+                <span>View Profile & Expertise</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <!-- Dynamic Brand Sonic Identity slider preview box (Reveals after form is filled!) -->
+        <section id="generated-dna-section" class="dash-dna-preview-section hidden">
+          <div class="dash-card dna-reveal-card">
+            <div class="dna-reveal-glow"></div>
+            
+            <!-- Accordion Header -->
+            <div class="onboarding-accordion-header" id="acc-header-dna">
+              <div class="acc-title-group">
+                <span class="acc-step">Step 1</span>
+                <h3>Brand Sonic Identity</h3>
+                <span class="acc-summary" id="acc-summary-dna">Creator Archetype • 80 BPM avg</span>
+              </div>
+              <span class="acc-chevron">▼</span>
+            </div>
+
+            <div class="onboarding-accordion-body">
+              <div class="dna-reveal-header">
+                <div class="dna-header-details">
+                  <span class="dna-badge">Brand Analysis Completed</span>
+                  <h2>Your Custom Brand Sonic Identity</h2>
+                  <p>Calculated dynamically based on your brand parameters form answers.</p>
+                </div>
+                
+                <div class="dna-listen-bar">
+                  <button id="btn-edit-sonic-identity" class="btn-primary btn-form-trigger">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px; vertical-align: middle;">
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                      <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                    <span class="dna-btn-text">Edit Sonic Identity</span>
+                  </button>
+                </div>
+              </div>
+              
+              <div class="dna-metrics-display-grid">
+                <div class="metric-progress-display">
+                  <div class="metric-label-row">
+                    <span>Sophistication</span>
+                    <strong id="label-result-soph">85%</strong>
+                  </div>
+                  <div class="metric-track"><div id="bar-result-soph" class="metric-fill accent-soph" style="width: 85%"></div></div>
+                </div>
+
+                <div class="metric-progress-display">
+                  <div class="metric-label-row">
+                    <span>Energy</span>
+                    <strong id="label-result-nrg">62%</strong>
+                  </div>
+                  <div class="metric-track"><div id="bar-result-nrg" class="metric-fill accent-nrg" style="width: 62%"></div></div>
+                </div>
+
+                <div class="metric-progress-display">
+                  <div class="metric-label-row">
+                    <span>Warmth</span>
+                    <strong id="label-result-wrm">78%</strong>
+                  </div>
+                  <div class="metric-track"><div id="bar-result-wrm" class="metric-fill accent-wrm" style="width: 78%"></div></div>
+                </div>
+              </div>
+
+              <div class="dna-reveal-footer">
+                <div class="vibe-tags">
+                  <span class="tag-title">Sonic Profile:</span>
+                  <span id="label-result-archetype" class="tag-v">Creator Archetype</span>
+                  <span id="label-result-bpm" class="tag-v">118 BPM avg</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+          <div class="dash-card curation-card hidden">
+            <div class="curation-glow"></div>
+            
+            <!-- Accordion Header -->
+            <div class="onboarding-accordion-header" id="acc-header-curation">
+              <div class="acc-title-group">
+                <span class="acc-step">Step 2</span>
+                <h3>Find Your Sound & Audition Tracks</h3>
+                <span class="acc-summary" id="acc-summary-curation">4 tracks generated</span>
+              </div>
+              <span class="acc-chevron">▼</span>
+            </div>
+
+            <div class="onboarding-accordion-body">
+              <div class="curation-header">
+                <span class="curation-badge">Phase 1: Step 2 - Find Your Sound</span>
+                <h2>Generate Audition Sample Tracks</h2>
+                <p>Train our AI curation model by generating 4 sample tracks from Suno via the Evolink API. Listen and select the song that best embodies your brand identity.</p>
+              </div>
+              
+              <!-- Generation Trigger State -->
+              <div id="curation-trigger-box" class="curation-action-box text-center">
+                <button id="btn-generate-audition" class="btn-primary">
+                  <svg class="icon-sync" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                  <span>Generate Tracks via Evolink API</span>
+                </button>
+                <p class="api-caption-sub">Connects to Suno AI to generate 4 custom brand melodies. Generation takes ~4 seconds.</p>
+              </div>
+              
+              <!-- Generation Loader State -->
+              <div id="curation-loader-box" class="curation-loader-box hidden text-center">
+                <div class="api-spinner"></div>
+                <h4 id="curation-loader-status">Connecting to Evolink API...</h4>
+                <p>Model training parameters sent. Generating vocal and instrumentation stems.</p>
+              </div>
+              
+              <!-- Tracks Grid State -->
+              <div id="curation-tracks-box" class="curation-tracks-grid hidden">
+                <!-- Track Card 1 -->
+                <div class="track-audition-card" data-track="1" data-current-set="A">
+                  <div class="track-card-header">
+                    <span class="track-number">Track 01</span>
+                    <button class="btn-play-track" data-track="1" aria-label="Play Track">
+                      <svg class="play-icon-svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                    </button>
+                  </div>
+                  <h3>Morning Calm</h3>
+                  <p>Slow tempo (65-78 BPM) & low density. Minor key & warm ambient acoustics. Slows tempo to increase dwell times by +38% for longer browsing & higher basket size.</p>
+                  <div class="track-meta">
+                    <span class="meta-tag">Minor Warm</span>
+                    <span class="meta-tag">72 BPM</span>
+                  </div>
+                  <button class="btn-regenerate-single-track" data-track="1" aria-label="Regenerate this track">
+                    <svg class="icon-sync" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                    <span>Regenerate Track</span>
+                  </button>
+                </div>
+
+                <!-- Track Card 2 -->
+                <div class="track-audition-card" data-track="2" data-current-set="A">
+                  <div class="track-card-header">
+                    <span class="track-number">Track 02</span>
+                    <button class="btn-play-track" data-track="2" aria-label="Play Track">
+                      <svg class="play-icon-svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                    </button>
+                  </div>
+                  <h3>Midday Flow</h3>
+                  <p>Optimal engagement tempo (85-100 BPM). Major key & forward pop acoustics. Balances retail browsing with purchasing momentum.</p>
+                  <div class="track-meta">
+                    <span class="meta-tag">Major Forward</span>
+                    <span class="meta-tag">90 BPM</span>
+                  </div>
+                  <button class="btn-regenerate-single-track" data-track="2" aria-label="Regenerate this track">
+                    <svg class="icon-sync" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                    <span>Regenerate Track</span>
+                  </button>
+                </div>
+
+                <!-- Track Card 3 -->
+                <div class="track-audition-card" data-track="3" data-current-set="A">
+                  <div class="track-card-header">
+                    <span class="track-number">Track 03</span>
+                    <button class="btn-play-track" data-track="3" aria-label="Play Track">
+                      <svg class="play-icon-svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                    </button>
+                  </div>
+                  <h3>Peak Drive</h3>
+                  <p>Fast tempo (105-120 BPM) & high density. Major key & driving upbeat synth notes. Encourages variety-seeking behavior, impulse buys & new product trials.</p>
+                  <div class="track-meta">
+                    <span class="meta-tag">Major Driving</span>
+                    <span class="meta-tag">115 BPM</span>
+                  </div>
+                  <button class="btn-regenerate-single-track" data-track="3" aria-label="Regenerate this track">
+                    <svg class="icon-sync" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                    <span>Regenerate Track</span>
+                  </button>
+                </div>
+
+                <!-- Track Card 4 -->
+                <div class="track-audition-card" data-track="4" data-current-set="A">
+                  <div class="track-card-header">
+                    <span class="track-number">Track 04</span>
+                    <button class="btn-play-track" data-track="4" aria-label="Play Track">
+                      <svg class="play-icon-svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                    </button>
+                  </div>
+                  <h3>After Hours</h3>
+                  <p>Mellow tempo (72-88 BPM). Minor key & intimate boutique soundscapes. Low arousal (PAD model) promoting customer comfort, relaxed purchasing & premium spend.</p>
+                  <div class="track-meta">
+                    <span class="meta-tag">Minor Intimate</span>
+                    <span class="meta-tag">76 BPM</span>
+                  </div>
+                  <button class="btn-regenerate-single-track" data-track="4" aria-label="Regenerate this track">
+                    <svg class="icon-sync" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                    <span>Regenerate Track</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Curation Footer (Visible after tracks are generated) -->
+              <div id="curation-completion-box" class="curation-completion-box hidden">
+                <button id="btn-regenerate-audition" class="btn-outline">
+                  <svg class="icon-sync" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px; vertical-align: middle;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                  <span>Regenerate Tracks</span>
+                </button>
+                <button id="btn-continue-to-traffic" class="btn-primary">
+                  <span>Continue to Store Traffic &rarr;</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- Step 3: Store Traffic Scheduling Section (Revealed when continue is clicked!) -->
+        <section id="store-traffic-section" class="store-traffic-section hidden">
+          <div class="dash-card store-traffic-card">
+            <div class="store-traffic-glow"></div>
+            
+            <!-- Accordion Header -->
+            <div class="onboarding-accordion-header" id="acc-header-traffic">
+              <div class="acc-title-group">
+                <span class="acc-step">Step 3</span>
+                <h3>Connect Your Stores & Playback Schedule</h3>
+                <span class="acc-summary" id="acc-summary-traffic">Daily traffic schedule active</span>
+              </div>
+              <span class="acc-chevron">▼</span>
+            </div>
+
+            <div class="onboarding-accordion-body">
+              <div class="store-traffic-header">
+                <span class="store-traffic-badge">Phase 1: Step 3 - Connect Your Stores</span>
+                <h2 id="store-traffic-title">Connect Your Stores & Playback Schedule</h2>
+                <p>Map out your daily operating hours and define when your stores transition between Morning Calm, Midday Flow, Peak Drive, and After Hours playlists. Our adaptive engine dynamically mixes acoustic parameters based on local store time.</p>
+              </div>
+            
+            <div class="store-traffic-body">
+              <!-- Location Details -->
+              <div style="display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 16px; margin-bottom: 24px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 20px;">
+                <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
+                  <label for="onboard-store-name" style="font-size: 0.75rem; font-weight: 600; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.05em;">Store Name</label>
+                  <input type="text" id="onboard-store-name" placeholder="e.g. Paris Marais" style="background: rgba(8, 8, 12, 0.6); border: 1px solid var(--color-border); border-radius: var(--border-radius-sm); padding: 10px 12px; color: #fff; font-size: 0.9rem; outline: none; transition: var(--transition-smooth);">
+                </div>
+                <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
+                  <label for="onboard-store-address" style="font-size: 0.75rem; font-weight: 600; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.05em;">Address</label>
+                  <input type="text" id="onboard-store-address" placeholder="e.g. 12 Rue des Archives" style="background: rgba(8, 8, 12, 0.6); border: 1px solid var(--color-border); border-radius: var(--border-radius-sm); padding: 10px 12px; color: #fff; font-size: 0.9rem; outline: none; transition: var(--transition-smooth);">
+                </div>
+                <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
+                  <label for="onboard-store-timezone" style="font-size: 0.75rem; font-weight: 600; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.05em;">Timezone</label>
+                  <select id="onboard-store-timezone" class="premium-select" style="background: rgba(8, 8, 12, 0.6); border: 1px solid var(--color-border); border-radius: var(--border-radius-sm); padding: 10px 12px; color: #fff; font-size: 0.9rem; outline: none; transition: var(--transition-smooth); cursor: pointer; height: 38px;">
+                    <option value="GMT">GMT (London)</option>
+                    <option value="EST">EST (New York)</option>
+                    <option value="CET" selected>CET (Paris/Berlin)</option>
+                    <option value="PST">PST (Los Angeles)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="traffic-config-grid">
+                <!-- Left Column: Opening Hours & Days -->
+                <div class="traffic-config-col hours-col">
+                  <h3>1. Set Opening Hours & Days</h3>
+                  
+                  <div class="day-selector-wrapper">
+                    <span class="selector-label">Operating Days:</span>
+                    <div class="weekdays-pills">
+                      <button class="day-pill active selected-tab" data-day="Mon">M</button>
+                      <button class="day-pill active" data-day="Tue">T</button>
+                      <button class="day-pill active" data-day="Wed">W</button>
+                      <button class="day-pill active" data-day="Thu">T</button>
+                      <button class="day-pill active" data-day="Fri">F</button>
+                      <button class="day-pill active" data-day="Sat">S</button>
+                      <button class="day-pill active" data-day="Sun">S</button>
+                    </div>
+                    
+                    <div class="day-status-toggle-wrapper">
+                      <label class="premium-checkbox-label">
+                        <input type="checkbox" id="checkbox-day-open" checked>
+                        <span class="checkbox-custom"></span>
+                        <span class="checkbox-text" id="label-day-status-text">Store is open on Monday</span>
+                      </label>
+                    </div>
+                  </div>
+                  
+                  <div class="hours-sliders-wrapper">
+                    <div class="hours-slider-item">
+                      <div class="slider-header-row">
+                        <span>Store Opens:</span>
+                        <strong id="label-opening-start">08:00 AM</strong>
+                      </div>
+                      <input type="range" id="slider-opening-start" min="6" max="12" value="8" class="premium-slider slider-purple w-full">
+                    </div>
+                    
+                    <div class="hours-slider-item">
+                      <div class="slider-header-row">
+                        <span>Store Closes:</span>
+                        <strong id="label-opening-end">09:00 PM</strong>
+                      </div>
+                      <input type="range" id="slider-opening-end" min="17" max="23" value="21" class="premium-slider slider-purple w-full">
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Right Column: Traffic Blocks Durations -->
+                <div class="traffic-config-col blocks-col">
+                  <h3>2. Adjust Traffic Block Hours</h3>
+                  <p class="config-subtext">Define the active operating hour ranges for the four audio-traffic profiles:</p>
+                  
+                  <div class="traffic-sliders-grid">
+                    <div class="traffic-slider-item">
+                      <div class="slider-header-row">
+                        <span class="legend-color m-calm"></span>
+                        <span>Morning Calm:</span>
+                        <strong id="label-calm-range">8:00 AM - 11:00 AM</strong>
+                      </div>
+                      <div class="range-sliders-wrapper">
+                        <div class="range-slider-row">
+                          <span class="slider-type-label">Start:</span>
+                          <input type="range" id="slider-calm-start" min="6" max="23" value="8" class="premium-slider slider-purple w-full">
+                        </div>
+                        <div class="range-slider-row">
+                          <span class="slider-type-label">End:</span>
+                          <input type="range" id="slider-calm-end" min="6" max="23" value="11" class="premium-slider slider-purple w-full">
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="traffic-slider-item">
+                      <div class="slider-header-row">
+                        <span class="legend-color m-flow"></span>
+                        <span>Midday Flow:</span>
+                        <strong id="label-flow-range">11:00 AM - 3:00 PM</strong>
+                      </div>
+                      <div class="range-sliders-wrapper">
+                        <div class="range-slider-row">
+                          <span class="slider-type-label">Start:</span>
+                          <input type="range" id="slider-flow-start" min="6" max="23" value="11" class="premium-slider slider-purple w-full">
+                        </div>
+                        <div class="range-slider-row">
+                          <span class="slider-type-label">End:</span>
+                          <input type="range" id="slider-flow-end" min="6" max="23" value="15" class="premium-slider slider-purple w-full">
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="traffic-slider-item">
+                      <div class="slider-header-row">
+                        <span class="legend-color m-drive"></span>
+                        <span>Peak Drive:</span>
+                        <strong id="label-drive-range">3:00 PM - 7:00 PM</strong>
+                      </div>
+                      <div class="range-sliders-wrapper">
+                        <div class="range-slider-row">
+                          <span class="slider-type-label">Start:</span>
+                          <input type="range" id="slider-drive-start" min="6" max="23" value="15" class="premium-slider slider-purple w-full">
+                        </div>
+                        <div class="range-slider-row">
+                          <span class="slider-type-label">End:</span>
+                          <input type="range" id="slider-drive-end" min="6" max="23" value="19" class="premium-slider slider-purple w-full">
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="traffic-slider-item">
+                      <div class="slider-header-row">
+                        <span class="legend-color m-after"></span>
+                        <span>After Hours:</span>
+                        <strong id="label-after-range">7:00 PM - 9:00 PM</strong>
+                      </div>
+                      <div class="range-sliders-wrapper">
+                        <div class="range-slider-row">
+                          <span class="slider-type-label">Start:</span>
+                          <input type="range" id="slider-after-start" min="6" max="23" value="19" class="premium-slider slider-purple w-full">
+                        </div>
+                        <div class="range-slider-row">
+                          <span class="slider-type-label">End:</span>
+                          <input type="range" id="slider-after-end" min="6" max="23" value="21" class="premium-slider slider-purple w-full">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Timeline Visual Representation -->
+              <div class="traffic-timeline-wrapper">
+                <h3>3. Visual Playlist Timeline</h3>
+                
+                <div class="timeline-visual-bar" id="timeline-visual-bar">
+                  <div class="timeline-block block-calm" style="width: 23%">Morning Calm</div>
+                  <div class="timeline-block block-flow" style="width: 31%">Midday Flow</div>
+                  <div class="timeline-block block-drive" style="width: 31%">Peak Drive</div>
+                  <div class="timeline-block block-after" style="width: 15%">After Hours</div>
+                </div>
+                
+                <div class="timeline-axis">
+                  <span id="axis-open">08:00 AM</span>
+                  <span>11:00 AM</span>
+                  <span>03:00 PM</span>
+                  <span>07:00 PM</span>
+                  <span id="axis-close">09:00 PM</span>
+                </div>
+                
+                <div class="timeline-summary-text" id="timeline-summary-text">
+                  Scheduled Playback: 8:00 AM - 11:00 AM (Morning Calm) | 11:00 AM - 3:00 PM (Midday Flow) | 3:00 PM - 7:00 PM (Peak Drive) | 7:00 PM - 9:00 PM (After Hours)
+                </div>
+              </div>
+              
+              <!-- Loader block inside the card -->
+              <div id="traffic-sync-loader" class="traffic-sync-loader hidden text-center">
+                <div class="api-spinner"></div>
+                <h4 id="traffic-sync-status">Synchronizing store clocks...</h4>
+                <p>Deploying daily zoning maps and mixing profiles to local nodes.</p>
+              </div>
+
+              <!-- Action button -->
+              <div class="traffic-actions-row text-center">
+                <button id="btn-deploy-traffic" class="btn-primary">Confirm & generate adaptive playlist</button>
+              </div>
+            </div>
+          </div> <!-- /onboarding-accordion-body -->
+          </div>
+        </section>
+      </div> <!-- /onboarding-page-container -->
+
+      <!-- Spotify-style Adaptive Playlist Section -->
+      <section id="adaptive-playlist-section" class="adaptive-playlist-section hidden">
+          <div class="playlist-header-container">
+            <div class="playlist-cover-wrapper">
+              <div class="playlist-cover-art">
+                <div class="cover-glow"></div>
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M9 18V5l12-2v13"/>
+                  <circle cx="6" cy="18" r="3"/>
+                  <circle cx="18" cy="16" r="3"/>
+                </svg>
+                <div class="cover-waves">
+                  <span></span><span></span><span></span><span></span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="playlist-header-info">
+              <span class="playlist-badge">PUBLIC PLAYLIST</span>
+              <h1 id="playlist-title">Brand Adaptive Mix</h1>
+              <p id="playlist-description">A dynamic AI-generated soundscape adaptive to the store's daily traffic profile. Configured with Morning Calm, Midday Flow, Peak Drive, and After Hours zones.</p>
+              <div class="playlist-metadata">
+                <span class="meta-brand-logo">C</span>
+                <span class="meta-brand-name" id="playlist-meta-brand">Cady</span>
+                <span class="meta-separator">•</span>
+                <span id="playlist-song-count">0 songs</span>
+                <span class="meta-separator">•</span>
+                <span id="playlist-duration">0 min</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Playback Status & Metadata Bar -->
+          <div class="playlist-status-bar" id="playlist-status-bar">
+            <div class="status-top-row">
+              <div class="status-live-meta">
+                <div class="status-indicator-dot pulsing-green"></div>
+                <span class="status-label">LIVE ACOUSTICS</span>
+                <span class="status-time" id="live-time-display">Friday, 1:50 PM</span>
+              </div>
+              <div class="status-override-container">
+                <label for="live-block-override-select" class="override-label">Vibe Select:</label>
+                <select id="live-block-override-select" class="status-override-select">
+                  <option value="auto">Auto (Scheduled)</option>
+                  <option value="calm">Morning Calm (CALM)</option>
+                  <option value="flow">Midday Flow (FLOW)</option>
+                  <option value="drive">Peak Drive (DRIVE)</option>
+                  <option value="after">After Hours (AFTER)</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="status-mid-row">
+              <span class="status-meta" id="live-meta-acoustic">Acoustics: The Progressive Leader (95 BPM)</span>
+              <div class="status-explanation" id="live-status-explanation">
+                Analyzing traffic patterns...
+              </div>
+            </div>
+            
+            <div class="status-bottom-row">
+              <div class="status-queue-info">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink: 0;">
+                  <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+                </svg>
+                <span class="status-next" id="live-next-up">Next Up: Steady Pace - Mac DeMarco</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Controls Bar -->
+          <div class="playlist-controls-row">
+            <button id="playlist-play-btn" class="playlist-play-btn" title="Play Playlist">
+              <svg class="play-svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+              <svg class="pause-svg hidden" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+              </svg>
+            </button>
+            <button class="playlist-control-icon btn-shuffle" title="Shuffle">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/>
+              </svg>
+            </button>
+            <button class="playlist-control-icon btn-download" title="Download">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+              </svg>
+            </button>
+            <button class="playlist-control-icon btn-options" title="More options">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>
+              </svg>
+            </button>
+            <button id="playlist-abort-btn" class="btn-abort hidden" title="Abort Generation">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+              </svg>
+              <span>Stop Generating</span>
+            </button>
+          </div>
+
+          <!-- Tracks Table -->
+          <div class="playlist-table-container">
+            <table class="playlist-table" id="playlist-tracks-table">
+              <thead>
+                <tr>
+                  <th class="col-num">#</th>
+                  <th class="col-title">Title</th>
+                  <th class="col-album">Sales Impact</th>
+                  <th class="col-tags">Tags</th>
+                  <th class="col-bpm">BPM</th>
+                  <th class="col-duration">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+                    </svg>
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="playlist-tracks-body">
+                <!-- Rows will be dynamically loaded here one-by-one -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Settings & Locations Page -->
+        <section id="settings-page-container" class="settings-page-container hidden">
+          <div class="settings-header" style="margin-bottom: 24px;">
+            <h1 class="settings-title" style="font-family: var(--font-outfit); font-size: 2.2rem; font-weight: 800; background: linear-gradient(135deg, #ffffff 40%, #c084fc 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px;">Location Settings & Multi-Store Management</h1>
+            <p class="settings-subtitle" style="color: var(--color-text-secondary); font-size: 0.95rem;">Manage opening hours, traffic schedules, and sonic nodes for each store location.</p>
+          </div>
+
+          <div class="settings-grid" style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 24px; align-items: start;">
+            <!-- Left Side: Add Store Form -->
+            <div class="settings-card add-store-card" style="background: rgba(17, 17, 24, 0.6); border: 1px solid var(--color-border); border-radius: var(--border-radius-md); padding: 24px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); position: relative; overflow: hidden;">
+              <h3 style="font-size: 1.1rem; font-weight: 600; color: #fff; margin-bottom: 16px;">Add Store Location</h3>
+              <form id="form-add-store" class="settings-form" style="display: flex; flex-direction: column; gap: 16px;">
+                <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
+                  <label for="store-name-input" style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-secondary);">Store Name</label>
+                  <input type="text" id="store-name-input" required placeholder="e.g. London Soho" style="background: rgba(8, 8, 12, 0.6); border: 1px solid var(--color-border); border-radius: var(--border-radius-sm); padding: 10px 12px; color: #fff; font-size: 0.9rem; outline: none; transition: var(--transition-smooth);">
+                </div>
+                <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
+                  <label for="store-address-input" style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-secondary);">Address</label>
+                  <input type="text" id="store-address-input" placeholder="e.g. 45 Wardour St, London" style="background: rgba(8, 8, 12, 0.6); border: 1px solid var(--color-border); border-radius: var(--border-radius-sm); padding: 10px 12px; color: #fff; font-size: 0.9rem; outline: none; transition: var(--transition-smooth);">
+                </div>
+                <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
+                  <label for="store-timezone-input" style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-secondary);">Timezone</label>
+                  <select id="store-timezone-input" class="premium-select" style="background: rgba(8, 8, 12, 0.6); border: 1px solid var(--color-border); border-radius: var(--border-radius-sm); padding: 10px 12px; color: #fff; font-size: 0.9rem; outline: none; transition: var(--transition-smooth); cursor: pointer;">
+                    <option value="GMT">GMT (London)</option>
+                    <option value="EST" selected>EST (New York)</option>
+                    <option value="CET">CET (Paris/Berlin)</option>
+                    <option value="PST">PST (Los Angeles)</option>
+                  </select>
+                </div>
+                <button type="submit" class="btn-primary w-full" style="margin-top: 8px;">Add Location</button>
+              </form>
+            </div>
+
+            <!-- Right Side: Stores List -->
+            <div class="settings-card stores-list-card" style="background: rgba(17, 17, 24, 0.6); border: 1px solid var(--color-border); border-radius: var(--border-radius-md); padding: 24px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);">
+              <h3 style="font-size: 1.1rem; font-weight: 600; color: #fff; margin-bottom: 16px;">Active Store Locations</h3>
+              <div class="playlist-table-container stores-list-container" style="overflow-x: auto;">
+                <table class="playlist-table">
+                  <thead>
+                    <tr>
+                      <th>Store Location</th>
+                      <th>Status</th>
+                      <th>Timezone</th>
+                      <th style="text-align: right; width: 140px;">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="stores-list-body" style="font-size: 0.88rem; color: var(--color-text-secondary);">
+                    <!-- Stores will be loaded dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Music Library & Catalog Page -->
+        <section id="library-page-container" class="library-page-container hidden">
+          <!-- Spotify-Style Browse View -->
+          <div id="library-browse-view">
+            <div class="spotify-browse-layout">
+              <!-- Left Column: Main Browse View -->
+              <div class="spotify-browse-main">
+                <!-- Filter Pills -->
+                <div class="spotify-filter-pills" style="display: flex; gap: 8px; margin-bottom: 24px;">
+                  <button class="spotify-filter-pill active" data-filter="all">All</button>
+                  <button class="spotify-filter-pill" data-filter="library">My Library</button>
+                  <button class="spotify-filter-pill" data-filter="shared">Shared</button>
+                </div>
+
+
+
+                <!-- Two Column Picked / Friday Section -->
+                <div class="spotify-picked-grid">
+                  <!-- Column 1: New music weekly -->
+                  <div>
+                    <h3 class="spotify-row-title" style="margin-top: 0; margin-bottom: 16px;">New music weekly</h3>
+                    <div class="spotify-picked-featured mood-playlist-card" data-playlist="synthwave" id="card-picked-synthwave" data-category="shared">
+                      <img src="https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&w=300&h=300&q=80" alt="Synthwave Chill">
+                      <div style="font-size: 0.72rem; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Playlist</div>
+                      <h2 style="font-family: var(--font-outfit); font-size: 1.8rem; font-weight: 800; color: #fff; margin: 0 0 8px 0; line-height: 1.2;">Synthwave Chill</h2>
+                      <p style="color: var(--color-text-secondary); font-size: 0.85rem; line-height: 1.4; margin-bottom: 20px; margin-top: 0;">Focus, game or just chill to these smooth synthwave beats.</p>
+                      <div style="display: flex; align-items: center; gap: 16px;">
+                        <button class="play-btn-circle" style="width: 48px; height: 48px; border-radius: 50%; background: #fff; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #000; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 2px;"><path d="M8 5v14l11-7z"/></svg>
+                        </button>
+                        <button style="width: 48px; height: 48px; border-radius: 50%; background: transparent; border: 1px solid rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center; cursor: pointer; color: #fff; transition: all 0.2s;" onmouseover="this.style.borderColor='#fff'; this.style.transform='scale(1.05)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.3)'; this.style.transform='scale(1)'">
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Column 2: Your core music -->
+                  <div>
+                    <div class="spotify-row-header">
+                      <h3 class="spotify-row-title" style="margin-top: 0; margin-bottom: 0;">Your core music</h3>
+                      <a class="spotify-row-show-all">Show all</a>
+                    </div>
+                    <div class="spotify-new-friday-grid">
+                      <div class="spotify-cover-card mood-playlist-card" data-playlist="calm" data-category="shared">
+                        <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=200&h=200&q=80" alt="Morning calm">
+                        <div class="spotify-cover-card-title">Morning calm</div>
+                        <div class="spotify-cover-card-desc">Relaxed acoustic and ambient textures to start the day.</div>
+                        <button class="play-btn">
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 2px;"><path d="M8 5v14l11-7z"/></svg>
+                        </button>
+                      </div>
+
+                      <div class="spotify-cover-card mood-playlist-card" data-playlist="flow" data-category="shared">
+                        <img src="https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=200&h=200&q=80" alt="Midday flow">
+                        <div class="spotify-cover-card-title">Midday flow</div>
+                        <div class="spotify-cover-card-desc">Upbeat, focused tempos for active shopping hours.</div>
+                        <button class="play-btn">
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 2px;"><path d="M8 5v14l11-7z"/></svg>
+                        </button>
+                      </div>
+
+                      <div class="spotify-cover-card mood-playlist-card" data-playlist="drive" data-category="shared">
+                        <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=200&h=200&q=80" alt="Peak Drive">
+                        <div class="spotify-cover-card-title">Peak Drive</div>
+                        <div class="spotify-cover-card-desc">High-energy beats to drive conversions and momentum.</div>
+                        <button class="play-btn">
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 2px;"><path d="M8 5v14l11-7z"/></svg>
+                        </button>
+                      </div>
+
+                      <div class="spotify-cover-card mood-playlist-card" data-playlist="after" data-category="shared">
+                        <img src="https://images.unsplash.com/photo-1511192336575-5a79af67a629?auto=format&fit=crop&w=200&h=200&q=80" alt="After hours">
+                        <div class="spotify-cover-card-title">After hours</div>
+                        <div class="spotify-cover-card-desc">Slow-tempo ambient waves for wind-down and closing.</div>
+                        <button class="play-btn">
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 2px;"><path d="M8 5v14l11-7z"/></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Recents Row -->
+                <div class="spotify-row-header">
+                  <h3 class="spotify-row-title">Recents</h3>
+                  <a class="spotify-row-show-all">Show all</a>
+                </div>
+                <div class="spotify-covers-row">
+                  <div class="spotify-cover-card" id="card-recent-library" data-category="library">
+                    <img src="my_library_cover.png" alt="My Library">
+                    <div class="spotify-cover-card-title">My Library</div>
+                    <div class="spotify-cover-card-desc">Your owned tracks and custom synthesized mixes</div>
+                    <button class="play-btn">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 2px;"><path d="M8 5v14l11-7z"/></svg>
+                    </button>
+                  </div>
+
+                  <!-- Card 2: Kaskade Radio -->
+                  <div class="spotify-cover-card mood-playlist-card" data-playlist="kaskade" data-category="shared">
+                    <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=200&h=200&q=80" alt="Kaskade Radio">
+                    <div class="spotify-cover-card-title">Kaskade Radio</div>
+                    <div class="spotify-cover-card-desc">Playlist • Spotify</div>
+                    <button class="play-btn">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 2px;"><path d="M8 5v14l11-7z"/></svg>
+                    </button>
+                  </div>
+
+                  <!-- Card 3: Singer-Songwriter Mix -->
+                  <div class="spotify-cover-card mood-playlist-card" data-playlist="singer" data-category="shared">
+                    <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=200&h=200&q=80" alt="Singer-Songwriter Mix">
+                    <div class="spotify-cover-card-title">Singer-Songwriter Mix</div>
+                    <div class="spotify-cover-card-desc">Playlist • Spotify</div>
+                    <button class="play-btn">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 2px;"><path d="M8 5v14l11-7z"/></svg>
+                    </button>
+                  </div>
+
+                  <!-- Card 4: Rap & Hip Hop for gym -->
+                  <div class="spotify-cover-card mood-playlist-card" data-playlist="workout" data-category="shared">
+                    <img src="https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=200&h=200&q=80" alt="Rap & Hip Hop">
+                    <div class="spotify-cover-card-title">Rap & Hip Hop for gym</div>
+                    <div class="spotify-cover-card-desc">Playlist • Mario Romero</div>
+                    <button class="play-btn">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 2px;"><path d="M8 5v14l11-7z"/></svg>
+                    </button>
+                  </div>
+
+                  <!-- Card 5: Sleep -->
+                  <div class="spotify-cover-card mood-playlist-card" data-playlist="sleep" data-category="shared">
+                    <img src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=200&h=200&q=80" alt="Sleep">
+                    <div class="spotify-cover-card-title">Sleep</div>
+                    <div class="spotify-cover-card-desc">Playlist • Spotify</div>
+                    <button class="play-btn">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 2px;"><path d="M8 5v14l11-7z"/></svg>
+                    </button>
+                  </div>
+
+                  <!-- Card 6: Retrowave // Outrun -->
+                  <div class="spotify-cover-card mood-playlist-card" data-playlist="retrowave" data-category="shared">
+                    <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=200&h=200&q=80" alt="Retrowave // Outrun">
+                    <div class="spotify-cover-card-title">Retrowave // Outrun</div>
+                    <div class="spotify-cover-card-desc">Playlist • Spotify</div>
+                    <button class="play-btn">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 2px;"><path d="M8 5v14l11-7z"/></svg>
+                    </button>
+                  </div>
+
+                  <!-- Card 7: Italian Synthwave -->
+                  <div class="spotify-cover-card mood-playlist-card" data-playlist="italian" data-category="shared">
+                    <img src="https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&w=200&h=200&q=80" alt="Italian Synthwave">
+                    <div class="spotify-cover-card-title">Italian Synthwave</div>
+                    <div class="spotify-cover-card-desc">Album • Various Artists</div>
+                    <button class="play-btn">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 2px;"><path d="M8 5v14l11-7z"/></svg>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Suggested Mixes Row -->
+                <div class="spotify-row-header">
+                  <h3 class="spotify-row-title">Suggested Mixes for <span class="brand-name-placeholder">Your Brand</span></h3>
+                  <a class="spotify-row-show-all">Show all</a>
+                </div>
+                <div class="spotify-covers-row">
+                  <!-- Card 1: Happy Summer Hits Mix -->
+                  <div class="spotify-cover-card mix-suggest-card" data-mix="summer" data-category="shared">
+                    <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=200&h=200&q=80" alt="Happy Summer Hits Mix">
+                    <div class="spotify-cover-card-title">Happy Summer Hits</div>
+                    <div class="spotify-cover-card-desc">Bright sun-drenched acoustic plucks & warm percussion.</div>
+                    <button class="btn-generate-mix play-btn" data-mix-title="Happy Summer Hits Mix" data-mix-prompt="upbeat summer hits acoustic vibe" style="border: none; outline: none; background: #1db954;">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 2px; color: #fff;"><path d="M8 5v14l11-7z"/></svg>
+                    </button>
+                  </div>
+
+                  <!-- Card 2: Relaxing Sunday Chill -->
+                  <div class="spotify-cover-card mix-suggest-card" data-mix="sunday" data-category="shared">
+                    <img src="https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=200&h=200&q=80" alt="Relaxing Sunday Chill">
+                    <div class="spotify-cover-card-title">Relaxing Sunday Chill</div>
+                    <div class="spotify-cover-card-desc">Mellow jazz chords and lo-fi beats, perfect for slow mornings.</div>
+                    <button class="btn-generate-mix play-btn" data-mix-title="Relaxing Sunday Chill" data-mix-prompt="mellow acoustic Sunday lo-fi jazz lounge" style="border: none; outline: none; background: #1db954;">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 2px; color: #fff;"><path d="M8 5v14l11-7z"/></svg>
+                    </button>
+                  </div>
+
+                  <!-- Card 3: Late Night Synthwave -->
+                  <div class="spotify-cover-card mix-suggest-card" data-mix="synth" data-category="shared">
+                    <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=200&h=200&q=80" alt="Late Night Synthwave">
+                    <div class="spotify-cover-card-title">Late Night Synthwave</div>
+                    <div class="spotify-cover-card-desc">Pulsing synthesized basslines and electronic percussion.</div>
+                    <button class="btn-generate-mix play-btn" data-mix-title="Late Night Synthwave" data-mix-prompt="futuristic neon cyber synthwave arpeggios" style="border: none; outline: none; background: #1db954;">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 2px; color: #fff;"><path d="M8 5v14l11-7z"/></svg>
+                    </button>
+                  </div>
+
+                  <!-- Card 4: Deep Focus Work Mix -->
+                  <div class="spotify-cover-card mix-suggest-card" data-mix="focus" data-category="shared">
+                    <img src="https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=200&h=200&q=80" alt="Deep Focus Work Mix">
+                    <div class="spotify-cover-card-title">Deep Focus Work Mix</div>
+                    <div class="spotify-cover-card-desc">Atmospheric synth soundscapes and minimal rhythmic textures.</div>
+                    <button class="btn-generate-mix play-btn" data-mix-title="Deep Focus Work Mix" data-mix-prompt="deep focus minimal ambient textures study flow" style="border: none; outline: none; background: #1db954;">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 2px; color: #fff;"><path d="M8 5v14l11-7z"/></svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Spotify-Style Detailed view -->
+          <div id="library-detail-view" class="hidden">
+            <div class="spotify-detail-header">
+              <button id="btn-library-back" class="spotify-detail-back">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                Back to Browse
+              </button>
+            </div>
+
+            <div class="playlist-header-container">
+              <div class="playlist-cover-wrapper">
+                <div class="playlist-cover-art" style="overflow: hidden;">
+                  <img src="my_library_cover.png" alt="My Library" id="detail-playlist-cover" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+              </div>
+              
+              <div class="playlist-header-info">
+                <span class="playlist-badge" id="detail-playlist-type">Playlist</span>
+                <h1 id="detail-playlist-title" style="margin-top: 4px;">My Library</h1>
+                <p id="detail-playlist-desc">Manage your active tracks, upload new audio assets, and expand your catalog with custom AI mixes.</p>
+                <div class="playlist-metadata">
+                  <span class="meta-brand-logo">C</span>
+                  <span class="meta-brand-name">Cady Curation</span>
+                  <span class="meta-separator">•</span>
+                  <span id="lib-stat-songs">20</span><span> songs</span>
+                  <span class="meta-separator">•</span>
+                  <span id="lib-stat-mixes">0</span><span> mix prompts</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="spotify-detail-grid" style="margin-top: 24px;">
+              <!-- Left Column: Owned Tracks & Register Custom Tracks -->
+              <div style="display: flex; flex-direction: column; gap: 24px;">
+                <!-- Catalog Content -->
+                <div style="display: flex; flex-direction: column; gap: 20px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 16px;">
+                    <h3 style="font-size: 1.1rem; font-weight: 600; color: #fff; margin: 0;">Your Owned Tracks</h3>
+                    <div style="display: flex; gap: 8px;">
+                      <button id="btn-populate-playlist" class="btn-outline btn-small" style="font-size: 0.8rem; padding: 6px 12px; cursor: pointer; border-color: rgba(192, 132, 252, 0.4); color: #c084fc;">Populate from Playlist</button>
+                      <button id="btn-show-add-track" class="btn-outline btn-small" style="font-size: 0.8rem; padding: 6px 12px; cursor: pointer;">+ Add Custom Song</button>
+                    </div>
+                  </div>
+
+                  <!-- Category Filter Pills inside My Library -->
+                  <div class="library-category-filters" style="display: flex; gap: 8px; margin-bottom: 8px;">
+                    <button class="spotify-filter-pill active" data-lib-filter="all">All</button>
+                    <button class="spotify-filter-pill" data-lib-filter="calm">Morning Calm</button>
+                    <button class="spotify-filter-pill" data-lib-filter="flow">Midday Flow</button>
+                    <button class="spotify-filter-pill" data-lib-filter="drive">Peak Drive</button>
+                    <button class="spotify-filter-pill" data-lib-filter="after">After Hours</button>
+                  </div>
+
+                  <!-- Add Track Form (Collapsible/Hidden by default) -->
+                  <div id="add-track-form-container" class="hidden" style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: var(--border-radius-sm); padding: 16px; margin-bottom: 16px; transition: all 0.3s ease;">
+                    <h4 style="font-size: 0.9rem; font-weight: 600; color: #fff; margin-bottom: 12px; margin-top: 0;">Register Custom Track</h4>
+                    <form id="form-library-add-track" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; align-items: end;">
+                      <div style="display: flex; flex-direction: column; gap: 4px;">
+                        <label style="font-size: 0.75rem; color: var(--color-text-secondary);">Song Title</label>
+                        <input type="text" id="lib-add-title" required placeholder="e.g. Celestial Waves" style="background: rgba(8, 8, 12, 0.6); border: 1px solid var(--color-border); border-radius: var(--border-radius-sm); padding: 8px 10px; color: #fff; font-size: 0.85rem; outline: none;">
+                      </div>
+                      <div style="display: flex; flex-direction: column; gap: 4px;">
+                        <label style="font-size: 0.75rem; color: var(--color-text-secondary);">Artist Name</label>
+                        <input type="text" id="lib-add-artist" required placeholder="e.g. Tycho" style="background: rgba(8, 8, 12, 0.6); border: 1px solid var(--color-border); border-radius: var(--border-radius-sm); padding: 8px 10px; color: #fff; font-size: 0.85rem; outline: none;">
+                      </div>
+                      <div style="display: flex; flex-direction: column; gap: 4px;">
+                        <label style="font-size: 0.75rem; color: var(--color-text-secondary);">Album</label>
+                        <input type="text" id="lib-add-album" placeholder="e.g. Awake" style="background: rgba(8, 8, 12, 0.6); border: 1px solid var(--color-border); border-radius: var(--border-radius-sm); padding: 8px 10px; color: #fff; font-size: 0.85rem; outline: none;">
+                      </div>
+                      <div style="display: flex; flex-direction: column; gap: 4px;">
+                        <label style="font-size: 0.75rem; color: var(--color-text-secondary);">Vibe Category</label>
+                        <select id="lib-add-category" style="background: rgba(8, 8, 12, 0.6); border: 1px solid var(--color-border); border-radius: var(--border-radius-sm); padding: 8px 10px; color: #fff; font-size: 0.85rem; outline: none; cursor: pointer;">
+                          <option value="calm">Calm (Morning)</option>
+                          <option value="flow">Flow (Midday)</option>
+                          <option value="drive">Drive (Peak)</option>
+                          <option value="after">After Hours</option>
+                        </select>
+                      </div>
+                      <div style="display: flex; flex-direction: column; gap: 4px;">
+                        <label style="font-size: 0.75rem; color: var(--color-text-secondary);">Tempo (BPM)</label>
+                        <input type="number" id="lib-add-bpm" min="40" max="220" value="95" style="background: rgba(8, 8, 12, 0.6); border: 1px solid var(--color-border); border-radius: var(--border-radius-sm); padding: 8px 10px; color: #fff; font-size: 0.85rem; outline: none;">
+                      </div>
+                      <div style="display: flex; gap: 8px;">
+                        <button type="submit" class="btn-primary" style="padding: 8px 16px; font-size: 0.85rem; height: 36px; flex: 1;">Add Track</button>
+                        <button type="button" id="btn-cancel-add-track" class="btn-outline" style="padding: 8px 12px; font-size: 0.85rem; height: 36px;">Cancel</button>
+                      </div>
+                    </form>
+                  </div>
+
+                  <!-- Table of songs -->
+                  <div class="playlist-table-container">
+                    <table class="playlist-table">
+                      <thead>
+                        <tr>
+                          <th class="col-num">#</th>
+                          <th class="col-title">Title</th>
+                          <th class="col-album">Sales Impact</th>
+                          <th class="col-tags">Tags</th>
+                          <th class="col-bpm">BPM</th>
+                          <th class="col-duration">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; display: inline-block; color: var(--color-text-muted);"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                          </th>
+                          <th style="text-align: right; width: 100px;">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody id="library-tracks-body" style="font-size: 0.88rem; color: var(--color-text-secondary);">
+                        <!-- Rendered dynamically -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div> <!-- Closes spotify-detail-grid -->
+          </div> <!-- Closes library-detail-view -->
+
+          <!-- Song Creator Sidebar (visible for the whole library page) -->
+          <div class="song-creator-widget">
+                <!-- Loading overlay specifically inside the widget -->
+                <div class="song-creator-loading-overlay hidden" id="song-creator-loading-overlay">
+                  <div class="song-creator-loader-card">
+                    <div class="song-creator-spinner"></div>
+                    <div class="song-creator-loading-status" id="song-creator-loading-status">Generating Song...</div>
+                    <div class="song-creator-progress-container">
+                      <div class="song-creator-progress-fill" id="song-creator-progress-fill"></div>
+                    </div>
+                    <div class="song-creator-loading-caption" id="song-creator-loading-caption">Sending prompt to Suno AI...</div>
+                  </div>
+                </div>
+
+                <!-- Song Preview Player -->
+                <div id="song-creator-preview" class="hidden" style="margin-bottom: 20px;">
+                  <div class="song-creator-preview-header">
+                    <h4>Song Preview</h4>
+                    <button type="button" class="btn-preview-close" id="btn-preview-close" title="Dismiss Preview">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                  </div>
+                  
+                  <div class="song-preview-card">
+                    <div class="song-preview-cover-wrapper">
+                      <img id="preview-song-cover" src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=200&h=200&q=80" alt="Preview Cover">
+                      <button type="button" id="btn-preview-play-pause" class="btn-preview-play-pause" aria-label="Play or Pause">
+                        <!-- Play icon SVG -->
+                        <svg class="preview-play-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                        <!-- Pause icon SVG -->
+                        <svg class="preview-pause-icon hidden" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                      </button>
+                    </div>
+                    <div class="song-preview-info">
+                      <div id="preview-song-title" class="song-preview-title">Custom AI Song</div>
+                      <div id="preview-song-artist" class="song-preview-artist">Suno AI Creator</div>
+                      <div id="preview-song-tags" class="song-preview-tags">
+                        <span class="category-tag flow">FLOW</span>
+                        <span class="preview-bpm-tag" id="preview-song-bpm">110 BPM</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Progress Bar -->
+                  <div class="song-preview-progress-area">
+                    <div id="preview-progress-container" class="preview-progress-container">
+                      <div id="preview-progress-fill" class="preview-progress-fill"></div>
+                    </div>
+                    <div class="song-preview-time">
+                      <span id="preview-time-current">0:00</span>
+                      <span id="preview-time-total">3:00</span>
+                    </div>
+                  </div>
+
+                  <!-- Actions Footer -->
+                  <div class="song-preview-actions">
+                    <button type="button" id="btn-preview-add" class="btn-preview-add">
+                      Add to Library
+                    </button>
+                    <button type="button" id="btn-preview-regenerate" class="btn-preview-regenerate">
+                      Regenerate
+                    </button>
+                  </div>
+                </div>
+
+                <div id="song-creator-form-content">
+                  <!-- Redesigned Song Description Card -->
+                  <div class="song-creator-card">
+                    <div class="song-creator-card-header">
+                      <span class="card-title">Song Description</span>
+                      <button type="button" class="btn-song-randomize" id="btn-song-randomize" title="Randomize prompt">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: block;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><circle cx="15.5" cy="15.5" r="1.5"></circle><circle cx="15.5" cy="8.5" r="1.5"></circle><circle cx="8.5" cy="15.5" r="1.5"></circle><circle cx="12" cy="12" r="1.5"></circle></svg>
+                      </button>
+                    </div>
+                    
+                    <textarea id="song-creator-prompt" placeholder="Epic dancehall song about strangers on the same train" rows="4">Epic dancehall song about strangers on the same train</textarea>
+                    <div class="song-creator-char-counter"><span id="song-creator-char-count">51</span> / 2000</div>
+                    
+                    <div class="song-creator-card-footer">
+                      <button type="button" class="btn-lyrics-toggle" id="btn-lyrics-toggle">+ Lyrics</button>
+                      
+                      <button type="button" class="btn-instrumental-pill" id="btn-instrumental-pill">
+                        <svg class="check-icon hidden" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px; display: inline-block; vertical-align: middle;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        <span>Instrumental</span>
+                      </button>
+                      
+                      <!-- Hidden inputs to preserve existing JavaScript data flow -->
+                      <input type="checkbox" id="song-creator-custom-mode" class="hidden">
+                      <input type="checkbox" id="song-creator-instrumental" class="hidden">
+                    </div>
+
+                    <!-- Expandable Lyrics Container -->
+                    <div id="song-lyrics-container" class="song-lyrics-container hidden">
+                      <textarea id="song-creator-lyrics" placeholder="Enter custom lyrics here..." rows="3"></textarea>
+                    </div>
+                  </div>
+
+                  <!-- Suggestions section -->
+                  <div class="song-suggestions-section">
+                    <div class="song-suggestions-label">Suggestions</div>
+                    <div class="song-suggestions-row">
+                      <button type="button" class="suggestion-pill">80s synth pop</button>
+                      <button type="button" class="suggestion-pill">atmospheric soundscapes</button>
+                      <button type="button" class="suggestion-pill">male tenor</button>
+                      <button type="button" class="suggestion-pill">ballad</button>
+                      <button type="button" class="suggestion-pill">lo-fi beats</button>
+                      <button type="button" class="suggestion-pill">heavy bass</button>
+                    </div>
+                  </div>
+
+                  <!-- Hidden old elements to make sure DOM selectors don't fail -->
+                  <div class="hidden">
+                    <textarea id="song-creator-style"></textarea>
+                    <textarea id="song-creator-title"></textarea>
+                  </div>
+
+                  <!-- Advanced Settings Accordion -->
+                  <div class="song-creator-accordion" id="song-creator-adv-accordion">
+                    <div class="song-creator-accordion-header" id="song-creator-adv-toggle">
+                      <span>Advanced Settings <span class="options-count">(4 options)</span></span>
+                      <svg class="chevron-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </div>
+                    <div class="song-creator-accordion-content">
+                      <div class="song-creator-adv-field">
+                        <label for="song-creator-bpm">Tempo (BPM)</label>
+                        <input type="number" id="song-creator-bpm" placeholder="e.g. 120" min="40" max="220">
+                      </div>
+                      <div class="song-creator-adv-field">
+                        <label for="song-creator-vocal-gender">Vocal Gender</label>
+                        <select id="song-creator-vocal-gender">
+                          <option value="any">Any / Default</option>
+                          <option value="female">Female</option>
+                          <option value="male">Male</option>
+                          <option value="duet">Duet</option>
+                        </select>
+                      </div>
+                      <div class="song-creator-adv-field">
+                        <label for="song-creator-mood">Key / Mood</label>
+                        <select id="song-creator-mood">
+                          <option value="warm">Warm / Energetic</option>
+                          <option value="major">Major / Happy</option>
+                          <option value="minor">Minor / Intimate</option>
+                          <option value="dark">Dark / Melancholic</option>
+                        </select>
+                      </div>
+                      <div class="song-creator-adv-field">
+                        <label for="song-creator-model">Model Version</label>
+                        <select id="song-creator-model">
+                          <option value="suno-v5" selected>Suno v5 (Latest)</option>
+                          <option value="suno-v3.5">Suno v3.5</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Footer Buttons -->
+                  <div class="song-creator-footer">
+                    <button type="button" class="btn-song-creator-reset" id="btn-song-creator-reset">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle;"><path d="M23 4v6h-6M1 20v-6h6"></path><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                      Reset
+                    </button>
+                    <button type="button" class="btn-song-creator-generate" id="btn-song-creator-generate">
+                      <span class="generate-text">Generate &rarr;</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Generation History -->
+                <div id="song-creator-history" class="song-creator-history">
+                  <div class="song-creator-history-header">
+                    <h4>History</h4>
+                  </div>
+                  <div id="song-creator-history-list" class="song-creator-history-list">
+                    <div class="song-creator-history-empty">No tracks generated yet.</div>
+                  </div>
+                </div>
+              </div>
+        </section>
+
+      </div>
+    </main>
+    
+    <!-- RIGHT SIDEBAR (Your Roadmap Timeline) -->
+    <aside class="roadmap-sidebar" id="roadmap-sidebar">
+      <h2>Your Roadmap</h2>
+      
+      <div class="roadmap-timeline">
+        <!-- Step 1: Active -->
+        <div class="roadmap-step active" id="step-roadmap-1">
+          <div class="step-connector"></div>
+          <div class="step-icon-wrapper">
+            <!-- Onboarding icon / Card -->
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2" ry="2"/><path d="M2 10H22M6 15H10"/></svg>
+          </div>
+          <div class="step-content">
+            <span class="step-badge">Active Step</span>
+            <h3>Brand Discovery</h3>
+            <p id="roadmap-step1-desc">Complete the Sonic Identity Form or schedule a consultation to establish your brand's unique sonic profile.</p>
+            
+            <div class="step-actions" id="step1-actions-box">
+              <button class="btn-primary btn-small btn-consultation-trigger">Schedule Now</button>
+              <button class="btn-outline btn-small btn-form-trigger">Start Form</button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Step 2: Locked -->
+        <div class="roadmap-step locked" id="step-roadmap-2">
+          <div class="step-connector"></div>
+          <div class="step-icon-wrapper">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <div class="step-content">
+            <h3>Find Your Sound</h3>
+            <p>Train the AI by generating and auditioning custom brand melodies.</p>
+          </div>
+        </div>
+        
+        <!-- Step 3: Locked -->
+        <div class="roadmap-step locked" id="step-roadmap-3">
+          <div class="step-connector"></div>
+          <div class="step-icon-wrapper">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          </div>
+          <div class="step-content">
+            <h3>Connect Your Stores</h3>
+            <p>Link foot-traffic sensors or point-of-sale data to dynamically adjust playlists.</p>
+          </div>
+        </div>
+        
+        <!-- Step 4: Locked -->
+        <div class="roadmap-step locked" id="step-roadmap-4">
+          <div class="step-connector"></div>
+          <div class="step-icon-wrapper">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><polyline points="22 4 12 14.01 9 11.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <div class="step-content">
+            <h3>Go Live</h3>
+            <p>Go live across all store locations with real-time adaptive playback.</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Quick Guide Footer widget -->
+      <a href="#" class="quick-guide-widget">
+        <div class="guide-icon-wrapper">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        </div>
+        <div class="guide-info">
+          <h4>Quick Guide</h4>
+          <p>How Sonic Identity drives sales</p>
+        </div>
+        <div class="guide-arrow">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg>
+        </div>
+      </a>
+    </aside>
+    
+    <!-- RIGHT SIDEBAR (Locations Management) -->
+    <aside class="roadmap-sidebar hidden" id="locations-sidebar">
+      <h2>Store Locations</h2>
+      
+      <!-- Add Store Location Card -->
+      <div class="sidebar-add-location-card" id="btn-sidebar-add-location">
+        <div class="add-loc-icon">+</div>
+        <div class="add-loc-text">
+          <h4>Add Store Location</h4>
+          <p>Register a new store node</p>
+        </div>
+      </div>
+      
+      <!-- Locations Scroll Container -->
+      <div class="sidebar-locations-list" id="sidebar-locations-list">
+        <!-- Will be populated dynamically -->
+      </div>
+    </aside>
+  </div>
+
+  <!-- ==========================================
+     11. ADD STORE LOCATION MODAL (POPUP)
+     ========================================== -->
+  <div id="add-location-modal" class="modal-overlay">
+    <div class="modal-card modal-large" style="max-width: 850px; width: 95%;">
+      <button class="modal-close" id="btn-close-add-location-modal" aria-label="Close Modal">&times;</button>
+      <div class="modal-header">
+        <h2>Register Store & Operating Profile</h2>
+        <p>Enter the store location details, operating hours, and daily traffic vibe blocks. A unique adaptive playlist will be compiled automatically.</p>
+      </div>
+      
+      <form id="form-popup-add-store" class="modal-body" style="display: flex; flex-direction: column; gap: 20px;">
+        <!-- Location details -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
+          <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
+            <label for="pop-store-name" style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-secondary);">Store Name</label>
+            <input type="text" id="pop-store-name" required placeholder="e.g. Paris Marais" style="background: rgba(8, 8, 12, 0.6); border: 1px solid var(--color-border); border-radius: var(--border-radius-sm); padding: 10px 12px; color: #fff; font-size: 0.9rem; outline: none; transition: var(--transition-smooth);">
+          </div>
+          <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
+            <label for="pop-store-address" style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-secondary);">Address</label>
+            <input type="text" id="pop-store-address" required placeholder="e.g. 12 Rue des Archives" style="background: rgba(8, 8, 12, 0.6); border: 1px solid var(--color-border); border-radius: var(--border-radius-sm); padding: 10px 12px; color: #fff; font-size: 0.9rem; outline: none; transition: var(--transition-smooth);">
+          </div>
+          <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
+            <label for="pop-store-timezone" style="font-size: 0.8rem; font-weight: 500; color: var(--color-text-secondary);">Timezone</label>
+            <select id="pop-store-timezone" class="premium-select" style="background: rgba(8, 8, 12, 0.6); border: 1px solid var(--color-border); border-radius: var(--border-radius-sm); padding: 10px 12px; color: #fff; font-size: 0.9rem; outline: none; transition: var(--transition-smooth); cursor: pointer;">
+              <option value="GMT">GMT (London)</option>
+              <option value="EST">EST (New York)</option>
+              <option value="CET" selected>CET (Paris/Berlin)</option>
+              <option value="PST">PST (Los Angeles)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Full Scheduling Component -->
+        <div style="border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 16px;">
+          <div class="traffic-config-grid" id="modal-traffic-config-grid" style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 24px; margin-bottom: 16px;">
+            
+            <!-- Left Column: Opening Hours & Days -->
+            <div class="traffic-config-col hours-col" style="padding: 0; background: none; border: none; box-shadow: none;">
+              <h3 style="font-size: 0.95rem; font-weight: 600; color: #fff; margin-bottom: 12px;">1. Opening Hours & Days</h3>
+              
+              <div class="day-selector-wrapper" style="margin-bottom: 16px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); padding: 12px; border-radius: 8px;">
+                <span class="selector-label" style="font-size: 0.75rem; color: var(--color-text-muted); display: block; margin-bottom: 6px;">Operating Days:</span>
+                <div class="weekdays-pills modal-weekdays-pills" style="display: flex; gap: 6px;">
+                  <button type="button" class="day-pill active selected-tab" data-day="Mon">M</button>
+                  <button type="button" class="day-pill active" data-day="Tue">T</button>
+                  <button type="button" class="day-pill active" data-day="Wed">W</button>
+                  <button type="button" class="day-pill active" data-day="Thu">T</button>
+                  <button type="button" class="day-pill active" data-day="Fri">F</button>
+                  <button type="button" class="day-pill active" data-day="Sat">S</button>
+                  <button type="button" class="day-pill active" data-day="Sun">S</button>
+                </div>
+                
+                <div class="day-status-toggle-wrapper" style="margin-top: 12px; border-top: 1px solid rgba(255,255,255,0.03); padding-top: 8px;">
+                  <label class="premium-checkbox-label">
+                    <input type="checkbox" id="modal-checkbox-day-open" checked>
+                    <span class="checkbox-custom"></span>
+                    <span class="checkbox-text" id="modal-label-day-status-text" style="font-size: 0.75rem;">Store is open on Monday</span>
+                  </label>
+                </div>
+              </div>
+              
+              <div class="hours-sliders-wrapper" id="modal-hours-sliders-wrapper" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); padding: 12px; border-radius: 8px;">
+                <div class="hours-slider-item" style="margin-bottom: 12px;">
+                  <div class="slider-header-row" style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 6px;">
+                    <span>Store Opens:</span>
+                    <strong id="modal-label-opening-start">08:00 AM</strong>
+                  </div>
+                  <input type="range" id="modal-slider-opening-start" min="6" max="12" value="8" class="premium-slider slider-purple w-full">
+                </div>
+                
+                <div class="hours-slider-item">
+                  <div class="slider-header-row" style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 6px;">
+                    <span>Store Closes:</span>
+                    <strong id="modal-label-opening-end">09:00 PM</strong>
+                  </div>
+                  <input type="range" id="modal-slider-opening-end" min="17" max="23" value="21" class="premium-slider slider-purple w-full">
+                </div>
+              </div>
+            </div>
+            
+            <!-- Right Column: Traffic Blocks Durations -->
+            <div class="traffic-config-col blocks-col" style="padding: 0; background: none; border: none; box-shadow: none;">
+              <h3 style="font-size: 0.95rem; font-weight: 600; color: #fff; margin-bottom: 12px;">2. Adjust Traffic Block Hours</h3>
+              
+              <div class="traffic-sliders-grid" id="modal-traffic-sliders-grid" style="display: flex; flex-direction: column; gap: 10px;">
+                <div class="traffic-slider-item" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); padding: 10px; border-radius: 8px;">
+                  <div class="slider-header-row" style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 6px;">
+                    <span style="display: flex; align-items: center; gap: 6px;">
+                      <span class="legend-color m-calm" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--color-calm);"></span>
+                      <strong>Morning Calm:</strong>
+                    </span>
+                    <strong id="modal-label-calm-range">8:00 AM - 11:00 AM</strong>
+                  </div>
+                  <div class="range-sliders-wrapper" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="range-slider-row" style="display: flex; align-items: center; gap: 6px;">
+                      <span style="font-size: 0.7rem; color: var(--color-text-muted);">Start:</span>
+                      <input type="range" id="modal-slider-calm-start" min="6" max="23" value="8" class="premium-slider slider-purple w-full">
+                    </div>
+                    <div class="range-slider-row" style="display: flex; align-items: center; gap: 6px;">
+                      <span style="font-size: 0.7rem; color: var(--color-text-muted);">End:</span>
+                      <input type="range" id="modal-slider-calm-end" min="6" max="23" value="11" class="premium-slider slider-purple w-full">
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="traffic-slider-item" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); padding: 10px; border-radius: 8px;">
+                  <div class="slider-header-row" style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 6px;">
+                    <span style="display: flex; align-items: center; gap: 6px;">
+                      <span class="legend-color m-flow" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--color-flow);"></span>
+                      <strong>Midday Flow:</strong>
+                    </span>
+                    <strong id="modal-label-flow-range">11:00 AM - 3:00 PM</strong>
+                  </div>
+                  <div class="range-sliders-wrapper" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="range-slider-row" style="display: flex; align-items: center; gap: 6px;">
+                      <span style="font-size: 0.7rem; color: var(--color-text-muted);">Start:</span>
+                      <input type="range" id="modal-slider-flow-start" min="6" max="23" value="11" class="premium-slider slider-purple w-full">
+                    </div>
+                    <div class="range-slider-row" style="display: flex; align-items: center; gap: 6px;">
+                      <span style="font-size: 0.7rem; color: var(--color-text-muted);">End:</span>
+                      <input type="range" id="modal-slider-flow-end" min="6" max="23" value="15" class="premium-slider slider-purple w-full">
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="traffic-slider-item" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); padding: 10px; border-radius: 8px;">
+                  <div class="slider-header-row" style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 6px;">
+                    <span style="display: flex; align-items: center; gap: 6px;">
+                      <span class="legend-color m-drive" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--color-drive);"></span>
+                      <strong>Peak Drive:</strong>
+                    </span>
+                    <strong id="modal-label-drive-range">3:00 PM - 7:00 PM</strong>
+                  </div>
+                  <div class="range-sliders-wrapper" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="range-slider-row" style="display: flex; align-items: center; gap: 6px;">
+                      <span style="font-size: 0.7rem; color: var(--color-text-muted);">Start:</span>
+                      <input type="range" id="modal-slider-drive-start" min="6" max="23" value="15" class="premium-slider slider-purple w-full">
+                    </div>
+                    <div class="range-slider-row" style="display: flex; align-items: center; gap: 6px;">
+                      <span style="font-size: 0.7rem; color: var(--color-text-muted);">End:</span>
+                      <input type="range" id="modal-slider-drive-end" min="6" max="23" value="19" class="premium-slider slider-purple w-full">
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="traffic-slider-item" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); padding: 10px; border-radius: 8px;">
+                  <div class="slider-header-row" style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 6px;">
+                    <span style="display: flex; align-items: center; gap: 6px;">
+                      <span class="legend-color m-after" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--color-after);"></span>
+                      <strong>After Hours:</strong>
+                    </span>
+                    <strong id="modal-label-after-range">7:00 PM - 9:00 PM</strong>
+                  </div>
+                  <div class="range-sliders-wrapper" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="range-slider-row" style="display: flex; align-items: center; gap: 6px;">
+                      <span style="font-size: 0.7rem; color: var(--color-text-muted);">Start:</span>
+                      <input type="range" id="modal-slider-after-start" min="6" max="23" value="19" class="premium-slider slider-purple w-full">
+                    </div>
+                    <div class="range-slider-row" style="display: flex; align-items: center; gap: 6px;">
+                      <span style="font-size: 0.7rem; color: var(--color-text-muted);">End:</span>
+                      <input type="range" id="modal-slider-after-end" min="6" max="23" value="21" class="premium-slider slider-purple w-full">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Timeline Visual Representation -->
+          <div class="traffic-timeline-wrapper" style="border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 16px; margin-top: 8px;">
+            <h3 style="font-size: 0.95rem; font-weight: 600; color: #fff; margin-bottom: 12px;">3. Visual Playlist Timeline</h3>
+            
+            <div class="timeline-visual-bar" id="modal-timeline-visual-bar" style="position: relative; height: 32px; background: rgba(255,255,255,0.02); border: 1px solid var(--color-border); border-radius: var(--border-radius-sm); overflow: hidden; margin-bottom: 6px;">
+              <!-- Filled dynamically -->
+            </div>
+            
+            <div class="timeline-axis" id="modal-timeline-axis" style="display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--color-text-muted); font-family: monospace;">
+              <span>08:00 AM</span>
+              <span>11:00 AM</span>
+              <span>03:00 PM</span>
+              <span>07:00 PM</span>
+              <span>09:00 PM</span>
+            </div>
+            
+            <div class="timeline-summary" id="modal-timeline-summary-text" style="font-size: 0.75rem; color: var(--color-text-secondary); margin-top: 8px; line-height: 1.4;">
+              <!-- Filled dynamically -->
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary w-full" style="margin-top: 8px; padding: 12px;">Save Store & Generate Playlist</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================
+     12. SHARE WEBPLAYER LINK MODAL
+     ========================================== -->
+  <div id="share-link-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 450px;">
+      <button class="modal-close" id="btn-close-share-modal" aria-label="Close Modal">&times;</button>
+      <div class="modal-header" style="text-align: center;">
+        <div style="width: 48px; height: 48px; border-radius: 50%; background: rgba(124, 58, 237, 0.12); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; border: 1px solid rgba(124, 58, 237, 0.2);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-purple-light)" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        </div>
+        <h2>Share Store Webplayer</h2>
+        <p>Copy the link below to deploy this store's adaptive playlist onto their local audio system.</p>
+      </div>
+      
+      <div class="modal-body" style="display: flex; flex-direction: column; gap: 16px; margin-top: 16px;">
+        <div style="position: relative; background: rgba(8, 8, 12, 0.8); border: 1px solid var(--color-border); border-radius: var(--border-radius-sm); padding: 12px 48px 12px 16px; font-family: monospace; font-size: 0.82rem; color: #fff; word-break: break-all; min-height: 44px; display: flex; align-items: center;">
+          <span id="txt-share-link">http://localhost:8080/player.html?store=london-flagship</span>
+          <button id="btn-copy-share-link" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); width: 32px; height: 32px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--color-purple-light); transition: var(--transition-smooth);" title="Copy Link">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          </button>
+        </div>
+        <button id="btn-close-share-popup" class="btn-primary w-full">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+     13. EVOLINK PLAYLIST GENERATION MODAL
+     ========================================== -->
+  <div id="evolink-generation-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 480px;">
+      <button class="modal-close" id="btn-close-evolink-modal" aria-label="Close Modal">&times;</button>
+      <div class="modal-header" style="text-align: center;">
+        <div style="width: 48px; height: 48px; border-radius: 50%; background: rgba(192, 132, 252, 0.12); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; border: 1px solid rgba(192, 132, 252, 0.2);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <h2 id="evolink-modal-title" style="margin-bottom: 8px;">Approve Playlist Generation</h2>
+        <p style="color: var(--color-text-secondary); font-size: 0.88rem; margin: 0;">Authorizing Evolink AI to generate custom themed soundscapes for your brand.</p>
+      </div>
+      
+      <!-- Content: Confirmation Screen -->
+      <div id="evolink-confirm-screen" class="modal-body" style="display: flex; flex-direction: column; gap: 16px; margin-top: 16px;">
+        <p style="color: var(--color-text-secondary); font-size: 0.88rem; line-height: 1.5; margin: 0;">
+          This request will fuse your active brand characteristics with the selected playlist parameters:
+        </p>
+        
+        <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--color-border); border-radius: var(--border-radius-sm); padding: 14px; display: flex; flex-direction: column; gap: 12px; text-align: left;">
+          <div>
+            <span style="font-size: 0.7rem; color: var(--color-text-muted); text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 2px;">Active Brand</span>
+            <div id="evolink-modal-brand" style="font-size: 0.9rem; font-weight: 600; color: #fff;">Cady</div>
+          </div>
+          <div>
+            <span style="font-size: 0.7rem; color: var(--color-text-muted); text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 2px;">Selected Playlist</span>
+            <div id="evolink-modal-mix-name" style="font-size: 0.9rem; font-weight: 600; color: #c084fc;">Happy Summer Hits Mix</div>
+          </div>
+          <div>
+            <span style="font-size: 0.7rem; color: var(--color-text-muted); text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 2px;">Evolink Prompt Payload</span>
+            <div id="evolink-modal-prompt-payload" style="font-size: 0.78rem; font-family: monospace; color: var(--color-text-secondary); word-break: break-all; background: rgba(0,0,0,0.2); padding: 6px 8px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.03);">brand="Cady" + prompt="upbeat summer hits acoustic vibe"</div>
+          </div>
+        </div>
+        
+        <div style="display: flex; gap: 12px; margin-top: 8px;">
+          <button id="btn-evolink-approve" class="btn-primary" style="flex: 1; padding: 10px;">Approve & Generate</button>
+          <button id="btn-evolink-cancel" class="btn-outline" style="flex: 1; padding: 10px;">Cancel</button>
+        </div>
+      </div>
+      
+      <!-- Content: Loading Screen -->
+      <div id="evolink-loading-screen" class="modal-body hidden" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; padding: 30px 10px; text-align: center;">
+        <div class="api-spinner" style="border: 3px solid rgba(255,255,255,0.05); border-top: 3px solid #c084fc; width: 36px; height: 36px; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        <div>
+          <h4 id="evolink-loading-status" style="font-size: 1.05rem; font-weight: 600; color: #fff; margin-bottom: 6px; margin-top: 0;">Connecting to Evolink...</h4>
+          <p id="evolink-loading-caption" style="color: var(--color-text-secondary); font-size: 0.8rem; margin: 0; line-height: 1.4;">Sending brand DNA weights and generating custom melody stems.</p>
+        </div>
+        <div class="progress-bar-track" style="width: 100%; height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden; margin-top: 8px;">
+          <div id="evolink-progress-fill" style="width: 0%; height: 100%; background: linear-gradient(90deg, #a855f7 0%, #c084fc 100%); transition: width 0.1s linear;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+     3. INTERACTIVE SCHEDULE CONSULTATION MODAL
+     ========================================== -->
+  <div id="consultation-modal" class="modal-overlay">
+    <div class="modal-card">
+      <button class="modal-close" aria-label="Close Modal">&times;</button>
+      <div class="modal-header">
+        <h2>Schedule Your Sonic Consultation</h2>
+        <p>Pick a date to sync with Jordan, our Senior Sonic Strategist (30 mins).</p>
+      </div>
+      
+      <div class="modal-body">
+        <div class="scheduler-calendar-widget">
+          <!-- Calendar Days picker grid -->
+          <div class="calendar-month-header">June 2026</div>
+          <div class="calendar-weekdays">
+            <span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span>
+          </div>
+          <div class="calendar-days-grid">
+            <span class="day muted">25</span><span class="day muted">26</span><span class="day muted">27</span><span class="day muted">28</span><span class="day muted">29</span><span class="day muted">30</span><span class="day muted">31</span>
+            <span class="day select-date" data-date="June 1">1</span>
+            <span class="day select-date" data-date="June 2">2</span>
+            <span class="day select-date" data-date="June 3">3</span>
+            <span class="day select-date" data-date="June 4">4</span>
+            <span class="day select-date" data-date="June 5">5</span>
+            <span class="day muted">6</span><span class="day muted">7</span>
+            <span class="day select-date" data-date="June 8">8</span>
+            <span class="day select-date" data-date="June 9">9</span>
+            <span class="day select-date" data-date="June 10">10</span>
+            <span class="day select-date" data-date="June 11">11</span>
+            <span class="day select-date" data-date="June 12">12</span>
+            <span class="day muted">13</span><span class="day muted">14</span>
+          </div>
+        </div>
+        
+        <div class="scheduler-time-widget">
+          <label>Available Timeslots</label>
+          <div class="times-picker">
+            <button class="time-btn" data-time="09:30 AM">09:30 AM</button>
+            <button class="time-btn" data-time="11:00 AM">11:00 AM</button>
+            <button class="time-btn" data-time="02:00 PM">02:00 PM</button>
+            <button class="time-btn" data-time="04:30 PM">04:30 PM</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button id="btn-confirm-booking" class="btn-primary w-full" disabled>
+          <span>Confirm Selection</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+     4. INTERACTIVE SONIC IDENTITY QUESTIONNAIRE FORM MODAL
+     ========================================== -->
+  <div id="dna-form-modal" class="modal-overlay">
+    <div class="modal-card form-modal-card" id="form-modal-card">
+      <button class="modal-close" aria-label="Close Modal">&times;</button>
+      
+      <!-- Multi-step form header -->
+      <div class="modal-header">
+        <div class="form-header-top">
+          <div class="form-steps-indicator">
+            <span class="step-indicator active" data-step="1">1</span>
+            <span class="step-line"></span>
+            <span class="step-indicator" data-step="2">2</span>
+            <span class="step-line"></span>
+            <span class="step-indicator" data-step="3">3</span>
+          </div>
+          
+          <!-- Why We Ask Toggle Badge Button -->
+          <button type="button" class="btn-help-toggle" id="btn-help-toggle">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <span>Why ask this?</span>
+          </button>
+        </div>
+        
+        <h2 id="form-step-title">Establish Your Sonic Identity</h2>
+        <p id="form-step-subtitle">Tell us about the atmosphere you want to cultivate. Our AI uses these parameters to curate your custom music ecosystem.</p>
+      </div>
+
+      <!-- Toggleable Educational Panel -->
+      <div class="form-help-panel hidden" id="form-help-panel">
+        <div class="help-panel-glow"></div>
+        <div class="help-panel-content" id="help-panel-text">
+          <!-- Text dynamically loaded via JavaScript based on active step -->
+        </div>
+      </div>
+      
+      <!-- Modal Main Scrollable Content -->
+      <div class="modal-body form-body-scroll">
+        
+        <!-- ==========================================
+           FORM STEP 1: ATMOSPHERE & BASICS
+           ========================================== -->
+        <div class="form-step-content active" data-step="1">
+          
+          <!-- 01. Vibe Selection -->
+          <div class="form-section">
+            <label class="section-num-title">01. Vibe Selection</label>
+            <div class="vibe-selection-row">
+              <!-- Choice 1: Warm & Inviting -->
+              <label class="vibe-circle-option">
+                <input type="radio" name="vibe-choice" value="warm" checked>
+                <div class="vibe-circle-inner">
+                  <div class="vibe-circle-dot color-warm">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                  </div>
+                  <span class="vibe-title">Warm & Inviting</span>
+                  <button type="button" class="btn-listen-sample" data-vibe="warm">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> Listen to Sample
+                  </button>
+                </div>
+              </label>
+
+              <!-- Choice 2: Cool & Modern -->
+              <label class="vibe-circle-option">
+                <input type="radio" name="vibe-choice" value="cool">
+                <div class="vibe-circle-inner">
+                  <div class="vibe-circle-dot color-cool">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25"/><line x1="8" y1="16" x2="8" y2="22"/><line x1="8" y1="13" x2="8" y2="13.01"/><line x1="12" y1="18" x2="12" y2="24"/><line x1="12" y1="15" x2="12" y2="15.01"/><line x1="16" y1="16" x2="16" y2="22"/><line x1="16" y1="13" x2="16" y2="13.01"/></svg>
+                  </div>
+                  <span class="vibe-title">Cool & Modern</span>
+                  <button type="button" class="btn-listen-sample" data-vibe="cool">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> Listen to Sample
+                  </button>
+                </div>
+              </label>
+
+              <!-- Choice 3: Bold & Energetic -->
+              <label class="vibe-circle-option">
+                <input type="radio" name="vibe-choice" value="bold">
+                <div class="vibe-circle-inner">
+                  <div class="vibe-circle-dot color-bold">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                  </div>
+                  <span class="vibe-title">Bold & Energetic</span>
+                  <button type="button" class="btn-listen-sample" data-vibe="bold">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> Listen to Sample
+                  </button>
+                </div>
+              </label>
+
+              <!-- Choice 4: Sophisticated & Luxe -->
+              <label class="vibe-circle-option">
+                <input type="radio" name="vibe-choice" value="sophisticated">
+                <div class="vibe-circle-inner">
+                  <div class="vibe-circle-dot color-soph">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 22 8.5 12 22 2 8.5 12 2"/><polyline points="2 8.5 12 13 22 8.5"/><line x1="12" y1="13" x2="12" y2="22"/></svg>
+                  </div>
+                  <span class="vibe-title">Sophisticated & Luxe</span>
+                  <button type="button" class="btn-listen-sample" data-vibe="sophisticated">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> Listen to Sample
+                  </button>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- 02. Genre Influence -->
+          <div class="form-section">
+            <label class="section-num-title">02. Genre Influence</label>
+            <div class="genre-influence-pills">
+              <label class="toggle-pill">
+                <input type="checkbox" name="genre-pill" value="Lounge">
+                <span>Lounge</span>
+              </label>
+              <label class="toggle-pill">
+                <input type="checkbox" name="genre-pill" value="Jazz" checked>
+                <span>Jazz</span>
+              </label>
+              <label class="toggle-pill">
+                <input type="checkbox" name="genre-pill" value="Electronic">
+                <span>Electronic</span>
+              </label>
+              <label class="toggle-pill">
+                <input type="checkbox" name="genre-pill" value="Pop">
+                <span>Pop</span>
+              </label>
+              <label class="toggle-pill">
+                <input type="checkbox" name="genre-pill" value="Ambient" checked>
+                <span>Ambient</span>
+              </label>
+              <label class="toggle-pill">
+                <input type="checkbox" name="genre-pill" value="Classical">
+                <span>Classical</span>
+              </label>
+              <label class="toggle-pill">
+                <input type="checkbox" name="genre-pill" value="Lo-Fi">
+                <span>Lo-Fi</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- 03. Tempo Threshold -->
+          <div class="form-section">
+            <div class="slider-header-row">
+              <label class="section-num-title">03. Tempo Threshold</label>
+              <span class="tempo-display"><strong id="form-tempo-label">80</strong> BPM</span>
+            </div>
+            <div class="tempo-slider-card">
+              <p class="slider-hint">Set the target pulse for your environment.</p>
+              <input type="range" id="form-tempo-slider" min="60" max="180" value="80" class="premium-slider w-full">
+              <div class="slider-markers">
+                <span>Chill (60)</span>
+                <span>Moderate (120)</span>
+                <span>Peak (180)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 04. Key Instrumentation -->
+          <div class="form-section">
+            <label class="section-num-title">04. Key Instrumentation</label>
+            <div class="key-instrumentation-grid">
+              <label class="instrument-pill">
+                <input type="checkbox" name="inst-pill" value="Piano">
+                <div class="inst-pill-inner">
+                  <span class="inst-icon">🎹</span>
+                  <span>Piano</span>
+                </div>
+              </label>
+              <label class="instrument-pill">
+                <input type="checkbox" name="inst-pill" value="Guitar" checked>
+                <div class="inst-pill-inner">
+                  <span class="inst-icon">🎸</span>
+                  <span>Guitar</span>
+                </div>
+              </label>
+              <label class="instrument-pill">
+                <input type="checkbox" name="inst-pill" value="Sax">
+                <div class="inst-pill-inner">
+                  <span class="inst-icon">🎷</span>
+                  <span>Sax</span>
+                </div>
+              </label>
+              <label class="instrument-pill">
+                <input type="checkbox" name="inst-pill" value="Drums">
+                <div class="inst-pill-inner">
+                  <span class="inst-icon">🥁</span>
+                  <span>Drums</span>
+                </div>
+              </label>
+              <label class="instrument-pill">
+                <input type="checkbox" name="inst-pill" value="Synth" checked>
+                <div class="inst-pill-inner">
+                  <span class="inst-icon">🌊</span>
+                  <span>Synth</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- 05. Reference Atmosphere -->
+          <div class="form-section">
+            <label class="section-num-title">05. Reference Atmosphere</label>
+            <div class="reference-links-col">
+              <div class="input-with-icon">
+                <span class="input-icon-decor">🔗</span>
+                <input type="url" id="ref-spotify" placeholder="Spotify Playlist URL" class="decorated-input">
+              </div>
+              <div class="input-with-icon">
+                <span class="input-icon-decor">🔗</span>
+                <input type="url" id="ref-youtube" placeholder="YouTube Reference Link" class="decorated-input">
+              </div>
+              <div class="input-with-icon">
+                <span class="input-icon-decor">🔗</span>
+                <input type="text" id="ref-competitor" placeholder="Competitor Example (Optional)" class="decorated-input">
+              </div>
+            </div>
+          </div>
+
+          <!-- 06. Forbidden Sounds -->
+          <div class="form-section">
+            <label class="section-num-title">06. Forbidden Sounds</label>
+            <textarea id="forbidden-sounds" placeholder="Any specific instruments, vocals, or moods you want to absolutely avoid? (e.g. No heavy brass, no high-pitched synth leads)" class="decorated-textarea"></textarea>
+          </div>
+
+        </div>
+
+        <!-- ==========================================
+           FORM STEP 2: RESONANCE & HEATMAP (WIDESCREEN)
+           ========================================== -->
+        <div class="form-step-content" data-step="2">
+          <div class="step-2-grid-layout">
+            
+            <!-- Left Side: Sliders and Affinity -->
+            <div class="step-2-sliders-column">
+              <h3 class="step-2-section-title">Core Personality Traits</h3>
+              
+              <!-- Slider 1: Traditional vs Modern -->
+              <div class="resonance-slider-group">
+                <div class="res-slider-labels">
+                  <span class="left-lbl">Traditional</span>
+                  <span class="right-lbl">Modern</span>
+                </div>
+                <input type="range" id="res-slider-trad" min="0" max="100" value="80" class="premium-slider slider-purple w-full">
+                <div class="res-slider-subtext">
+                  <span class="left-sub">Heritage, Stability</span>
+                  <span class="right-sub">Innovative, Sleek</span>
+                </div>
+              </div>
+
+              <!-- Slider 2: Serious vs Playful -->
+              <div class="resonance-slider-group">
+                <div class="res-slider-labels">
+                  <span class="left-lbl">Serious</span>
+                  <span class="right-lbl">Playful</span>
+                </div>
+                <input type="range" id="res-slider-play" min="0" max="100" value="38" class="premium-slider slider-purple w-full">
+                <div class="res-slider-subtext">
+                  <span class="left-sub">Professional, Focus</span>
+                  <span class="right-sub">Energetic, Whimsical</span>
+                </div>
+              </div>
+
+              <!-- Slider 3: Global vs Local -->
+              <div class="resonance-slider-group">
+                <div class="res-slider-labels">
+                  <span class="left-lbl">Global</span>
+                  <span class="right-lbl">Local</span>
+                </div>
+                <input type="range" id="res-slider-local" min="0" max="100" value="20" class="premium-slider slider-purple w-full">
+                <div class="res-slider-subtext">
+                  <span class="left-sub">Universal, Cosmopolitan</span>
+                  <span class="right-sub">Community, Roots</span>
+                </div>
+              </div>
+
+              <!-- Slider 4: Minimal vs Rich -->
+              <div class="resonance-slider-group">
+                <div class="res-slider-labels">
+                  <span class="left-lbl">Minimal</span>
+                  <span class="right-lbl">Rich</span>
+                </div>
+                <input type="range" id="res-slider-rich" min="0" max="100" value="62" class="premium-slider slider-purple w-full">
+                <div class="res-slider-subtext">
+                  <span class="left-sub">Uncluttered, Airy</span>
+                  <span class="right-sub">Textured, Layered</span>
+                </div>
+              </div>
+
+              <!-- Affinity Box -->
+              <div class="affinity-badge-card">
+                <div class="affinity-icon-decor">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/></svg>
+                </div>
+                <div class="affinity-info">
+                  <h4>Archetype Affinity: <span id="lbl-affinity-archetype">The Progressive Leader</span></h4>
+                  <p>Calculated based on your resonance inputs.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Side: Sonic Heatmap Grid -->
+            <div class="step-2-heatmap-column">
+              <div class="heatmap-header-row">
+                <h3>Sonic Heatmap</h3>
+                <span class="rendering-live-badge">
+                  <span class="live-dot-pulse"></span>
+                  Real-time Rendering
+                </span>
+              </div>
+              <p class="heatmap-desc">Frequency distribution across brand vectors</p>
+              
+              <!-- 15x10 Heatmap Matrix -->
+              <div class="heatmap-container-box">
+                <div class="heatmap-matrix-grid" id="heatmap-matrix-grid">
+                  <!-- Generated dynamically in JS: 15 columns x 10 rows = 150 cells -->
+                </div>
+                
+                <div class="heatmap-scales-row">
+                  <span class="scale-label">Sub-Bass</span>
+                  <span class="scale-label">Mids</span>
+                  <span class="scale-label">Presence</span>
+                  <span class="scale-label">Air</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ==========================================
+           FORM STEP 3: REVIEW & AI SYNTHESIS
+           ========================================== -->
+        <div class="form-step-content" data-step="3">
+          <div class="step-3-grid-layout" id="step-3-default-panel">
+            
+            <!-- Left Side: Selection Summary & Mission -->
+            <div class="step-3-review-column">
+              
+              <!-- Sonic Foundations summary card -->
+              <div class="dash-card review-card-item">
+                <h3>Sonic Foundations</h3>
+                <div class="summary-meta-block">
+                  <label>Vibe Profile</label>
+                  <div class="summary-pills-row" id="summary-vibe-list">
+                    <!-- Loaded dynamically via JS -->
+                    <span class="tag-v">Sophisticated</span>
+                    <span class="tag-v">Minimalist</span>
+                  </div>
+                </div>
+                
+                <div class="summary-meta-block">
+                  <label>Genre Mapping</label>
+                  <p class="summary-text-val" id="summary-genre-text">Cinematic Electronic, Deep House, Ambient Textures</p>
+                </div>
+
+                <div class="summary-meta-block">
+                  <label>Resonance Index</label>
+                  <div class="resonance-index-track">
+                    <div class="resonance-index-slider-bar" id="resonance-index-indicator" style="left: 65%;"></div>
+                  </div>
+                  <div class="resonance-index-labels">
+                    <span>Atmospheric</span>
+                    <span>Kinetic</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Mission Statement Textbox -->
+              <div class="dash-card review-card-item">
+                <h3>Mission Statement</h3>
+                <textarea id="mission-statement" placeholder="Describe your brand's sonic vision..." class="mission-textarea"></textarea>
+                <span class="mission-caption-sub">This text will influence the AI's final metadata weighting.</span>
+              </div>
+            </div>
+
+            <!-- Right Side: AI Synthesis Engine Animation Panel -->
+            <div class="step-3-synthesis-column">
+              <div class="synthesis-card-wrapper">
+                <div class="synthesis-header-badges">
+                  <span class="status-badge">● Harmonic Flux</span>
+                  <span class="status-badge">● Rhythmic Sync</span>
+                </div>
+                
+                <h2>AI Synthesis</h2>
+                <p class="synthesis-prompt">Neural processing is mapping your brand DNA to acoustic frequencies.</p>
+                
+                <!-- Mock animated visualizer bars -->
+                <div class="synthesis-visualizer-bars" id="synthesis-visualizer-bars">
+                  <span></span><span></span><span></span><span></span><span></span>
+                  <span></span><span></span><span></span><span></span><span></span>
+                  <span></span><span></span><span></span><span></span><span></span>
+                  <span></span><span></span><span></span><span></span><span></span>
+                </div>
+                
+                <button type="button" id="btn-generate-report" class="btn-primary w-full">
+                  <span>Generate Sonic Identity Report</span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m11.314 11.314l.707.707M12 5a7 7 0 1 0 0 14 7 7 0 0 0 0-14z"/></svg>
+                </button>
+                
+                <span class="synthesis-duration-label">Processing time: ~12 seconds</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Loading Synthesis Overlay Screen -->
+          <div class="synthesis-loading-screen hidden" id="synthesis-loading-screen">
+            <div class="loader-waves-bg"></div>
+            <div class="loader-content-box">
+              <div class="circular-spinner-wrapper">
+                <!-- SVG circular loader path -->
+                <svg width="80" height="80" viewBox="0 0 100 100" class="spinner-ring">
+                  <circle cx="50" cy="50" r="40" stroke="#1f1f32" stroke-width="6" fill="transparent"></circle>
+                  <circle cx="50" cy="50" r="40" stroke="#7c3aed" stroke-width="6" fill="transparent" stroke-dasharray="251.2" stroke-dashoffset="251.2" id="spinner-fill-circle" stroke-linecap="round"></circle>
+                </svg>
+                <div class="spinner-inner-text" id="spinner-percentage">0%</div>
+              </div>
+              <h3 id="loader-status-text">Synthesizing Brand Archetypes...</h3>
+              <p>Analyzing key instrumentation vectors and acoustics mapping.</p>
+              
+              <!-- Equalizer bouncing waves -->
+              <div class="loader-visualizer-wave">
+                <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+      
+      <!-- Modal Footer actions -->
+      <div class="modal-footer form-footer" id="form-modal-footer">
+        <button id="btn-form-prev" class="btn-secondary" disabled>Back</button>
+        <button id="btn-form-next" class="btn-primary">Next</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fixed Bottom Spotify-style Player Bar -->
+  <div id="playlist-player-bar" class="bottom-player-bar hidden">
+    <div class="player-left">
+      <div class="player-cover-art">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M9 18V5l12-2v13"/>
+          <circle cx="6" cy="18" r="3"/>
+          <circle cx="18" cy="16" r="3"/>
+        </svg>
+      </div>
+      <div class="player-track-info">
+        <h4 id="player-track-title">Not Playing</h4>
+        <p id="player-track-artist">Select a track</p>
+      </div>
+      <button class="player-like-btn" title="Save to Your Library">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="player-center">
+      <div class="player-controls">
+        <button id="player-btn-shuffle" class="player-control-icon" title="Shuffle">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/>
+          </svg>
+        </button>
+        <button id="player-btn-prev" class="player-control-icon" title="Previous">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M6 6h2v12H6zm3.5 6L18 18V6z"/>
+          </svg>
+        </button>
+        <button id="player-btn-play" class="player-btn-play" title="Play/Pause">
+          <svg class="play-svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+          <svg class="pause-svg hidden" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+          </svg>
+        </button>
+        <button id="player-btn-next" class="player-control-icon" title="Next">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
+          </svg>
+        </button>
+        <button id="player-btn-repeat" class="player-control-icon" title="Repeat">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 1v4h-4M3 11V9a4 4 0 0 1 4-4h10M7 23v-4h4M21 13v2a4 4 0 0 1-4 4H7"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="player-progress-container">
+        <span id="player-time-current">0:00</span>
+        <div class="player-progress-bar-wrapper" id="player-scrubber-wrapper">
+          <div class="player-progress-bar-bg">
+            <div class="player-progress-bar-fill" id="player-scrubber-fill" style="width: 0%"></div>
+          </div>
+        </div>
+        <span id="player-time-total">0:00</span>
+      </div>
+    </div>
+
+    <div class="player-right">
+      <button class="player-control-icon" title="Lyrics">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 20h9M3 20h4M3 12h18M3 4h18"/>
+        </svg>
+      </button>
+      <button class="player-control-icon" title="Queue">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+        </svg>
+      </button>
+      <div class="player-volume-container">
+        <button id="player-btn-volume" class="player-control-icon" title="Mute/Unmute">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+          </svg>
+        </button>
+        <div class="player-volume-slider-wrapper" id="player-volume-wrapper">
+          <div class="player-volume-bar-bg">
+            <div class="player-volume-bar-fill" id="player-volume-fill" style="width: 50%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS Logic -->
+  <script src="config.js"></script>
+  <script src="dashboard.js?v=3"></script>
+</body>
+</html>
