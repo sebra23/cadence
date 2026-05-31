@@ -2198,7 +2198,7 @@ document.addEventListener('DOMContentLoaded', () => {
         step3.querySelector('.step-icon-wrapper').innerHTML = '3';
         step3.querySelector('.step-content').innerHTML = `
           <span class="step-badge">Active Step</span>
-          <h3>Connect Your Stores</h3>
+          <h3>Connect Your Store</h3>
           <p>Link foot-traffic sensors or point-of-sale data to dynamically adjust playlists.</p>
         `;
       }
@@ -2843,8 +2843,8 @@ document.addEventListener('DOMContentLoaded', () => {
             step3.querySelector('.step-icon-wrapper').style.backgroundColor = '#10b981';
             step3.querySelector('.step-icon-wrapper').style.borderColor = '#10b981';
             step3.querySelector('.step-content').innerHTML = `
-              <h3>Connect Your Stores</h3>
-              <p><span style="color:#10b981; font-weight:500;">✓ Stores & Schedule Connected!</span><br>Transition timing and traffic profiles synchronized to hardware clocks.</p>
+              <h3>Connect Your Store</h3>
+              <p><span style="color:#10b981; font-weight:500;">✓ Store & Schedule Connected!</span><br>Transition timing and traffic profiles synchronized to hardware clocks.</p>
             `;
           }
 
@@ -7052,7 +7052,7 @@ document.addEventListener('DOMContentLoaded', () => {
           if (content) {
             content.innerHTML = `
               <span class="step-badge">Active Step</span>
-              <h3>Connect Your Stores</h3>
+              <h3>Connect Your Store</h3>
               <p>Link foot-traffic sensors or point-of-sale data to dynamically adjust playlists.</p>
             `;
           }
