@@ -4227,7 +4227,11 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const titleEl = document.getElementById('store-traffic-title');
     if (titleEl) {
-      titleEl.textContent = `Define Store Traffic & Playback Schedule - ${loc.name}`;
+      if (trafficScheduleActive) {
+        titleEl.textContent = `Define Store Traffic & Playback Schedule - ${loc.name}`;
+      } else {
+        titleEl.textContent = `Add your first store`;
+      }
     }
 
     const onboardNameInput = document.getElementById('onboard-store-name');
@@ -6590,7 +6594,11 @@ document.addEventListener('DOMContentLoaded', () => {
           currentStore.name = onboardNameInput.value.trim() || 'Unnamed Store';
           const titleEl = document.getElementById('store-traffic-title');
           if (titleEl) {
-            titleEl.textContent = `Define Store Traffic & Playback Schedule - ${currentStore.name}`;
+            if (trafficScheduleActive) {
+              titleEl.textContent = `Define Store Traffic & Playback Schedule - ${currentStore.name}`;
+            } else {
+              titleEl.textContent = `Add your first store`;
+            }
           }
           saveLocationsToLocalStorage();
           renderSidebarLocations();
