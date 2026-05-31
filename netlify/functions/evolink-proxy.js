@@ -16,8 +16,7 @@ exports.handler = async (event, context) => {
   }
 
   // Load API key securely from Netlify environment variables
-  // Fallback to the current key for testing if the env var isn't configured in Netlify yet
-  const apiKey = process.env.EVOLINK_API_KEY || "sk-kSt99HfX3dgjEPzvxaWUpTKOOiwiheS2EBtL2OsYnJoF6YBk";
+  const apiKey = process.env.EVOLINK_API_KEY;
   const baseTarget = "https://api.evolink.ai";
 
   // The request is proxied from /api/* to this function.
