@@ -4065,13 +4065,20 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // Update local times for sidebar cards
+    // Update local times and current tracks for sidebar cards
     const timeSpans = document.querySelectorAll('.sidebar-location-card .sidebar-loc-time span');
     if (timeSpans.length > 0) {
       locations.forEach((loc, idx) => {
         const span = timeSpans[idx];
         if (span) {
           span.textContent = `Local Time: ${getStoreLocalTime(loc.timezone)} (${loc.timezone})`;
+        }
+        const cards = document.querySelectorAll('.sidebar-location-card');
+        if (cards[idx]) {
+          const trackTextEl = cards[idx].querySelector('.sidebar-loc-playing-track-text');
+          if (trackTextEl) {
+            trackTextEl.textContent = getNowPlayingForStore(loc);
+          }
         }
       });
     }
@@ -4097,6 +4104,52 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  function getNowPlayingForStore(loc) {
+    const isCurrent = (loc.id === activeLocationId);
+    if (isCurrent) {
+      if (activePlaylistTrack) {
+        return `${activePlaylistTrack.title} - ${activePlaylistTrack.artist}${isPlaylistPlaying ? '' : ' (Paused)'}`;
+      }
+      return isPlaylistPlaying ? "Custom Ambient Soundscape" : "Playback Idle";
+    }
+    
+    // Return a stable mock song based on the location timezone or local time
+    const localTimeStr = getStoreLocalTime(loc.timezone);
+    let hour = 12;
+    if (localTimeStr) {
+      const match = localTimeStr.match(/^(\d+):(\d+)\s*(AM|PM)/i);
+      if (match) {
+        let h = parseInt(match[1]);
+        const isPm = match[3].toUpperCase() === 'PM';
+        if (isPm && h !== 12) h += 12;
+        if (!isPm && h === 12) h = 0;
+        hour = h;
+      }
+    }
+
+    // Determine category based on hour
+    let category = 'calm';
+    if (hour >= 8 && hour < 11) category = 'calm';
+    else if (hour >= 11 && hour < 15) category = 'flow';
+    else if (hour >= 15 && hour < 19) category = 'drive';
+    else category = 'after';
+
+    // Select a track from themedTracksDict matching category
+    const catalog = (themedTracksDict.sunday || []).concat(themedTracksDict.summer || [], themedTracksDict.synth || []);
+    const candidates = catalog.filter(t => t.category === category);
+    if (candidates.length === 0) return "Equator Wind - Latitude 0";
+    
+    // Use a simple hash of location id to choose deterministically
+    let hash = 0;
+    const nameToHash = loc.name || "store";
+    for (let i = 0; i < nameToHash.length; i++) {
+      hash += nameToHash.charCodeAt(i);
+    }
+    const index = hash % candidates.length;
+    const track = candidates[index];
+    return `${track.title} - ${track.artist}`;
+  }
+
   function renderSidebarLocations() {
     const listContainer = document.getElementById('sidebar-locations-list');
     if (!listContainer) return;
@@ -4109,6 +4162,7 @@ document.addEventListener('DOMContentLoaded', () => {
       card.dataset.id = loc.id;
       
       const localTimeStr = getStoreLocalTime(loc.timezone);
+      const nowPlayingTrackStr = getNowPlayingForStore(loc);
       
       card.innerHTML = `
         <div class="sidebar-loc-header">
@@ -4124,7 +4178,16 @@ document.addEventListener('DOMContentLoaded', () => {
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
           <span>Local Time: ${localTimeStr} (${loc.timezone})</span>
         </div>
-        <div class="sidebar-loc-actions">
+        
+        <div class="sidebar-loc-playing" style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed rgba(255, 255, 255, 0.06); font-size: 0.8rem; color: var(--color-text-secondary); display: flex; align-items: center; gap: 8px;">
+          <span class="playing-pulse-icon" style="color: var(--color-purple-light); font-size: 1rem; display: inline-block; animation: pulse-audio 1.5s infinite;">🎵</span>
+          <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1;">
+            <span style="font-weight: 500; color: #fff;">Now Playing:</span> 
+            <span class="sidebar-loc-playing-track-text" style="color: var(--color-purple-light); font-weight: 500;">${nowPlayingTrackStr}</span>
+          </div>
+        </div>
+
+        <div class="sidebar-loc-actions" style="margin-top: 12px;">
           <button class="btn-sidebar-action btn-share-webplayer" data-id="${loc.id}" title="Share Webplayer link">
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
             Share
@@ -4218,10 +4281,16 @@ document.addEventListener('DOMContentLoaded', () => {
       const isCurrent = (loc.id === activeLocationId);
       const nameText = isCurrent ? `<strong>${loc.name} (Active)</strong>` : loc.name;
       
+      const nowPlaying = getNowPlayingForStore(loc);
+      
       tr.innerHTML = `
         <td style="padding: 12px 16px;">
           <div style="font-weight: 600; color: #fff;">${nameText}</div>
           <div style="font-size: 0.75rem; color: var(--color-text-muted);">${loc.address}</div>
+          <div style="font-size: 0.72rem; color: var(--color-purple-light); margin-top: 4px; display: flex; align-items: center; gap: 6px;">
+            <span class="playing-pulse-icon" style="animation: pulse-audio 1.5s infinite;">🎵</span>
+            <span>Now Playing: ${nowPlaying}</span>
+          </div>
         </td>
         <td style="padding: 12px 16px;">
           <span class="store-status-badge ${loc.status}">${loc.status.charAt(0).toUpperCase() + loc.status.slice(1)}</span>
