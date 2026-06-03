@@ -3541,6 +3541,11 @@ document.addEventListener('DOMContentLoaded', () => {
             <td class="col-tags"><span class="category-tag ${track.category}">${track.category.toUpperCase()}</span></td>
             <td class="col-bpm">${track.bpm} BPM</td>
             <td class="col-duration">${track.duration}</td>
+            <td style="text-align: right; width: 100px;">
+              <button class="track-menu-btn" style="background: transparent; border: none; color: var(--color-text-secondary); cursor: pointer; padding: 6px 12px; font-size: 1.25rem; border-radius: 50%; transition: all 0.2s;" onmouseover="this.style.color='#fff'; this.style.background='rgba(255,255,255,0.08)';" onmouseout="this.style.color='var(--color-text-secondary)'; this.style.background='transparent';">
+                &#8942;
+              </button>
+            </td>
           `;
           
           trackRow.addEventListener('dblclick', () => {
@@ -3552,6 +3557,14 @@ document.addEventListener('DOMContentLoaded', () => {
             playBtn.addEventListener('click', (e) => {
               e.stopPropagation();
               playPlaylistTrack(track);
+            });
+          }
+
+          const menuBtn = trackRow.querySelector('.track-menu-btn');
+          if (menuBtn) {
+            menuBtn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              openTrackMenu(track);
             });
           }
           tbody.appendChild(trackRow);
@@ -3605,6 +3618,11 @@ document.addEventListener('DOMContentLoaded', () => {
         <td class="col-tags"><span class="category-tag ${track.category}">${track.category.toUpperCase()}</span></td>
         <td class="col-bpm">${track.bpm} BPM</td>
         <td class="col-duration">${track.duration}</td>
+        <td style="text-align: right; width: 100px;">
+          <button class="track-menu-btn" style="background: transparent; border: none; color: var(--color-text-secondary); cursor: pointer; padding: 6px 12px; font-size: 1.25rem; border-radius: 50%; transition: all 0.2s;" onmouseover="this.style.color='#fff'; this.style.background='rgba(255,255,255,0.08)';" onmouseout="this.style.color='var(--color-text-secondary)'; this.style.background='transparent';">
+            &#8942;
+          </button>
+        </td>
       `;
       
       // Event Listeners
@@ -3617,6 +3635,14 @@ document.addEventListener('DOMContentLoaded', () => {
         playBtn.addEventListener('click', (e) => {
           e.stopPropagation();
           playPlaylistTrack(track);
+        });
+      }
+
+      const menuBtn = trackRow.querySelector('.track-menu-btn');
+      if (menuBtn) {
+        menuBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          openTrackMenu(track);
         });
       }
       
@@ -5595,6 +5621,11 @@ document.addEventListener('DOMContentLoaded', () => {
           <td class="col-tags"><span class="category-tag ${track.category}">${track.category.toUpperCase()}</span></td>
           <td class="col-bpm">${track.bpm} BPM</td>
           <td class="col-duration">${track.duration}</td>
+          <td style="text-align: right; width: 100px;">
+            <button class="track-menu-btn" style="background: transparent; border: none; color: var(--color-text-secondary); cursor: pointer; padding: 6px 12px; font-size: 1.25rem; border-radius: 50%; transition: all 0.2s;" onmouseover="this.style.color='#fff'; this.style.background='rgba(255,255,255,0.08)';" onmouseout="this.style.color='var(--color-text-secondary)'; this.style.background='transparent';">
+              &#8942;
+            </button>
+          </td>
         `;
         
         trackRow.addEventListener('dblclick', () => {
@@ -5606,6 +5637,14 @@ document.addEventListener('DOMContentLoaded', () => {
           playBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             playPlaylistTrack(track);
+          });
+        }
+
+        const menuBtn = trackRow.querySelector('.track-menu-btn');
+        if (menuBtn) {
+          menuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openTrackMenu(track);
           });
         }
         tbody.appendChild(trackRow);
