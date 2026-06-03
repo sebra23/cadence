@@ -6921,26 +6921,30 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
+    // Reusable function to open the register store location modal
+    function openRegisterLocationModal() {
+      // Reset modal schedules to default for a fresh form
+      modalStoreSchedules = JSON.parse(JSON.stringify(defaultModalStoreSchedules));
+      modalActiveScheduleDay = 'Mon';
+      
+      // Select 'Mon' tab pill in modal UI
+      document.querySelectorAll('#add-location-modal .weekdays-pills .day-pill').forEach(p => {
+        if (p.dataset.day === 'Mon') {
+          p.classList.add('selected-tab');
+        } else {
+          p.classList.remove('selected-tab');
+        }
+      });
+      
+      loadActiveDayModalSchedule();
+      openModal(modals.addLocation);
+    }
+    window.openRegisterLocationModal = openRegisterLocationModal;
+
     // Sidebar: Add Location button click opens modal
     const btnSidebarAddLoc = document.getElementById('btn-sidebar-add-location');
     if (btnSidebarAddLoc) {
-      btnSidebarAddLoc.addEventListener('click', () => {
-        // Reset modal schedules to default for a fresh form
-        modalStoreSchedules = JSON.parse(JSON.stringify(defaultModalStoreSchedules));
-        modalActiveScheduleDay = 'Mon';
-        
-        // Select 'Mon' tab pill in modal UI
-        document.querySelectorAll('#add-location-modal .weekdays-pills .day-pill').forEach(p => {
-          if (p.dataset.day === 'Mon') {
-            p.classList.add('selected-tab');
-          } else {
-            p.classList.remove('selected-tab');
-          }
-        });
-        
-        loadActiveDayModalSchedule();
-        openModal(modals.addLocation);
-      });
+      btnSidebarAddLoc.addEventListener('click', openRegisterLocationModal);
     }
 
     // Sidebar: Popup form submission
@@ -7609,14 +7613,9 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnPlusAddStore) {
     btnPlusAddStore.addEventListener('click', () => {
       closePlusMenu();
-      switchPage('settings');
-      setTimeout(() => {
-        const storeNameInput = document.getElementById('store-name-input');
-        if (storeNameInput) {
-          storeNameInput.focus();
-          storeNameInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      }, 100);
+      if (typeof openRegisterLocationModal === 'function') {
+        openRegisterLocationModal();
+      }
     });
   }
 
