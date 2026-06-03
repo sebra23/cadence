@@ -6443,12 +6443,21 @@ ul {
 .category-tag-dot.after { background: #9061f9; }
 
 @media (max-width: 768px) {
+  .main-dashboard {
+    padding: 16px 8px 100px 8px !important;
+  }
+
+  .adaptive-playlist-section {
+    padding: 16px 4px !important;
+    gap: 16px !important;
+  }
+
   .playlist-header-container {
     flex-direction: column !important;
     align-items: center !important;
     text-align: center !important;
     gap: 16px !important;
-    padding: 0 16px !important;
+    padding: 0 8px !important;
   }
   
   .playlist-cover-wrapper {
@@ -6465,7 +6474,7 @@ ul {
   }
 
   .playlist-actions-row {
-    padding: 0 12px !important;
+    padding: 0 4px !important;
   }
 
   /* Transform playlist table into clean list view on mobile */
@@ -6484,7 +6493,7 @@ ul {
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
-    padding: 8px 12px !important;
+    padding: 8px 4px !important;
     background: transparent !important;
     border-bottom: none !important;
     margin-bottom: 8px !important;
