@@ -7580,6 +7580,67 @@ document.addEventListener('DOMContentLoaded', () => {
   loadUserData();
   bindPlayerEvents();
 
+  // Mobile Plus (+) Bottom Sheet navigation actions
+  const plusLink = document.getElementById('sidebar-link-plus');
+  const plusSheet = document.getElementById('cady-plus-sheet');
+  const plusBackdrop = document.getElementById('cady-plus-backdrop');
+  const plusHandle = document.getElementById('cady-plus-handle');
+  const btnPlusAddStore = document.getElementById('btn-plus-add-store');
+  const btnPlusAddSong = document.getElementById('btn-plus-add-song');
+
+  const closePlusMenu = () => {
+    if (plusSheet) plusSheet.classList.remove('active');
+  };
+
+  if (plusLink && plusSheet) {
+    plusLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      plusSheet.classList.add('active');
+    });
+  }
+
+  if (plusBackdrop) {
+    plusBackdrop.addEventListener('click', closePlusMenu);
+  }
+  if (plusHandle) {
+    plusHandle.addEventListener('click', closePlusMenu);
+  }
+
+  if (btnPlusAddStore) {
+    btnPlusAddStore.addEventListener('click', () => {
+      closePlusMenu();
+      switchPage('settings');
+      setTimeout(() => {
+        const storeNameInput = document.getElementById('store-name-input');
+        if (storeNameInput) {
+          storeNameInput.focus();
+          storeNameInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 100);
+    });
+  }
+
+  if (btnPlusAddSong) {
+    btnPlusAddSong.addEventListener('click', () => {
+      closePlusMenu();
+      switchPage('library');
+      if (typeof showLibraryDetail === 'function') {
+        showLibraryDetail('library');
+      }
+      setTimeout(() => {
+        const addForm = document.getElementById('add-track-form-container');
+        if (addForm) {
+          addForm.classList.remove('hidden');
+          const addTitleInput = document.getElementById('lib-add-title');
+          if (addTitleInput) {
+            addTitleInput.focus();
+            addTitleInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }
+      }, 100);
+    });
+  }
+
   // Expose for testing
   window.startPlaylistGeneration = startPlaylistGeneration;
   window.abortPlaylistGeneration = abortPlaylistGeneration;
