@@ -4449,7 +4449,7 @@ ul {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: #1db954;
+  background: var(--color-purple-primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -4461,6 +4461,11 @@ ul {
   border: none;
   box-shadow: 0 4px 12px rgba(0,0,0,0.5);
   color: #fff;
+}
+
+.spotify-quick-card .play-btn:hover {
+  background: var(--color-purple-light);
+  transform: scale(1.06) translateY(0);
 }
 
 .spotify-quick-card:hover .play-btn {
@@ -4580,7 +4585,7 @@ ul {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: #1db954;
+  background: var(--color-purple-primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -4593,6 +4598,11 @@ ul {
   border: none;
   box-shadow: 0 8px 16px rgba(0,0,0,0.5);
   color: #fff;
+}
+
+.spotify-cover-card .play-btn:hover {
+  background: var(--color-purple-light);
+  transform: scale(1.06) translateY(0);
 }
 
 .spotify-cover-card:hover .play-btn {
