@@ -3192,6 +3192,15 @@ document.addEventListener('DOMContentLoaded', () => {
           playPlaylistTrack(track);
         });
 
+        row.addEventListener('click', (e) => {
+          if (e.target.closest('.track-menu-btn') || e.target.closest('.btn-add-to-lib') || e.target.closest('.btn-fav-track')) {
+            return;
+          }
+          if (window.innerWidth <= 768) {
+            playPlaylistTrack(track);
+          }
+        });
+
         const playBtn = row.querySelector('.play-hover-btn');
         if (playBtn) {
           playBtn.addEventListener('click', (e) => {
@@ -3277,6 +3286,15 @@ document.addEventListener('DOMContentLoaded', () => {
         row.addEventListener('dblclick', () => {
           playlistSongs = [...playlistTracks];
           playPlaylistTrack(track);
+        });
+
+        row.addEventListener('click', (e) => {
+          if (e.target.closest('.track-menu-btn') || e.target.closest('.btn-add-to-lib') || e.target.closest('.btn-fav-track')) {
+            return;
+          }
+          if (window.innerWidth <= 768) {
+            playPlaylistTrack(track);
+          }
         });
 
         const playBtn = row.querySelector('.play-hover-btn');
@@ -3551,6 +3569,15 @@ document.addEventListener('DOMContentLoaded', () => {
           trackRow.addEventListener('dblclick', () => {
             playPlaylistTrack(track);
           });
+
+          trackRow.addEventListener('click', (e) => {
+            if (e.target.closest('.track-menu-btn') || e.target.closest('.btn-add-to-lib') || e.target.closest('.btn-fav-track')) {
+              return;
+            }
+            if (window.innerWidth <= 768) {
+              playPlaylistTrack(track);
+            }
+          });
           
           const playBtn = trackRow.querySelector('.play-hover-btn');
           if (playBtn) {
@@ -3628,6 +3655,15 @@ document.addEventListener('DOMContentLoaded', () => {
       // Event Listeners
       trackRow.addEventListener('dblclick', () => {
         playPlaylistTrack(track);
+      });
+
+      trackRow.addEventListener('click', (e) => {
+        if (e.target.closest('.track-menu-btn') || e.target.closest('.btn-add-to-lib') || e.target.closest('.btn-fav-track')) {
+          return;
+        }
+        if (window.innerWidth <= 768) {
+          playPlaylistTrack(track);
+        }
       });
       
       const playBtn = trackRow.querySelector('.play-hover-btn');
@@ -5699,6 +5735,15 @@ document.addEventListener('DOMContentLoaded', () => {
         
         trackRow.addEventListener('dblclick', () => {
           playPlaylistTrack(track);
+        });
+
+        trackRow.addEventListener('click', (e) => {
+          if (e.target.closest('.track-menu-btn') || e.target.closest('.btn-add-to-lib') || e.target.closest('.btn-fav-track')) {
+            return;
+          }
+          if (window.innerWidth <= 768) {
+            playPlaylistTrack(track);
+          }
         });
         
         const playBtn = trackRow.querySelector('.play-hover-btn');
