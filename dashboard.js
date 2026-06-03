@@ -3119,13 +3119,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const totalSongsBadge = document.getElementById('lib-stat-songs');
 
-    if (activeDetailPlaylist === 'library') {
-      const filteredSongs = activeLibraryCategoryFilter === 'all'
+    const isTagPlaylist = (activeDetailPlaylist === 'calm' || activeDetailPlaylist === 'flow' || activeDetailPlaylist === 'drive' || activeDetailPlaylist === 'after');
+
+    if (activeDetailPlaylist === 'library' || isTagPlaylist) {
+      const targetCategory = isTagPlaylist ? activeDetailPlaylist : activeLibraryCategoryFilter;
+      
+      const filteredSongs = targetCategory === 'all'
         ? ownedSongs
-        : ownedSongs.filter(track => track.category === activeLibraryCategoryFilter);
+        : ownedSongs.filter(track => track.category === targetCategory);
 
       if (totalSongsBadge) {
         totalSongsBadge.textContent = filteredSongs.length;
+      }
+
+      if (filteredSongs.length === 0) {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td colspan="7" style="text-align: center; padding: 40px; color: var(--color-text-muted);">
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.5;"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              <span>No music added to this tag playlist yet. Tracks generated in onboarding/curation matching this tag will appear here.</span>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(row);
       }
 
       filteredSongs.forEach((track, idx) => {
@@ -3171,7 +3188,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
 
         row.addEventListener('dblclick', () => {
-          playlistSongs = [...ownedSongs];
+          playlistSongs = [...filteredSongs];
           playPlaylistTrack(track);
         });
 
@@ -3179,7 +3196,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (playBtn) {
           playBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            playlistSongs = [...ownedSongs];
+            playlistSongs = [...filteredSongs];
             playPlaylistTrack(track);
           });
         }
@@ -5182,13 +5199,27 @@ document.addEventListener('DOMContentLoaded', () => {
       const descEl = document.getElementById('detail-playlist-desc');
       
       if (coverEl) coverEl.src = coverSrc;
-      if (typeEl) typeEl.textContent = playlistId === 'library' ? 'Playlist' : 'Shared Playlist';
+      
+      let playlistType = 'Playlist';
+      if (playlistId === 'calm' || playlistId === 'flow' || playlistId === 'drive' || playlistId === 'after') {
+        playlistType = 'Core Tag Playlist';
+      } else if (playlistId !== 'library') {
+        playlistType = 'Shared Playlist';
+      }
+      if (typeEl) typeEl.textContent = playlistType;
+      
       if (titleEl) titleEl.textContent = title;
       if (descEl) descEl.textContent = desc;
 
       const headerTitleEl = document.querySelector('#library-detail-view h3');
       if (headerTitleEl) {
-        headerTitleEl.textContent = playlistId === 'library' ? 'Your Owned Tracks' : 'Playlist Tracks';
+        if (playlistId === 'library') {
+          headerTitleEl.textContent = 'Your Owned Tracks';
+        } else if (playlistId === 'calm' || playlistId === 'flow' || playlistId === 'drive' || playlistId === 'after') {
+          headerTitleEl.textContent = 'Tracks Tagged ' + playlistId.toUpperCase();
+        } else {
+          headerTitleEl.textContent = 'Playlist Tracks';
+        }
       }
 
       // Hide custom track buttons/forms for shared playlists
@@ -6342,6 +6373,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function playMoodPlaylist(playlistId) {
+      const isTag = (playlistId === "calm" || playlistId === "flow" || playlistId === "drive" || playlistId === "after");
+      if (isTag) {
+        const taggedSongs = ownedSongs.filter(s => s.category === playlistId);
+        if (taggedSongs.length > 0) {
+          playlistSongs = [...taggedSongs];
+          playPlaylistTrack(taggedSongs[0]);
+          showToast("Playing Playlist", `Started playing tracks tagged: ${playlistId.toUpperCase()}`, "success");
+          return;
+        }
+      }
+
       let category = "flow";
       let bpm = 95;
       
@@ -6378,7 +6420,17 @@ document.addEventListener('DOMContentLoaded', () => {
     moodCards.forEach(card => {
       card.addEventListener('click', () => {
         const playlistId = card.getAttribute('data-playlist');
-        playMoodPlaylist(playlistId);
+        
+        const imgEl = card.querySelector('img');
+        const titleEl = card.querySelector('.spotify-cover-card-title') || card.querySelector('h3');
+        const descEl = card.querySelector('.spotify-cover-card-desc') || card.querySelector('p');
+        
+        const coverSrc = imgEl ? imgEl.src : '';
+        const title = titleEl ? titleEl.textContent.trim() : 'Playlist';
+        const desc = descEl ? descEl.textContent.trim() : '';
+        
+        switchPage('library');
+        showLibraryDetail(playlistId, coverSrc, title, desc);
       });
       
       const playBtn = card.querySelector('.play-btn');
@@ -6397,6 +6449,18 @@ document.addEventListener('DOMContentLoaded', () => {
           playMoodPlaylist(playlistId);
         });
       }
+    });
+
+    const showAllLinks = document.querySelectorAll('.spotify-row-show-all');
+    showAllLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        switchPage('library');
+        const browseView = document.getElementById('library-browse-view');
+        const detailView = document.getElementById('library-detail-view');
+        if (browseView) browseView.classList.remove('hidden');
+        if (detailView) detailView.classList.add('hidden');
+      });
     });
 
     // Music Library: My Library Play Buttons
