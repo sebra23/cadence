@@ -4499,10 +4499,32 @@ ul {
 }
 
 .spotify-covers-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
   gap: 20px;
   margin-bottom: 40px;
+  padding: 6px 4px 12px 4px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+  -webkit-overflow-scrolling: touch;
+}
+
+.spotify-covers-row::-webkit-scrollbar {
+  height: 6px;
+}
+
+.spotify-covers-row::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.spotify-covers-row::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+}
+
+.spotify-covers-row::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
 }
 
 .spotify-cover-card {
@@ -4515,6 +4537,7 @@ ul {
   display: flex;
   flex-direction: column;
   position: relative;
+  flex: 0 0 190px;
 }
 
 .spotify-cover-card:hover {
