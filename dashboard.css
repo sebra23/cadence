@@ -6608,4 +6608,34 @@ ul {
   }
 }
 
+/* Responsive Register Store Modal Grid Layout */
+.modal-location-details-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+.modal-traffic-config-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  margin-bottom: 16px;
+}
+
+@media (min-width: 768px) {
+  .modal-location-details-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  .modal-traffic-config-grid {
+    grid-template-columns: 1fr 1.2fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .modal-card.modal-scrollable {
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+    padding: 20px !important;
+  }
+}
+
 
