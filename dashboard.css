@@ -6181,4 +6181,292 @@ ul {
   }
 }
 
+/* ==========================================================================
+   28. Premium bottom sheet menu drawer & playlist action bar
+   ========================================================================== */
+.playlist-actions-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 16px;
+  gap: 16px;
+}
+
+.left-actions, .right-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.playlist-action-btn {
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.playlist-action-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.playlist-action-btn.shuffle-btn.active {
+  color: var(--color-purple-primary);
+}
+
+.playlist-main-play-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--color-purple-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  transition: all 0.2s ease;
+}
+
+.playlist-main-play-btn:hover {
+  background: var(--color-purple-light);
+  transform: scale(1.05);
+}
+
+.playlist-main-play-btn:active {
+  transform: scale(0.95);
+}
+
+/* Bottom Sheet */
+.cady-bottom-sheet-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.cady-bottom-sheet-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.cady-bottom-sheet-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 1;
+}
+
+.cady-bottom-sheet-container {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 500px;
+  background: #111118;
+  border-radius: 20px 20px 0 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 8px 0 24px 0;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.cady-bottom-sheet-overlay.active .cady-bottom-sheet-container {
+  transform: translateY(0);
+}
+
+.cady-bottom-sheet-handle-wrapper {
+  width: 100%;
+  padding: 4px 0 12px 0;
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.cady-bottom-sheet-handle {
+  width: 36px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.cady-bottom-sheet-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 24px 16px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.cady-sheet-track-cover {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 4px;
+  background: #1f1f32;
+  flex-shrink: 0;
+}
+
+.cady-sheet-track-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow: hidden;
+}
+
+.cady-sheet-title {
+  color: #fff;
+  font-family: var(--font-outfit);
+  font-size: 1rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cady-sheet-subtitle {
+  color: var(--color-text-secondary);
+  font-size: 0.82rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cady-bottom-sheet-options {
+  display: flex;
+  flex-direction: column;
+  padding-top: 8px;
+}
+
+.cady-sheet-option-btn {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  padding: 14px 24px;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: var(--font-outfit);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  text-align: left;
+}
+
+.cady-sheet-option-btn:hover,
+.cady-sheet-option-btn:active {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.cady-sheet-option-btn svg {
+  color: var(--color-text-secondary);
+  transition: color 0.2s;
+}
+
+.cady-sheet-option-btn:hover svg {
+  color: #fff;
+}
+
+/* Submenu styles */
+.cady-sheet-submenu {
+  display: flex;
+  flex-direction: column;
+  background: rgba(0, 0, 0, 0.15);
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.25s ease-out;
+}
+
+.cady-sheet-submenu.expanded {
+  max-height: 200px;
+}
+
+.cady-sheet-sub-option-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 24px 12px 60px;
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  font-size: 0.88rem;
+  font-weight: 500;
+  font-family: var(--font-outfit);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  text-align: left;
+}
+
+.cady-sheet-sub-option-btn:hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: #fff;
+}
+
+/* Chevron spin style */
+.cady-sheet-option-btn.expanded .chevron-right {
+  transform: rotate(90deg);
+  transition: transform 0.2s;
+}
+.chevron-right {
+  transition: transform 0.2s;
+}
+
+.category-tag-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.category-tag-dot.calm { background: #10b981; }
+.category-tag-dot.flow { background: #3b82f6; }
+.category-tag-dot.drive { background: #ff9000; }
+.category-tag-dot.after { background: #9061f9; }
+
+@media (max-width: 768px) {
+  .playlist-header-container {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    gap: 16px !important;
+    padding: 0 16px !important;
+  }
+  
+  .playlist-cover-wrapper {
+    margin-right: 0 !important;
+    width: 200px !important;
+    height: 200px !important;
+  }
+
+  .playlist-cover-art {
+    width: 200px !important;
+    height: 200px !important;
+    border-radius: 8px !important;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.6) !important;
+  }
+
+  .playlist-actions-row {
+    padding: 0 12px !important;
+  }
+}
+
 

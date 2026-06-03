@@ -3181,8 +3181,8 @@ document.addEventListener('DOMContentLoaded', () => {
           <td class="col-bpm">${track.bpm ? track.bpm + ' BPM' : '95 BPM'}</td>
           <td class="col-duration">${track.duration || '3:30'}</td>
           <td style="text-align: right; width: 100px;">
-            <button class="btn-delete-track" data-id="${track.id}" style="background: transparent; border: none; color: #ef4444; cursor: pointer; padding: 4px 8px; font-size: 0.8rem; border-radius: 4px; transition: background 0.2s;" onmouseover="this.style.background='rgba(239, 68, 68, 0.1)'" onmouseout="this.style.background='transparent'">
-              Remove
+            <button class="track-menu-btn" style="background: transparent; border: none; color: var(--color-text-secondary); cursor: pointer; padding: 6px 12px; font-size: 1.25rem; border-radius: 50%; transition: all 0.2s;" onmouseover="this.style.color='#fff'; this.style.background='rgba(255,255,255,0.08)';" onmouseout="this.style.color='var(--color-text-secondary)'; this.style.background='transparent';">
+              &#8942;
             </button>
           </td>
         `;
@@ -3201,11 +3201,11 @@ document.addEventListener('DOMContentLoaded', () => {
           });
         }
 
-        const deleteBtn = row.querySelector('.btn-delete-track');
-        if (deleteBtn) {
-          deleteBtn.addEventListener('click', (e) => {
+        const menuBtn = row.querySelector('.track-menu-btn');
+        if (menuBtn) {
+          menuBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            removeTrackFromLibrary(track.id);
+            openTrackMenu(track);
           });
         }
 
@@ -3267,8 +3267,10 @@ document.addEventListener('DOMContentLoaded', () => {
           <td class="col-tags"><span class="category-tag ${track.category}">${track.category.toUpperCase()}</span></td>
           <td class="col-bpm">${track.bpm ? track.bpm + ' BPM' : '95 BPM'}</td>
           <td class="col-duration">${track.duration || '3:30'}</td>
-          <td style="text-align: right; display: flex; align-items: center; justify-content: flex-end; gap: 8px; width: 100px;">
-            ${actionButtonHtml}
+          <td style="text-align: right; width: 100px;">
+            <button class="track-menu-btn" style="background: transparent; border: none; color: var(--color-text-secondary); cursor: pointer; padding: 6px 12px; font-size: 1.25rem; border-radius: 50%; transition: all 0.2s;" onmouseover="this.style.color='#fff'; this.style.background='rgba(255,255,255,0.08)';" onmouseout="this.style.color='var(--color-text-secondary)'; this.style.background='transparent';">
+              &#8942;
+            </button>
           </td>
         `;
 
@@ -3286,11 +3288,11 @@ document.addEventListener('DOMContentLoaded', () => {
           });
         }
 
-        const addBtn = row.querySelector('.btn-add-to-lib');
-        if (addBtn) {
-          addBtn.addEventListener('click', (e) => {
+        const menuBtn = row.querySelector('.track-menu-btn');
+        if (menuBtn) {
+          menuBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            addTrackToLibraryFromShared(track);
+            openTrackMenu(track);
           });
         }
 
@@ -7191,6 +7193,234 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (e) {
       console.error("Failed to load saved audition tracks:", e);
     }
+  }
+
+  // Premium Bottom Drawer Sheet Controllers
+  let activeSheetTrack = null;
+
+  function openTrackMenu(track) {
+    activeSheetTrack = track;
+    
+    const sheet = document.getElementById('cady-bottom-sheet');
+    const titleEl = document.getElementById('cady-sheet-track-title');
+    const artistEl = document.getElementById('cady-sheet-track-artist');
+    const coverEl = document.getElementById('cady-sheet-track-cover');
+    const likeText = document.querySelector('#btn-sheet-like .like-text');
+    const addPlaylistBtn = document.getElementById('btn-sheet-add-playlist');
+    const submenu = document.getElementById('cady-sheet-playlists-submenu');
+
+    if (!sheet || !titleEl || !artistEl) return;
+
+    titleEl.textContent = track.title;
+    artistEl.textContent = track.artist;
+    
+    if (coverEl) {
+      coverEl.src = track.coverUrl || 'my_library_cover.png';
+    }
+
+    // Toggle liked state visual text
+    const isAlreadyOwned = ownedSongs.some(s => s.title === track.title && s.artist === track.artist);
+    if (likeText) {
+      likeText.textContent = isAlreadyOwned ? "Remove from liked songs" : "Add to liked songs";
+    }
+
+    // Reset submenu
+    if (addPlaylistBtn) addPlaylistBtn.classList.remove('expanded');
+    if (submenu) submenu.classList.remove('expanded');
+
+    sheet.classList.add('active');
+  }
+
+  function closeTrackMenu() {
+    const sheet = document.getElementById('cady-bottom-sheet');
+    if (sheet) {
+      sheet.classList.remove('active');
+    }
+    activeSheetTrack = null;
+  }
+
+  // Initialize sheet event handlers
+  const sheetBackdrop = document.querySelector('.cady-bottom-sheet-backdrop');
+  if (sheetBackdrop) {
+    sheetBackdrop.addEventListener('click', closeTrackMenu);
+  }
+
+  const sheetHandle = document.querySelector('.cady-bottom-sheet-handle-wrapper');
+  if (sheetHandle) {
+    sheetHandle.addEventListener('click', closeTrackMenu);
+  }
+
+  // Share action
+  const sheetShareBtn = document.getElementById('btn-sheet-share');
+  if (sheetShareBtn) {
+    sheetShareBtn.addEventListener('click', () => {
+      if (activeSheetTrack) {
+        navigator.clipboard.writeText(`${activeSheetTrack.title} by ${activeSheetTrack.artist}`);
+        showToast("Link Copied", `Copied "${activeSheetTrack.title}" details to clipboard!`, "success");
+      }
+      closeTrackMenu();
+    });
+  }
+
+  // Add to Playlist Submenu toggle
+  const sheetAddPlaylistBtn = document.getElementById('btn-sheet-add-playlist');
+  const sheetSubmenu = document.getElementById('cady-sheet-playlists-submenu');
+  if (sheetAddPlaylistBtn && sheetSubmenu) {
+    sheetAddPlaylistBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      sheetAddPlaylistBtn.classList.toggle('expanded');
+      sheetSubmenu.classList.toggle('expanded');
+    });
+  }
+
+  // Submenu tags click handlers
+  const submenuBtns = document.querySelectorAll('.cady-sheet-sub-option-btn');
+  submenuBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const tag = btn.getAttribute('data-tag');
+      if (activeSheetTrack) {
+        // Find existing track or duplicate to change category
+        const existingTrack = ownedSongs.find(s => s.title === activeSheetTrack.title && s.artist === activeSheetTrack.artist);
+        if (existingTrack) {
+          existingTrack.category = tag;
+          saveOwnedSongs();
+          renderLibraryTracks();
+          showToast("Playlist Updated", `Moved "${activeSheetTrack.title}" to ${tag.toUpperCase()} playlist.`, "success");
+        } else {
+          // If shared track, register it first
+          const newTrack = {
+            id: Date.now(),
+            title: activeSheetTrack.title,
+            artist: activeSheetTrack.artist,
+            album: activeSheetTrack.album || "Spotify Custom Mix",
+            category: tag,
+            bpm: activeSheetTrack.bpm || 95,
+            duration: activeSheetTrack.duration || "3:30",
+            durationSeconds: activeSheetTrack.durationSeconds || 210,
+            coverUrl: activeSheetTrack.coverUrl || 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=150&auto=format&fit=crop'
+          };
+          addTrackToLibrary(newTrack);
+        }
+      }
+      closeTrackMenu();
+    });
+  });
+
+  // Add to Queue action
+  const sheetQueueBtn = document.getElementById('btn-sheet-add-queue');
+  if (sheetQueueBtn) {
+    sheetQueueBtn.addEventListener('click', () => {
+      if (activeSheetTrack) {
+        // Add to bottom player playlistSongs queue
+        playlistSongs.push(activeSheetTrack);
+        showToast("Added to Queue", `"${activeSheetTrack.title}" queued as the next song.`, "success");
+      }
+      closeTrackMenu();
+    });
+  }
+
+  // Like / Unlike action
+  const sheetLikeBtn = document.getElementById('btn-sheet-like');
+  if (sheetLikeBtn) {
+    sheetLikeBtn.addEventListener('click', () => {
+      if (activeSheetTrack) {
+        const isAlreadyOwned = ownedSongs.some(s => s.title === activeSheetTrack.title && s.artist === activeSheetTrack.artist);
+        if (isAlreadyOwned) {
+          const matched = ownedSongs.find(s => s.title === activeSheetTrack.title && s.artist === activeSheetTrack.artist);
+          if (matched) removeTrackFromLibrary(matched.id);
+        } else {
+          const newTrack = {
+            id: Date.now(),
+            title: activeSheetTrack.title,
+            artist: activeSheetTrack.artist,
+            album: activeSheetTrack.album || "Spotify Liked Track",
+            category: activeSheetTrack.category || "flow",
+            bpm: activeSheetTrack.bpm || 95,
+            duration: activeSheetTrack.duration || "3:30",
+            durationSeconds: activeSheetTrack.durationSeconds || 210,
+            coverUrl: activeSheetTrack.coverUrl || 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=150&auto=format&fit=crop'
+          };
+          addTrackToLibrary(newTrack);
+        }
+      }
+      closeTrackMenu();
+    });
+  }
+
+  // Playlist Options menu handler
+  const playlistOptionsBtn = document.getElementById('btn-playlist-three-dots');
+  if (playlistOptionsBtn) {
+    playlistOptionsBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      // Open bottom menu option for the whole playlist
+      const playlistName = document.getElementById('detail-playlist-title').textContent.trim();
+      const mockPlaylistTrack = {
+        title: playlistName,
+        artist: "Playlist Container",
+        coverUrl: document.querySelector('.playlist-cover-art img')?.src || 'my_library_cover.png',
+        category: "all"
+      };
+      openTrackMenu(mockPlaylistTrack);
+    });
+  }
+
+  // Main Playlist Play Button handler
+  const mainPlayBtn = document.getElementById('btn-playlist-main-play');
+  if (mainPlayBtn) {
+    mainPlayBtn.addEventListener('click', () => {
+      // Find filtered tracks for active tag/library view and play first
+      const isTagPlaylist = (activeDetailPlaylist === 'calm' || activeDetailPlaylist === 'flow' || activeDetailPlaylist === 'drive' || activeDetailPlaylist === 'after');
+      let targetSongs = [];
+      if (activeDetailPlaylist === 'library' || isTagPlaylist) {
+        const targetCategory = isTagPlaylist ? activeDetailPlaylist : activeLibraryCategoryFilter;
+        targetSongs = targetCategory === 'all'
+          ? ownedSongs
+          : ownedSongs.filter(track => track.category === targetCategory);
+      } else {
+        targetSongs = themedTracksDict[activeDetailPlaylist] || [];
+      }
+
+      if (targetSongs.length > 0) {
+        playlistSongs = [...targetSongs];
+        playPlaylistTrack(targetSongs[0]);
+        showToast("Playlist Playback", `Started playing playlist: ${activeDetailPlaylist.toUpperCase()}`, "success");
+      } else {
+        showToast("Playlist Empty", "This playlist doesn't have any songs yet.", "warning");
+      }
+    });
+  }
+
+  // Playlist Shuffle Button handler
+  const shuffleBtn = document.getElementById('btn-playlist-shuffle');
+  if (shuffleBtn) {
+    shuffleBtn.addEventListener('click', () => {
+      shuffleBtn.classList.toggle('active');
+      const isShuffle = shuffleBtn.classList.contains('active');
+      
+      const isTagPlaylist = (activeDetailPlaylist === 'calm' || activeDetailPlaylist === 'flow' || activeDetailPlaylist === 'drive' || activeDetailPlaylist === 'after');
+      let targetSongs = [];
+      if (activeDetailPlaylist === 'library' || isTagPlaylist) {
+        const targetCategory = isTagPlaylist ? activeDetailPlaylist : activeLibraryCategoryFilter;
+        targetSongs = targetCategory === 'all'
+          ? ownedSongs
+          : ownedSongs.filter(track => track.category === targetCategory);
+      } else {
+        targetSongs = themedTracksDict[activeDetailPlaylist] || [];
+      }
+
+      if (targetSongs.length > 0) {
+        if (isShuffle) {
+          // Shuffle songs array in place
+          playlistSongs = [...targetSongs].sort(() => Math.random() - 0.5);
+          playPlaylistTrack(playlistSongs[0]);
+          showToast("Shuffle Mode", "Playlist shuffled successfully.", "info");
+        } else {
+          playlistSongs = [...targetSongs];
+          showToast("Normal Mode", "Playlist order restored.", "info");
+        }
+      }
+    });
   }
 
   // Load active user data and initialize schedule / events

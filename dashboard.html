@@ -1021,6 +1021,29 @@
                   <span class="meta-separator">•</span>
                   <span id="lib-stat-mixes">0</span><span> mix prompts</span>
                 </div>
+                <div class="playlist-actions-row">
+                  <div class="left-actions">
+                    <button class="playlist-action-btn" title="Add to Liked Playlists">
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    </button>
+                    <button class="playlist-action-btn" title="Download Offline">
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12l4 4 4-4"/></svg>
+                    </button>
+                    <button id="btn-playlist-three-dots" class="playlist-action-btn" title="Playlist Options">
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                    </button>
+                  </div>
+                  
+                  <div class="right-actions">
+                    <button id="btn-playlist-shuffle" class="playlist-action-btn shuffle-btn" title="Shuffle Playback">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+                    </button>
+                    
+                    <button id="btn-playlist-main-play" class="playlist-main-play-btn" title="Play">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 2px;"><path d="M8 5v14l11-7z"/></svg>
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -2244,6 +2267,67 @@
             <div class="player-volume-bar-fill" id="player-volume-fill" style="width: 50%"></div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Premium Bottom Drawer Sheet for Mobile Menu Actions -->
+  <div id="cady-bottom-sheet" class="cady-bottom-sheet-overlay">
+    <div class="cady-bottom-sheet-backdrop"></div>
+    <div class="cady-bottom-sheet-container">
+      <div class="cady-bottom-sheet-handle-wrapper">
+        <div class="cady-bottom-sheet-handle"></div>
+      </div>
+      
+      <div class="cady-bottom-sheet-header">
+        <img id="cady-sheet-track-cover" src="my_library_cover.png" alt="Cover" class="cady-sheet-track-cover">
+        <div class="cady-sheet-track-info">
+          <div id="cady-sheet-track-title" class="cady-sheet-title">Song Title</div>
+          <div id="cady-sheet-track-artist" class="cady-sheet-subtitle">Artist Name</div>
+        </div>
+      </div>
+      
+      <div class="cady-bottom-sheet-options">
+        <button id="btn-sheet-share" class="cady-sheet-option-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+          <span>Share</span>
+        </button>
+        
+        <button id="btn-sheet-add-playlist" class="cady-sheet-option-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          <span>Add to playlist</span>
+          <svg class="chevron-right" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: auto; opacity: 0.5;"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        
+        <!-- Sub-menu for adding to tag playlists -->
+        <div id="cady-sheet-playlists-submenu" class="cady-sheet-submenu">
+          <button class="cady-sheet-sub-option-btn" data-tag="calm">
+            <span class="category-tag-dot calm"></span>
+            <span>Morning calm</span>
+          </button>
+          <button class="cady-sheet-sub-option-btn" data-tag="flow">
+            <span class="category-tag-dot flow"></span>
+            <span>Midday flow</span>
+          </button>
+          <button class="cady-sheet-sub-option-btn" data-tag="drive">
+            <span class="category-tag-dot drive"></span>
+            <span>Peak Drive</span>
+          </button>
+          <button class="cady-sheet-sub-option-btn" data-tag="after">
+            <span class="category-tag-dot after"></span>
+            <span>After hours</span>
+          </button>
+        </div>
+        
+        <button id="btn-sheet-add-queue" class="cady-sheet-option-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>Add to Queue</span>
+        </button>
+        
+        <button id="btn-sheet-like" class="cady-sheet-option-btn">
+          <svg class="heart-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          <span class="like-text">Add to liked songs</span>
+        </button>
       </div>
     </div>
   </div>
