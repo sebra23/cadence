@@ -6467,6 +6467,95 @@ ul {
   .playlist-actions-row {
     padding: 0 12px !important;
   }
+
+  /* Transform playlist table into clean list view on mobile */
+  .playlist-table thead {
+    display: none !important;
+  }
+  
+  .playlist-table, 
+  .playlist-table tbody, 
+  .playlist-table tr {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  .playlist-table tr {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 8px 12px !important;
+    background: transparent !important;
+    border-bottom: none !important;
+    margin-bottom: 8px !important;
+    transition: background-color 0.2s ease;
+  }
+  
+  .playlist-table tr.active-track {
+    background: rgba(144, 97, 249, 0.08) !important;
+    border-radius: 8px !important;
+  }
+
+  /* Hide table cells except Title and Menu action columns */
+  .playlist-table th.col-num, 
+  .playlist-table td.col-num,
+  .playlist-table th.col-album, 
+  .playlist-table td.col-album,
+  .playlist-table th.col-bpm, 
+  .playlist-table td.col-bpm,
+  .playlist-table th.col-tags, 
+  .playlist-table td.col-tags,
+  .playlist-table th.col-duration, 
+  .playlist-table td.col-duration {
+    display: none !important;
+  }
+
+  .playlist-table td.col-title {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 0 !important;
+    border: none !important;
+    background: transparent !important;
+    flex: 1 !important;
+    overflow: hidden !important;
+  }
+  
+  .track-title-info {
+    width: 100% !important;
+  }
+
+  .playlist-table td:last-child {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    width: auto !important;
+    padding: 0 !important;
+    border: none !important;
+    background: transparent !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* Hide company/vibe tag details in artist description on mobile */
+  .track-company-wrapper {
+    display: none !important;
+  }
+
+  /* Clean up typography */
+  .track-name {
+    font-size: 1rem !important;
+    font-weight: 500 !important;
+    color: #fff !important;
+  }
+  
+  .track-artist {
+    font-size: 0.85rem !important;
+    color: var(--color-text-secondary) !important;
+  }
+
+  .active-track .track-name {
+    color: var(--color-purple-light) !important;
+  }
 }
 
 

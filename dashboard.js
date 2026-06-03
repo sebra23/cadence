@@ -3172,7 +3172,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <img src="${track.coverUrl || 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=150&auto=format&fit=crop'}" class="track-cover-thumbnail" style="width: 40px; height: 40px; border-radius: 4px; object-fit: cover; flex-shrink: 0;" alt="${track.title}">
               <div style="display: flex; flex-direction: column; gap: 2px;">
                 <span class="track-name">${track.title}</span>
-                <span class="track-artist">${track.artist} • <span class="track-company" style="color: #c084fc; font-weight: 500;">${track.userCompany || brandName}</span></span>
+                <span class="track-artist">${track.artist}<span class="track-company-wrapper"> • <span class="track-company" style="color: #c084fc; font-weight: 500;">${track.userCompany || brandName}</span></span></span>
               </div>
             </div>
           </td>
@@ -3259,7 +3259,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=150&auto=format&fit=crop" class="track-cover-thumbnail" style="width: 40px; height: 40px; border-radius: 4px; object-fit: cover; flex-shrink: 0;" alt="${track.title}">
               <div style="display: flex; flex-direction: column; gap: 2px;">
                 <span class="track-name">${track.title}</span>
-                <span class="track-artist">${track.artist} • <span class="track-company" style="color: #c084fc; font-weight: 500;">${track.userCompany || brandName}</span></span>
+                <span class="track-artist">${track.artist}<span class="track-company-wrapper"> • <span class="track-company" style="color: #c084fc; font-weight: 500;">${track.userCompany || brandName}</span></span></span>
               </div>
             </div>
           </td>
@@ -3533,7 +3533,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <img src="${track.coverUrl || 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=150&auto=format&fit=crop'}" class="track-cover-thumbnail" style="width: 40px; height: 40px; border-radius: 4px; object-fit: cover; flex-shrink: 0;" alt="${track.title}">
                 <div style="display: flex; flex-direction: column; gap: 2px;">
                   <span class="track-name">${track.title}</span>
-                  <span class="track-artist">${track.artist} • <span class="track-company" style="color: #c084fc; font-weight: 500;">${brandName}</span></span>
+                  <span class="track-artist">${track.artist}<span class="track-company-wrapper"> • <span class="track-company" style="color: #c084fc; font-weight: 500;">${brandName}</span></span></span>
                 </div>
               </div>
             </td>
@@ -3597,7 +3597,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <img src="${track.coverUrl || 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=150&auto=format&fit=crop'}" class="track-cover-thumbnail" style="width: 40px; height: 40px; border-radius: 4px; object-fit: cover; flex-shrink: 0;" alt="${track.title}">
             <div style="display: flex; flex-direction: column; gap: 2px;">
               <span class="track-name">${track.title}</span>
-              <span class="track-artist">${track.artist} • <span class="track-company" style="color: #c084fc; font-weight: 500;">${brandName}</span></span>
+              <span class="track-artist">${track.artist}<span class="track-company-wrapper"> • <span class="track-company" style="color: #c084fc; font-weight: 500;">${brandName}</span></span></span>
             </div>
           </div>
         </td>
@@ -3784,7 +3784,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="playlist-spinner" style="width: 16px; height: 16px; border: 2px solid rgba(255, 255, 255, 0.05); border-top-color: #c084fc; border-radius: 50%; animation: api-spin 0.8s linear infinite; flex-shrink: 0;"></div>
             <div style="display: flex; flex-direction: column; gap: 2px;">
               <span class="track-name" style="font-style: italic;" id="track-name-${currentGenIndex}">Generating "${trackToGen.title}"...</span>
-              <span class="track-artist">${trackToGen.artist} • <span class="track-company" style="color: #c084fc; font-weight: 500;">${brandName}</span></span>
+              <span class="track-artist">${trackToGen.artist}<span class="track-company-wrapper"> • <span class="track-company" style="color: #c084fc; font-weight: 500;">${brandName}</span></span></span>
             </div>
           </div>
         </td>
@@ -5587,7 +5587,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <img src="${track.coverUrl || 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=150&auto=format&fit=crop'}" class="track-cover-thumbnail" style="width: 40px; height: 40px; border-radius: 4px; object-fit: cover; flex-shrink: 0;" alt="${track.title}">
               <div style="display: flex; flex-direction: column; gap: 2px;">
                 <span class="track-name">${track.title}</span>
-                <span class="track-artist">${track.artist} • <span class="track-company" style="color: #c084fc; font-weight: 500;">${track.userCompany || brandName}</span></span>
+                <span class="track-artist">${track.artist}<span class="track-company-wrapper"> • <span class="track-company" style="color: #c084fc; font-weight: 500;">${track.userCompany || brandName}</span></span></span>
               </div>
             </div>
           </td>
