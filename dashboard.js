@@ -103,6 +103,22 @@ document.addEventListener('DOMContentLoaded', () => {
   let locations = [];
   let activeLocationId = 'london-flagship';
   let storeSchedules = null;
+  let activeZoneId = 'zone-default';
+  let modalStoreZones = [];
+  let modalActiveZoneId = 'zone-default';
+
+  function ensureLocationZones(loc) {
+    if (!loc) return;
+    if (!loc.zones || loc.zones.length === 0) {
+      loc.zones = [
+        {
+          id: 'zone-default',
+          name: 'Main Area',
+          schedules: JSON.parse(JSON.stringify(loc.schedules))
+        }
+      ];
+    }
+  }
 
   function saveLocationsToLocalStorage() {
     try {
@@ -2402,6 +2418,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Save opening hours to active day
     schedule.start = parseInt(startInput.value);
     schedule.end = parseInt(endInput.value);
+    // Get active zone
+    const activeLocObj = locations.find(l => l.id === activeLocationId);
+    ensureLocationZones(activeLocObj);
+    const activeZone = activeLocObj.zones.find(z => z.id === activeZoneId) || activeLocObj.zones[0];
+    const zoneSchedule = activeZone.schedules[activeDay];
 
     // Save and clamp traffic ranges to opening hours
     ['calm', 'flow', 'drive', 'after'].forEach(type => {
@@ -2426,8 +2447,8 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         }
         
-        schedule[`${type}Start`] = startVal;
-        schedule[`${type}End`] = endVal;
+        zoneSchedule[`${type}Start`] = startVal;
+        zoneSchedule[`${type}End`] = endVal;
         
         sSlider.min = schedule.start;
         sSlider.max = schedule.end;
@@ -2458,8 +2479,8 @@ document.addEventListener('DOMContentLoaded', () => {
       ];
 
       categories.forEach(cat => {
-        const startVal = schedule[`${cat.key}Start`];
-        const endVal = schedule[`${cat.key}End`];
+        const startVal = zoneSchedule[`${cat.key}Start`];
+        const endVal = zoneSchedule[`${cat.key}End`];
         
         if (startVal < endVal && totalOperatingHours > 0) {
           const leftPct = ((startVal - schedule.start) / totalOperatingHours) * 100;
@@ -2496,12 +2517,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (summaryText) {
       summaryText.innerHTML = `
         <strong>Scheduled Playback (${dayNames[activeDay]}):</strong> 
-        ${formatHour(schedule.calmStart)} - ${formatHour(schedule.calmEnd)} (Morning Calm) | 
-        ${formatHour(schedule.flowStart)} - ${formatHour(schedule.flowEnd)} (Midday Flow) | 
-        ${formatHour(schedule.driveStart)} - ${formatHour(schedule.driveEnd)} (Peak Drive) | 
-        ${formatHour(schedule.afterStart)} - ${formatHour(schedule.afterEnd)} (After Hours)
+        ${formatHour(zoneSchedule.calmStart)} - ${formatHour(zoneSchedule.calmEnd)} (Morning Calm) | 
+        ${formatHour(zoneSchedule.flowStart)} - ${formatHour(zoneSchedule.flowEnd)} (Midday Flow) | 
+        ${formatHour(zoneSchedule.driveStart)} - ${formatHour(zoneSchedule.driveEnd)} (Peak Drive) | 
+        ${formatHour(zoneSchedule.afterStart)} - ${formatHour(zoneSchedule.afterEnd)} (After Hours)
       `;
     }
+    
     saveLocationsToLocalStorage();
     updateDualSliderHighlights();
   }
@@ -2511,6 +2533,11 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const schedule = storeSchedules[activeScheduleDay];
       
+      const activeLocObj = locations.find(l => l.id === activeLocationId);
+      ensureLocationZones(activeLocObj);
+      const activeZone = activeLocObj.zones.find(z => z.id === activeZoneId) || activeLocObj.zones[0];
+      const zoneSchedule = activeZone.schedules[activeScheduleDay];
+
       const startInput = document.getElementById('slider-opening-start');
       const endInput = document.getElementById('slider-opening-end');
       
@@ -2530,8 +2557,8 @@ document.addEventListener('DOMContentLoaded', () => {
             eSlider.min = minHour;
             eSlider.max = maxHour;
             
-            sSlider.value = schedule[`${type}Start`];
-            eSlider.value = schedule[`${type}End`];
+            sSlider.value = zoneSchedule[`${type}Start`];
+            eSlider.value = zoneSchedule[`${type}End`];
           }
         });
         
@@ -2557,6 +2584,31 @@ document.addEventListener('DOMContentLoaded', () => {
     } finally {
       isUpdatingSchedule = false;
     }
+  }
+
+  function renderDashboardZoneTabs() {
+    const tabContainer = document.getElementById('dashboard-zone-tabs');
+    if (!tabContainer) return;
+    tabContainer.innerHTML = '';
+
+    const activeLocObj = locations.find(l => l.id === activeLocationId);
+    if (!activeLocObj) return;
+
+    ensureLocationZones(activeLocObj);
+
+    activeLocObj.zones.forEach(zone => {
+      const button = document.createElement('button');
+      button.className = `zone-tab-btn ${zone.id === activeZoneId ? 'active' : ''}`;
+      button.textContent = zone.name;
+      button.dataset.zoneId = zone.id;
+      button.type = 'button';
+      button.addEventListener('click', () => {
+        activeZoneId = zone.id;
+        renderDashboardZoneTabs();
+        loadActiveDaySchedule();
+      });
+      tabContainer.appendChild(button);
+    });
   }
 
   // Wire up Store Traffic Sliders
@@ -2669,6 +2721,10 @@ document.addEventListener('DOMContentLoaded', () => {
     schedule.start = parseInt(startInput.value);
     schedule.end = parseInt(endInput.value);
 
+    // Save to the active zone schedule inside modalStoreZones
+    const modalActiveZone = modalStoreZones.find(z => z.id === modalActiveZoneId) || modalStoreZones[0];
+    const zoneSchedule = modalActiveZone.schedules[activeDay];
+
     // Save and clamp traffic ranges to opening hours
     ['calm', 'flow', 'drive', 'after'].forEach(type => {
       const sSlider = document.getElementById(`modal-slider-${type}-start`);
@@ -2692,8 +2748,8 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         }
         
-        schedule[`${type}Start`] = startVal;
-        schedule[`${type}End`] = endVal;
+        zoneSchedule[`${type}Start`] = startVal;
+        zoneSchedule[`${type}End`] = endVal;
         
         sSlider.min = schedule.start;
         sSlider.max = schedule.end;
@@ -2724,8 +2780,8 @@ document.addEventListener('DOMContentLoaded', () => {
       ];
 
       categories.forEach(cat => {
-        const startVal = schedule[`${cat.key}Start`];
-        const endVal = schedule[`${cat.key}End`];
+        const startVal = zoneSchedule[`${cat.key}Start`];
+        const endVal = zoneSchedule[`${cat.key}End`];
         
         if (startVal < endVal && totalOperatingHours > 0) {
           const leftPct = ((startVal - schedule.start) / totalOperatingHours) * 100;
@@ -2762,10 +2818,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (summaryText) {
       summaryText.innerHTML = `
         <strong>Scheduled Playback (${dayNames[activeDay]}):</strong> 
-        ${formatHour(schedule.calmStart)} - ${formatHour(schedule.calmEnd)} (Morning Calm) | 
-        ${formatHour(schedule.flowStart)} - ${formatHour(schedule.flowEnd)} (Midday Flow) | 
-        ${formatHour(schedule.driveStart)} - ${formatHour(schedule.driveEnd)} (Peak Drive) | 
-        ${formatHour(schedule.afterStart)} - ${formatHour(schedule.afterEnd)} (After Hours)
+        ${formatHour(zoneSchedule.calmStart)} - ${formatHour(zoneSchedule.calmEnd)} (Morning Calm) | 
+        ${formatHour(zoneSchedule.flowStart)} - ${formatHour(zoneSchedule.flowEnd)} (Midday Flow) | 
+        ${formatHour(zoneSchedule.driveStart)} - ${formatHour(zoneSchedule.driveEnd)} (Peak Drive) | 
+        ${formatHour(zoneSchedule.afterStart)} - ${formatHour(zoneSchedule.afterEnd)} (After Hours)
       `;
     }
     updateDualSliderHighlights();
@@ -2776,6 +2832,9 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const schedule = modalStoreSchedules[modalActiveScheduleDay];
       
+      const modalActiveZone = modalStoreZones.find(z => z.id === modalActiveZoneId) || modalStoreZones[0];
+      const zoneSchedule = modalActiveZone.schedules[modalActiveScheduleDay];
+
       const startInput = document.getElementById('modal-slider-opening-start');
       const endInput = document.getElementById('modal-slider-opening-end');
       
@@ -2795,8 +2854,8 @@ document.addEventListener('DOMContentLoaded', () => {
             eSlider.min = minHour;
             eSlider.max = maxHour;
             
-            sSlider.value = schedule[`${type}Start`];
-            eSlider.value = schedule[`${type}End`];
+            sSlider.value = zoneSchedule[`${type}Start`];
+            eSlider.value = zoneSchedule[`${type}End`];
           }
         });
         
@@ -2822,6 +2881,26 @@ document.addEventListener('DOMContentLoaded', () => {
     } finally {
       isUpdatingModalSchedule = false;
     }
+  }
+
+  function renderModalZoneTabs() {
+    const tabContainer = document.getElementById('modal-zones-tabs-row');
+    if (!tabContainer) return;
+    tabContainer.innerHTML = '';
+
+    modalStoreZones.forEach(zone => {
+      const button = document.createElement('button');
+      button.className = `zone-tab-btn ${zone.id === modalActiveZoneId ? 'active' : ''}`;
+      button.textContent = zone.name;
+      button.dataset.zoneId = zone.id;
+      button.type = 'button';
+      button.addEventListener('click', () => {
+        modalActiveZoneId = zone.id;
+        renderModalZoneTabs();
+        loadActiveDayModalSchedule();
+      });
+      tabContainer.appendChild(button);
+    });
   }
 
   // Wire up Modal Store Traffic Sliders
@@ -2866,6 +2945,27 @@ document.addEventListener('DOMContentLoaded', () => {
     checkboxModalDayOpen.addEventListener('change', () => {
       if (isUpdatingModalSchedule) return;
       modalStoreSchedules[modalActiveScheduleDay].open = checkboxModalDayOpen.checked;
+      loadActiveDayModalSchedule();
+    });
+  }
+
+  const btnModalAddZone = document.getElementById('modal-btn-add-zone');
+  if (btnModalAddZone) {
+    btnModalAddZone.addEventListener('click', () => {
+      if (modalStoreZones.length >= 5) {
+        showToast("Zone Limit Reached", "A location can have at most 5 zones.", "warning");
+        return;
+      }
+      const zoneName = prompt("Enter zone name (e.g. VIP Lounge, Restrooms):");
+      if (!zoneName) return;
+      const zoneId = 'zone-' + Date.now();
+      modalStoreZones.push({
+        id: zoneId,
+        name: zoneName.trim(),
+        schedules: JSON.parse(JSON.stringify(defaultModalStoreSchedules))
+      });
+      modalActiveZoneId = zoneId;
+      renderModalZoneTabs();
       loadActiveDayModalSchedule();
     });
   }
@@ -7009,6 +7109,22 @@ document.addEventListener('DOMContentLoaded', () => {
       modalStoreSchedules = JSON.parse(JSON.stringify(defaultModalStoreSchedules));
       modalActiveScheduleDay = 'Mon';
       
+      // Initialize default zones in the modal
+      modalStoreZones = [
+        {
+          id: 'zone-default',
+          name: 'Main Lounge',
+          schedules: JSON.parse(JSON.stringify(defaultModalStoreSchedules))
+        },
+        {
+          id: 'zone-vip',
+          name: 'VIP Area',
+          schedules: JSON.parse(JSON.stringify(defaultModalStoreSchedules))
+        }
+      ];
+      modalActiveZoneId = 'zone-default';
+      renderModalZoneTabs();
+      
       // Select 'Mon' tab pill in modal UI
       document.querySelectorAll('#add-location-modal .weekdays-pills .day-pill').forEach(p => {
         if (p.dataset.day === 'Mon') {
@@ -7049,7 +7165,8 @@ document.addEventListener('DOMContentLoaded', () => {
           address: popStoreAddress,
           timezone: popStoreTimezone,
           status: 'deployed',
-          schedules: JSON.parse(JSON.stringify(modalStoreSchedules))
+          schedules: JSON.parse(JSON.stringify(modalStoreSchedules)),
+          zones: JSON.parse(JSON.stringify(modalStoreZones))
         };
         
         locations.push(newStore);

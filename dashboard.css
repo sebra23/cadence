@@ -6733,4 +6733,32 @@ ul {
   background: var(--color-text-primary);
 }
 
+/* Zone Manager Tabs styling */
+.zone-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.zone-tab:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.zone-tab.active-zone-tab {
+  background: rgba(124, 58, 237, 0.2) !important;
+  border-color: var(--color-purple-light) !important;
+  color: #fff !important;
+  box-shadow: 0 0 10px rgba(124, 58, 237, 0.2);
+}
+
 
