@@ -2580,6 +2580,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
 
+      renderDashboardZoneTabs();
       updateTrafficTimeline();
     } finally {
       isUpdatingSchedule = false;
@@ -2604,7 +2605,6 @@ document.addEventListener('DOMContentLoaded', () => {
       button.type = 'button';
       button.addEventListener('click', () => {
         activeZoneId = zone.id;
-        renderDashboardZoneTabs();
         loadActiveDaySchedule();
       });
       tabContainer.appendChild(button);
@@ -2877,6 +2877,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
 
+      renderModalZoneTabs();
       updateModalTrafficTimeline();
     } finally {
       isUpdatingModalSchedule = false;
@@ -2896,7 +2897,6 @@ document.addEventListener('DOMContentLoaded', () => {
       button.type = 'button';
       button.addEventListener('click', () => {
         modalActiveZoneId = zone.id;
-        renderModalZoneTabs();
         loadActiveDayModalSchedule();
       });
       tabContainer.appendChild(button);
@@ -2967,6 +2967,34 @@ document.addEventListener('DOMContentLoaded', () => {
       modalActiveZoneId = zoneId;
       renderModalZoneTabs();
       loadActiveDayModalSchedule();
+    });
+  }
+
+  const btnAddZone = document.getElementById('btn-add-zone');
+  if (btnAddZone) {
+    btnAddZone.addEventListener('click', () => {
+      const activeLocObj = locations.find(l => l.id === activeLocationId);
+      if (!activeLocObj) return;
+      ensureLocationZones(activeLocObj);
+      if (activeLocObj.zones.length >= 5) {
+        showToast("Zone Limit Reached", "A location can have at most 5 zones.", "warning");
+        return;
+      }
+      const zoneName = prompt("Enter zone name (e.g. VIP Lounge, Restrooms):");
+      if (!zoneName) return;
+      const zoneId = 'zone-' + Date.now();
+      activeLocObj.zones.push({
+        id: zoneId,
+        name: zoneName.trim(),
+        schedules: JSON.parse(JSON.stringify(defaultModalStoreSchedules))
+      });
+      activeZoneId = zoneId;
+      saveLocationsToLocalStorage();
+      renderDashboardZoneTabs();
+      renderSidebarLocations();
+      renderLocationsList();
+      loadActiveDaySchedule();
+      showToast("Zone Added", `Zone "${zoneName}" added to ${activeLocObj.name}.`, "success");
     });
   }
 
