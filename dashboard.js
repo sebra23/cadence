@@ -2587,7 +2587,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function renderDashboardZoneTabs() {
-    const tabContainer = document.getElementById('dashboard-zone-tabs');
+    const tabContainer = document.getElementById('zones-tabs-row');
     if (!tabContainer) return;
     tabContainer.innerHTML = '';
 
