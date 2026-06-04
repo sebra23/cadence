@@ -2598,16 +2598,69 @@ document.addEventListener('DOMContentLoaded', () => {
     ensureLocationZones(activeLocObj);
 
     activeLocObj.zones.forEach(zone => {
-      const button = document.createElement('button');
-      button.className = `zone-tab ${zone.id === activeZoneId ? 'active-zone-tab' : ''}`;
-      button.textContent = zone.name;
-      button.dataset.zoneId = zone.id;
-      button.type = 'button';
-      button.addEventListener('click', () => {
+      const tabEl = document.createElement('div');
+      tabEl.className = `zone-tab ${zone.id === activeZoneId ? 'active-zone-tab' : ''}`;
+      tabEl.style.display = 'inline-flex';
+      tabEl.style.alignItems = 'center';
+      tabEl.style.cursor = 'pointer';
+      tabEl.style.userSelect = 'none';
+
+      const textSpan = document.createElement('span');
+      textSpan.textContent = zone.name;
+      tabEl.appendChild(textSpan);
+
+      // Only allow removing custom zones (must have > 1 zone and not be default)
+      if (activeLocObj.zones.length > 1 && zone.id !== 'zone-default') {
+        const removeBtn = document.createElement('span');
+        removeBtn.innerHTML = '&times;';
+        removeBtn.className = 'remove-zone-badge';
+        removeBtn.style.marginLeft = '8px';
+        removeBtn.style.width = '14px';
+        removeBtn.style.height = '14px';
+        removeBtn.style.borderRadius = '50%';
+        removeBtn.style.background = 'rgba(255, 255, 255, 0.15)';
+        removeBtn.style.color = 'var(--color-text-secondary)';
+        removeBtn.style.fontSize = '10px';
+        removeBtn.style.fontWeight = 'bold';
+        removeBtn.style.display = 'inline-flex';
+        removeBtn.style.alignItems = 'center';
+        removeBtn.style.justifyContent = 'center';
+        removeBtn.style.transition = 'background-color 0.2s, color 0.2s';
+        removeBtn.title = "Remove zone";
+
+        removeBtn.addEventListener('mouseenter', () => {
+          removeBtn.style.background = '#ef4444';
+          removeBtn.style.color = '#fff';
+        });
+        removeBtn.addEventListener('mouseleave', () => {
+          removeBtn.style.background = 'rgba(255, 255, 255, 0.15)';
+          removeBtn.style.color = 'var(--color-text-secondary)';
+        });
+
+        removeBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (confirm(`Are you sure you want to remove the zone "${zone.name}"?`)) {
+            activeLocObj.zones = activeLocObj.zones.filter(z => z.id !== zone.id);
+            if (activeZoneId === zone.id) {
+              activeZoneId = activeLocObj.zones[0].id;
+            }
+            saveLocationsToLocalStorage();
+            renderDashboardZoneTabs();
+            renderSidebarLocations();
+            renderLocationsList();
+            loadActiveDaySchedule();
+            showToast("Zone Removed", `Zone "${zone.name}" removed successfully.`, "success");
+          }
+        });
+        tabEl.appendChild(removeBtn);
+      }
+
+      tabEl.addEventListener('click', () => {
         activeZoneId = zone.id;
         loadActiveDaySchedule();
       });
-      tabContainer.appendChild(button);
+
+      tabContainer.appendChild(tabEl);
     });
   }
 
@@ -2890,16 +2943,66 @@ document.addEventListener('DOMContentLoaded', () => {
     tabContainer.innerHTML = '';
 
     modalStoreZones.forEach(zone => {
-      const button = document.createElement('button');
-      button.className = `zone-tab ${zone.id === modalActiveZoneId ? 'active-zone-tab' : ''}`;
-      button.textContent = zone.name;
-      button.dataset.zoneId = zone.id;
-      button.type = 'button';
-      button.addEventListener('click', () => {
+      const tabEl = document.createElement('div');
+      tabEl.className = `zone-tab ${zone.id === modalActiveZoneId ? 'active-zone-tab' : ''}`;
+      tabEl.style.display = 'inline-flex';
+      tabEl.style.alignItems = 'center';
+      tabEl.style.cursor = 'pointer';
+      tabEl.style.userSelect = 'none';
+
+      const textSpan = document.createElement('span');
+      textSpan.textContent = zone.name;
+      tabEl.appendChild(textSpan);
+
+      // Only allow removing custom zones (must have > 1 zone and not be default)
+      if (modalStoreZones.length > 1 && zone.id !== 'zone-default') {
+        const removeBtn = document.createElement('span');
+        removeBtn.innerHTML = '&times;';
+        removeBtn.className = 'remove-zone-badge';
+        removeBtn.style.marginLeft = '8px';
+        removeBtn.style.width = '14px';
+        removeBtn.style.height = '14px';
+        removeBtn.style.borderRadius = '50%';
+        removeBtn.style.background = 'rgba(255, 255, 255, 0.15)';
+        removeBtn.style.color = 'var(--color-text-secondary)';
+        removeBtn.style.fontSize = '10px';
+        removeBtn.style.fontWeight = 'bold';
+        removeBtn.style.display = 'inline-flex';
+        removeBtn.style.alignItems = 'center';
+        removeBtn.style.justifyContent = 'center';
+        removeBtn.style.transition = 'background-color 0.2s, color 0.2s';
+        removeBtn.title = "Remove zone";
+
+        removeBtn.addEventListener('mouseenter', () => {
+          removeBtn.style.background = '#ef4444';
+          removeBtn.style.color = '#fff';
+        });
+        removeBtn.addEventListener('mouseleave', () => {
+          removeBtn.style.background = 'rgba(255, 255, 255, 0.15)';
+          removeBtn.style.color = 'var(--color-text-secondary)';
+        });
+
+        removeBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (confirm(`Are you sure you want to remove the zone "${zone.name}"?`)) {
+            modalStoreZones = modalStoreZones.filter(z => z.id !== zone.id);
+            if (modalActiveZoneId === zone.id) {
+              modalActiveZoneId = modalStoreZones[0].id;
+            }
+            renderModalZoneTabs();
+            loadActiveDayModalSchedule();
+            showToast("Zone Removed", `Zone "${zone.name}" removed from configuration.`, "success");
+          }
+        });
+        tabEl.appendChild(removeBtn);
+      }
+
+      tabEl.addEventListener('click', () => {
         modalActiveZoneId = zone.id;
         loadActiveDayModalSchedule();
       });
-      tabContainer.appendChild(button);
+
+      tabContainer.appendChild(tabEl);
     });
   }
 
