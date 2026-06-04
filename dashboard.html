@@ -2322,6 +2322,28 @@
     </div>
   </div>
 
+  <!-- ==========================================
+     CUSTOM PROMPT DIALOG MODAL (ADD ZONE)
+     ========================================== -->
+  <div id="custom-prompt-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 400px; padding: 28px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <h3 id="custom-prompt-title" style="font-family: var(--font-outfit); font-size: 1.25rem; font-weight: 700; margin: 0; color: #fff;">Enter Zone Name</h3>
+        <button id="btn-close-prompt-modal" style="color: var(--color-text-secondary); opacity: 0.7; transition: opacity 0.2s; font-size: 1.2rem;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.7">&times;</button>
+      </div>
+      <p id="custom-prompt-description" style="font-size: 0.85rem; color: var(--color-text-secondary); line-height: 1.4; margin-bottom: 20px;">Provide a name for this retail space segment (e.g., VIP Lounge, Restrooms, Outdoor Terrace).</p>
+      
+      <div class="form-group" style="margin-bottom: 24px;">
+        <input type="text" id="custom-prompt-input" placeholder="e.g. VIP Lounge" style="background: rgba(0, 0, 0, 0.25); border: 1px solid var(--color-border); padding: 12px 16px; border-radius: var(--border-radius-sm); color: var(--color-text-primary); font-family: inherit; font-size: 0.95rem; width: 100%; outline: none; transition: var(--transition-smooth);" autocomplete="off">
+      </div>
+      
+      <div style="display: flex; justify-content: flex-end; gap: 12px;">
+        <button id="btn-cancel-prompt-modal" class="btn-secondary" style="padding: 10px 18px; font-size: 0.85rem;">Cancel</button>
+        <button id="btn-save-prompt-modal" class="btn-primary" style="padding: 10px 18px; font-size: 0.85rem;">Add Zone</button>
+      </div>
+    </div>
+  </div>
+
   <!-- JS Logic -->
   <script src="config.js"></script>
   <script src="dashboard.js?v=3"></script>

@@ -13,6 +13,78 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let activePersonaId = null;
 
+  // Custom Prompt Modal Dialog System
+  let activePromptPromiseResolve = null;
+
+  function openCustomPrompt(title, description, placeholder = '') {
+    const promptModal = document.getElementById('custom-prompt-modal');
+    const promptInput = document.getElementById('custom-prompt-input');
+    const promptTitle = document.getElementById('custom-prompt-title');
+    const promptDesc = document.getElementById('custom-prompt-description');
+    
+    if (!promptModal || !promptInput) return Promise.resolve(null);
+    
+    if (title) promptTitle.textContent = title;
+    if (description) promptDesc.textContent = description;
+    promptInput.value = '';
+    promptInput.placeholder = placeholder;
+    
+    promptModal.classList.add('active');
+    setTimeout(() => promptInput.focus(), 100);
+    
+    return new Promise((resolve) => {
+      activePromptPromiseResolve = resolve;
+    });
+  }
+
+  function closeCustomPrompt(value = null) {
+    const promptModal = document.getElementById('custom-prompt-modal');
+    if (promptModal) {
+      promptModal.classList.remove('active');
+    }
+    if (activePromptPromiseResolve) {
+      activePromptPromiseResolve(value);
+      activePromptPromiseResolve = null;
+    }
+  }
+
+  // Wire up custom prompt event listeners
+  const customPromptInput = document.getElementById('custom-prompt-input');
+  const btnClosePromptModal = document.getElementById('btn-close-prompt-modal');
+  const btnCancelPromptModal = document.getElementById('btn-cancel-prompt-modal');
+  const btnSavePromptModal = document.getElementById('btn-save-prompt-modal');
+
+  if (btnClosePromptModal) {
+    btnClosePromptModal.addEventListener('click', () => closeCustomPrompt(null));
+  }
+  if (btnCancelPromptModal) {
+    btnCancelPromptModal.addEventListener('click', () => closeCustomPrompt(null));
+  }
+  if (btnSavePromptModal) {
+    btnSavePromptModal.addEventListener('click', () => {
+      const val = customPromptInput ? customPromptInput.value.trim() : '';
+      if (!val) {
+        showToast("Invalid Name", "Please enter a valid zone name.", "warning");
+        return;
+      }
+      closeCustomPrompt(val);
+    });
+  }
+  if (customPromptInput) {
+    customPromptInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const val = customPromptInput.value.trim();
+        if (!val) {
+          showToast("Invalid Name", "Please enter a valid zone name.", "warning");
+          return;
+        }
+        closeCustomPrompt(val);
+      } else if (e.key === 'Escape') {
+        closeCustomPrompt(null);
+      }
+    });
+  }
+
   // ==========================================
   // 0. Sleek Toast Notification System
   // ==========================================
@@ -3054,12 +3126,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const btnModalAddZone = document.getElementById('modal-btn-add-zone');
   if (btnModalAddZone) {
-    btnModalAddZone.addEventListener('click', () => {
+    btnModalAddZone.addEventListener('click', async () => {
       if (modalStoreZones.length >= 5) {
         showToast("Zone Limit Reached", "A location can have at most 5 zones.", "warning");
         return;
       }
-      const zoneName = prompt("Enter zone name (e.g. VIP Lounge, Restrooms):");
+      const zoneName = await openCustomPrompt(
+        "Enter Zone Name",
+        "Provide a name for this retail space segment (e.g., VIP Lounge, Restrooms, Outdoor Terrace).",
+        "e.g. VIP Lounge"
+      );
       if (!zoneName) return;
       const zoneId = 'zone-' + Date.now();
       modalStoreZones.push({
@@ -3075,7 +3151,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const btnAddZone = document.getElementById('btn-add-zone');
   if (btnAddZone) {
-    btnAddZone.addEventListener('click', () => {
+    btnAddZone.addEventListener('click', async () => {
       console.log("[btnAddZone] Clicked. activeLocationId:", activeLocationId, "locations count:", locations.length);
       const activeLocObj = locations.find(l => l.id === activeLocationId) || locations[0];
       if (!activeLocObj) {
@@ -3088,7 +3164,11 @@ document.addEventListener('DOMContentLoaded', () => {
         showToast("Zone Limit Reached", "A location can have at most 5 zones.", "warning");
         return;
       }
-      const zoneName = prompt("Enter zone name (e.g. VIP Lounge, Restrooms):");
+      const zoneName = await openCustomPrompt(
+        "Enter Zone Name",
+        "Provide a name for this retail space segment (e.g., VIP Lounge, Restrooms, Outdoor Terrace).",
+        "e.g. VIP Lounge"
+      );
       if (!zoneName) {
         console.log("[btnAddZone] No zone name provided by user.");
         return;
