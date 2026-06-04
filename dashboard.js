@@ -2592,14 +2592,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!tabContainer) return;
     tabContainer.innerHTML = '';
 
-    const activeLocObj = locations.find(l => l.id === activeLocationId);
+    const activeLocObj = locations.find(l => l.id === activeLocationId) || locations[0];
     if (!activeLocObj) return;
 
     ensureLocationZones(activeLocObj);
 
     activeLocObj.zones.forEach(zone => {
       const button = document.createElement('button');
-      button.className = `zone-tab-btn ${zone.id === activeZoneId ? 'active' : ''}`;
+      button.className = `zone-tab ${zone.id === activeZoneId ? 'active-zone-tab' : ''}`;
       button.textContent = zone.name;
       button.dataset.zoneId = zone.id;
       button.type = 'button';
@@ -2891,7 +2891,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     modalStoreZones.forEach(zone => {
       const button = document.createElement('button');
-      button.className = `zone-tab-btn ${zone.id === modalActiveZoneId ? 'active' : ''}`;
+      button.className = `zone-tab ${zone.id === modalActiveZoneId ? 'active-zone-tab' : ''}`;
       button.textContent = zone.name;
       button.dataset.zoneId = zone.id;
       button.type = 'button';
