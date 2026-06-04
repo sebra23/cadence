@@ -637,7 +637,7 @@
               <th class="col-index">#</th>
               <th>Title</th>
               <th>Artist</th>
-              <th class="col-vibe">Vibe Vibe</th>
+              <th class="col-vibe">Acoustic Vibe</th>
               <th class="col-bpm">Tempo</th>
               <th class="col-duration">Duration</th>
             </tr>
@@ -871,20 +871,37 @@
     }
 
     function getActiveScheduleBlock(storeObj) {
+      const zoneId = urlParams.get('zone');
+      let zone = null;
+      if (storeObj.zones && storeObj.zones.length > 0) {
+        if (zoneId) {
+          zone = storeObj.zones.find(z => z.id === zoneId);
+        }
+        if (!zone) {
+          zone = storeObj.zones[0];
+        }
+      }
+      
+      // If there's a manual vibe override set on the zone (and it's not 'auto'), respect it!
+      if (zone && zone.vibeOverride && zone.vibeOverride !== 'auto') {
+        return zone.vibeOverride;
+      }
+      
       const details = getStoreTimeDetails(storeObj.timezone);
-      const schedule = storeObj.schedules[details.day];
+      const schedule = (zone && zone.schedules) ? zone.schedules[details.day] : storeObj.schedules[details.day];
       
       if (!schedule || !schedule.open) {
         return 'closed';
       }
       
       const hour = details.hour;
+      if (hour < schedule.start || hour >= schedule.end) {
+        return 'closed';
+      }
       if (hour >= schedule.calmStart && hour < schedule.calmEnd) return 'calm';
       if (hour >= schedule.flowStart && hour < schedule.flowEnd) return 'flow';
       if (hour >= schedule.driveStart && hour < schedule.driveEnd) return 'drive';
-      if (hour >= schedule.afterStart && hour < schedule.afterEnd) return 'after';
-      
-      return 'closed';
+      return 'after';
     }
 
     // UI state render
@@ -926,7 +943,16 @@
       
       // Active Vibe Badge
       lblActiveVibe.className = `badge vibe-badge ${currentBlock}`;
-      lblActiveVibe.textContent = `${currentBlock.charAt(0).toUpperCase() + currentBlock.slice(1)} Vibe`;
+      
+      let displayBlockName = currentBlock;
+      let emoji = '🎵';
+      if (currentBlock === 'calm') { displayBlockName = 'Morning Calm'; emoji = '🧘'; }
+      else if (currentBlock === 'flow') { displayBlockName = 'Midday Flow'; emoji = '🌿'; }
+      else if (currentBlock === 'drive') { displayBlockName = 'Peak Drive'; emoji = '⚡'; }
+      else if (currentBlock === 'after') { displayBlockName = 'After Hours'; emoji = '🌙'; }
+      else if (currentBlock === 'closed') { displayBlockName = 'Standby'; emoji = '💤'; }
+      
+      lblActiveVibe.textContent = `${emoji} ${displayBlockName}`;
       
       // Overlay if store is closed
       if (currentBlock === 'closed') {
@@ -981,7 +1007,7 @@
         <td class="col-artist">${track.artist} • <span class="track-company" style="color: var(--color-primary, #c084fc); opacity: 0.8; font-weight: 500;">${companyName}</span></td>
         <td class="col-vibe">
           <span class="badge vibe-badge ${track.category}" style="font-size: 0.65rem; padding: 2px 6px;">
-            ${track.category}
+            ${track.category === 'calm' ? '🧘 calm' : track.category === 'flow' ? '🌿 flow' : track.category === 'drive' ? '⚡ drive' : '🌙 after'}
           </span>
         </td>
         <td class="col-bpm">${track.bpm} BPM</td>

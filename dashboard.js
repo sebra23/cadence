@@ -2729,7 +2729,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
       tabEl.addEventListener('click', () => {
         activeZoneId = zone.id;
+        manualTrafficOverride = zone.vibeOverride || 'auto';
+        const overrideSelect = document.getElementById('live-block-override-select');
+        if (overrideSelect) {
+          overrideSelect.value = manualTrafficOverride;
+        }
         loadActiveDaySchedule();
+        renderSidebarLocations();
+        startPlaylistGeneration("", true);
       });
 
       tabContainer.appendChild(tabEl);
@@ -4610,44 +4617,67 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   function getNowPlayingForZone(loc, zone) {
     const isCurrentLoc = (loc.id === activeLocationId);
-    if (isCurrentLoc) {
-      if (zone.id === activeZoneId) {
-        if (activePlaylistTrack) {
-          return `${activePlaylistTrack.title} - ${activePlaylistTrack.artist}${isPlaylistPlaying ? '' : ' (Paused)'}`;
+    
+    // Resolve what block (vibe) is playing in this zone
+    let block = zone.vibeOverride || 'auto';
+    if (block === 'auto') {
+      if (isCurrentLoc && zone.id === activeZoneId) {
+        block = getCurrentTrafficBlock();
+      } else {
+        // Resolve time-based block for this zone
+        const localTimeStr = getStoreLocalTime(loc.timezone);
+        let hour = 12;
+        if (localTimeStr) {
+          const match = localTimeStr.match(/^(\d+):(\d+)\s*(AM|PM)/i);
+          if (match) {
+            let h = parseInt(match[1]);
+            const isPm = match[3].toUpperCase() === 'PM';
+            if (isPm && h !== 12) h += 12;
+            if (!isPm && h === 12) h = 0;
+            hour = h;
+          }
         }
-        return isPlaylistPlaying ? "Custom Ambient Soundscape" : "Playback Idle";
-      }
-      if (!isPlaylistPlaying) {
-        return "Playback Idle";
+        
+        const schedule = (zone.schedules) ? zone.schedules : loc.schedules;
+        const now = new Date();
+        const daysMap = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        const todayKey = daysMap[now.getDay()];
+        const todaySched = schedule ? schedule[todayKey] : null;
+        
+        if (!todaySched || !todaySched.open) {
+          block = 'closed';
+        } else if (hour < todaySched.start || hour >= todaySched.end) {
+          block = 'closed';
+        } else if (hour >= todaySched.calmStart && hour < todaySched.calmEnd) {
+          block = 'calm';
+        } else if (hour >= todaySched.flowStart && hour < todaySched.flowEnd) {
+          block = 'flow';
+        } else if (hour >= todaySched.driveStart && hour < todaySched.driveEnd) {
+          block = 'drive';
+        } else {
+          block = 'after';
+        }
       }
     }
     
-    // Stable mock based on loc and zone IDs
-    const localTimeStr = getStoreLocalTime(loc.timezone);
-    let hour = 12;
-    if (localTimeStr) {
-      const match = localTimeStr.match(/^(\d+):(\d+)\s*(AM|PM)/i);
-      if (match) {
-        let h = parseInt(match[1]);
-        const isPm = match[3].toUpperCase() === 'PM';
-        if (isPm && h !== 12) h += 12;
-        if (!isPm && h === 12) h = 0;
-        hour = h;
-      }
+    if (block === 'closed') {
+      return "Playback Idle";
     }
-
-    let category = 'calm';
-    if (hour >= 8 && hour < 11) category = 'calm';
-    else if (hour >= 11 && hour < 15) category = 'flow';
-    else if (hour >= 15 && hour < 19) category = 'drive';
-    else category = 'after';
-
+    
+    if (isCurrentLoc && zone.id === activeZoneId) {
+      if (activePlaylistTrack) {
+        return `${activePlaylistTrack.title} - ${activePlaylistTrack.artist}${isPlaylistPlaying ? '' : ' (Paused)'}`;
+      }
+      return isPlaylistPlaying ? "Custom Ambient Soundscape" : "Playback Idle";
+    }
+    
+    // Select deterministic song for this zone matching its block vibe category
     const catalog = (themedTracksDict.sunday || []).concat(themedTracksDict.summer || [], themedTracksDict.synth || []);
-    const candidates = catalog.filter(t => t.category === category);
+    const candidates = catalog.filter(t => t.category === block);
     if (candidates.length === 0) return "Equator Wind - Latitude 0";
     
     let hash = 0;
-    const str = loc.id + '-' + zone.id;
+    const str = loc.id + '-' + zone.id + '-' + block;
     for (let i = 0; i < str.length; i++) {
       hash = str.charCodeAt(i) + ((hash << 5) - hash);
     }
@@ -4695,13 +4725,32 @@ document.addEventListener('DOMContentLoaded', () => {
             const icon = isZoneActive ? '🔊' : '🎵';
             const textColor = isZoneActive ? 'var(--color-purple-light)' : 'rgba(255, 255, 255, 0.7)';
             const fontWeight = isZoneActive ? '600' : 'normal';
+            const vibeOverride = zone.vibeOverride || 'auto';
             
             return `
-              <div class="sidebar-zone-item" data-zone-id="${zone.id}" style="display: flex; align-items: center; justify-content: space-between; font-size: 0.78rem; background: rgba(255, 255, 255, 0.01); padding: 5px 8px; border-radius: 6px; border-left: 2px solid ${isZoneActive ? 'var(--color-purple)' : 'transparent'}; transition: all 0.2s ease;">
-                <div style="font-weight: 500; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100px; flex-shrink: 0;" title="${zone.name}">${zone.name}</div>
-                <div style="display: flex; align-items: center; gap: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-grow: 1; justify-content: flex-end;">
-                  <span style="font-size: 0.8rem; flex-shrink: 0; animation: ${isPlaying ? 'pulse-audio 1.5s infinite' : 'none'};">${icon}</span>
-                  <span class="sidebar-loc-playing-track-text" data-zone-id="${zone.id}" style="color: ${textColor}; font-weight: ${fontWeight}; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${zonePlaying}">${zonePlaying}</span>
+              <div class="sidebar-zone-item" data-zone-id="${zone.id}" style="display: flex; align-items: center; justify-content: space-between; font-size: 0.78rem; background: rgba(255, 255, 255, 0.01); padding: 6px 8px; border-radius: 6px; border-left: 2px solid ${isZoneActive ? 'var(--color-purple)' : 'transparent'}; transition: all 0.2s ease; gap: 8px;">
+                <div style="flex-shrink: 0; min-width: 90px; max-width: 110px;">
+                  <div style="font-weight: 600; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${zone.name}">${zone.name}</div>
+                  <select class="zone-vibe-select" data-loc-id="${loc.id}" data-zone-id="${zone.id}" style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); color: var(--color-text-secondary); font-size: 0.65rem; border-radius: 4px; padding: 2px 4px; width: 85px; margin-top: 4px; outline: none; cursor: pointer; transition: all 0.2s ease;">
+                    <option value="auto" ${vibeOverride === 'auto' ? 'selected' : ''}>⏱️ Auto</option>
+                    <option value="calm" ${vibeOverride === 'calm' ? 'selected' : ''}>🧘 Calm</option>
+                    <option value="flow" ${vibeOverride === 'flow' ? 'selected' : ''}>🌿 Flow</option>
+                    <option value="drive" ${vibeOverride === 'drive' ? 'selected' : ''}>⚡ Drive</option>
+                    <option value="after" ${vibeOverride === 'after' ? 'selected' : ''}>🌙 After</option>
+                  </select>
+                </div>
+                
+                <div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center; overflow: hidden; flex-grow: 1; text-align: right;">
+                  <div style="display: flex; align-items: center; gap: 4px; overflow: hidden; max-width: 100%;">
+                    <span style="font-size: 0.75rem; flex-shrink: 0; animation: ${isPlaying ? 'pulse-audio 1.5s infinite' : 'none'};">${icon}</span>
+                    <span class="sidebar-loc-playing-track-text" data-zone-id="${zone.id}" style="color: ${textColor}; font-weight: ${fontWeight}; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${zonePlaying}">${zonePlaying}</span>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 6px; margin-top: 4px;">
+                    <button class="btn-zone-share-link" data-loc-id="${loc.id}" data-zone-id="${zone.id}" title="Copy Zone Webplayer Link" style="background: none; border: none; padding: 0; margin: 0; color: var(--color-text-muted); cursor: pointer; display: flex; align-items: center; gap: 3px; font-size: 0.68rem; transition: color 0.2s ease;">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align: middle;"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                      <span>Share Zone</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             `;
@@ -4721,9 +4770,26 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
       
       card.addEventListener('click', (e) => {
-        if (e.target.closest('.btn-sidebar-action')) return;
-        selectActiveLocation(loc.id);
+        if (e.target.closest('.btn-sidebar-action') || e.target.closest('.zone-vibe-select') || e.target.closest('.btn-zone-share-link')) return;
+        
+        const zoneItem = e.target.closest('.sidebar-zone-item');
+        if (zoneItem) {
+          const zoneId = zoneItem.dataset.zoneId;
+          selectActiveLocation(loc.id);
+          activeZoneId = zoneId;
+          
+          const zoneObj = loc.zones.find(z => z.id === zoneId);
+          manualTrafficOverride = zoneObj ? (zoneObj.vibeOverride || 'auto') : 'auto';
+          const overrideSelect = document.getElementById('live-block-override-select');
+          if (overrideSelect) {
+            overrideSelect.value = manualTrafficOverride;
+          }
+        } else {
+          selectActiveLocation(loc.id);
+        }
+        
         renderSidebarLocations();
+        renderDashboardZoneTabs();
         startPlaylistGeneration("", true);
       });
       
@@ -4740,41 +4806,67 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Bind edit schedule buttons
-    const editScheduleBtns = listContainer.querySelectorAll('.btn-sidebar-edit-schedule');
-    editScheduleBtns.forEach(btn => {
+    // Bind zone share buttons
+    const zoneShareBtns = listContainer.querySelectorAll('.btn-zone-share-link');
+    zoneShareBtns.forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
-        const locId = btn.dataset.id;
-        selectActiveLocation(locId);
-        switchPage('dashboard');
+        const locId = btn.dataset.locId;
+        const zoneId = btn.dataset.zoneId;
         
-        const trafficSection = document.getElementById('store-traffic-section');
-        if (trafficSection) {
-          trafficSection.classList.remove('hidden');
-          const card = trafficSection.querySelector('.store-traffic-card');
-          if (card) {
-            const container = document.getElementById('onboarding-page-container');
-            const isCompleted = container && container.classList.contains('onboarding-completed');
-            if (container && !isCompleted) {
-              document.querySelectorAll('.dash-card').forEach(c => c.classList.remove('expanded'));
+        const loc = locations.find(l => l.id === locId);
+        const zone = loc ? (loc.zones || []).find(z => z.id === zoneId) : null;
+        const zoneName = zone ? zone.name : "Zone";
+        
+        const origin = window.location.origin || "http://localhost:8080";
+        const shareUrl = `${origin}/player.html?store=${locId}&zone=${zoneId}&email=${encodeURIComponent(activeUserEmail)}`;
+        
+        navigator.clipboard.writeText(shareUrl).then(() => {
+          showToast("Copied Zone Link", `Webplayer link for zone "${zoneName}" copied to clipboard.`, "success");
+        }).catch(err => {
+          openShareModal(locId, zoneId);
+        });
+      });
+    });
+
+    // Bind zone vibe selects
+    const zoneVibeSelects = listContainer.querySelectorAll('.zone-vibe-select');
+    zoneVibeSelects.forEach(select => {
+      select.addEventListener('click', (e) => {
+        e.stopPropagation();
+      });
+      select.addEventListener('change', (e) => {
+        e.stopPropagation();
+        const locId = select.dataset.locId;
+        const zoneId = select.dataset.zoneId;
+        const newVibe = select.value;
+        
+        const loc = locations.find(l => l.id === locId);
+        if (loc) {
+          ensureLocationZones(loc);
+          const zone = (loc.zones || []).find(z => z.id === zoneId);
+          if (zone) {
+            zone.vibeOverride = newVibe;
+            saveLocationsToLocalStorage();
+            
+            if (locId === activeLocationId && zoneId === activeZoneId) {
+              manualTrafficOverride = newVibe;
+              const overrideSelect = document.getElementById('live-block-override-select');
+              if (overrideSelect) {
+                overrideSelect.value = newVibe;
+              }
+              startPlaylistGeneration("", true);
             }
-            card.classList.add('expanded');
+            
+            showToast("Zone Vibe Updated", `Vibe for zone "${zone.name}" set to ${newVibe === 'auto' ? 'Automatic Schedule' : newVibe.toUpperCase()}.`, "success");
+            updateLiveStatusWidget();
           }
         }
-        
-        setTimeout(() => {
-          if (trafficSection && typeof trafficSection.scrollIntoView === 'function') {
-            trafficSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          }
-        }, 100);
-        
-        showToast("Switching Location", `Editing operating schedule for ${locations.find(l => l.id === locId).name}.`, "info");
       });
     });
   }
 
-  function openShareModal(locId) {
+  function openShareModal(locId, zoneId = null) {
     const loc = locations.find(l => l.id === locId);
     if (!loc) return;
     
@@ -4783,7 +4875,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (txtShareLink && shareModal) {
       const origin = window.location.origin || "http://localhost:8080";
-      const shareUrl = `${origin}/player.html?store=${loc.id}&email=${encodeURIComponent(activeUserEmail)}`;
+      let shareUrl = `${origin}/player.html?store=${loc.id}&email=${encodeURIComponent(activeUserEmail)}`;
+      if (zoneId) {
+        shareUrl += `&zone=${zoneId}`;
+      }
       txtShareLink.textContent = shareUrl;
       
       openModal(shareModal);
@@ -4871,6 +4966,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!loc) return;
     activeLocationId = locationId;
     storeSchedules = loc.schedules;
+    
+    ensureLocationZones(loc);
+    activeZoneId = loc.zones[0].id;
+    manualTrafficOverride = loc.zones[0].vibeOverride || 'auto';
+    const overrideSelect = document.getElementById('live-block-override-select');
+    if (overrideSelect) {
+      overrideSelect.value = manualTrafficOverride;
+    }
     
     const titleEl = document.getElementById('store-traffic-title');
     if (titleEl) {
@@ -7303,6 +7406,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (overrideSelect) {
       overrideSelect.addEventListener('change', () => {
         manualTrafficOverride = overrideSelect.value;
+        const loc = locations.find(l => l.id === activeLocationId);
+        if (loc) {
+          ensureLocationZones(loc);
+          const zone = loc.zones.find(z => z.id === activeZoneId);
+          if (zone) {
+            zone.vibeOverride = manualTrafficOverride;
+            saveLocationsToLocalStorage();
+            renderSidebarLocations();
+          }
+        }
         updateLiveStatusWidget();
         
         // If synth engine is currently playing, update parameters instantly!
