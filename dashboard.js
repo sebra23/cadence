@@ -2973,15 +2973,23 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnAddZone = document.getElementById('btn-add-zone');
   if (btnAddZone) {
     btnAddZone.addEventListener('click', () => {
-      const activeLocObj = locations.find(l => l.id === activeLocationId);
-      if (!activeLocObj) return;
+      console.log("[btnAddZone] Clicked. activeLocationId:", activeLocationId, "locations count:", locations.length);
+      const activeLocObj = locations.find(l => l.id === activeLocationId) || locations[0];
+      if (!activeLocObj) {
+        console.error("[btnAddZone] No store location found.");
+        showToast("No Store Found", "Please configure or select a store location first.", "warning");
+        return;
+      }
       ensureLocationZones(activeLocObj);
       if (activeLocObj.zones.length >= 5) {
         showToast("Zone Limit Reached", "A location can have at most 5 zones.", "warning");
         return;
       }
       const zoneName = prompt("Enter zone name (e.g. VIP Lounge, Restrooms):");
-      if (!zoneName) return;
+      if (!zoneName) {
+        console.log("[btnAddZone] No zone name provided by user.");
+        return;
+      }
       const zoneId = 'zone-' + Date.now();
       activeLocObj.zones.push({
         id: zoneId,
