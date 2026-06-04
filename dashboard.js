@@ -5911,7 +5911,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const cardRecentLib = document.getElementById('card-recent-library');
     const btnLibraryBack = document.getElementById('btn-library-back');
 
-    function showLibraryDetail(playlistId = 'library', coverSrc = 'my_library_cover.png', title = 'My Library', desc = 'Manage your active tracks, upload new audio assets, and expand your catalog with custom AI mixes.') {
+    function showLibraryDetail(playlistId = 'library', coverSrc = 'my_library_cover.png', title = 'Favourites', desc = 'Manage your active tracks, upload new audio assets, and expand your catalog with custom AI mixes.') {
       activeDetailPlaylist = playlistId;
       
       const coverEl = document.getElementById('detail-playlist-cover');
@@ -7211,9 +7211,9 @@ document.addEventListener('DOMContentLoaded', () => {
       if (ownedSongs.length > 0) {
         playlistSongs = [...ownedSongs];
         playPlaylistTrack(ownedSongs[0]);
-        showToast("Playing Library", "Started synthesizer stream of your owned tracks.", "success");
+        showToast("Playing Favourites", "Started synthesizer stream of your owned tracks.", "success");
       } else {
-        showToast("Library Empty", "Add some songs or generate a suggested mix first!", "warning");
+        showToast("Favourites Empty", "Add some songs or generate a suggested mix first!", "warning");
       }
     }
 
