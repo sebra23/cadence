@@ -2262,6 +2262,86 @@ document.addEventListener('DOMContentLoaded', () => {
     return 'closed';
   }
 
+  function updateDualSliderHighlights() {
+    const categories = ['calm', 'flow', 'drive', 'after'];
+    
+    // Main dashboard sliders
+    const mainStart = document.getElementById('slider-opening-start');
+    const mainEnd = document.getElementById('slider-opening-end');
+    if (mainStart && mainEnd) {
+      const min = parseInt(mainStart.value);
+      const max = parseInt(mainEnd.value);
+      const range = max - min;
+      categories.forEach(type => {
+        const sEl = document.getElementById(`slider-${type}-start`);
+        const eEl = document.getElementById(`slider-${type}-end`);
+        const fill = document.getElementById(`fill-${type}`);
+        if (sEl && eEl && fill) {
+          const sVal = parseInt(sEl.value);
+          const eVal = parseInt(eEl.value);
+          if (range > 0) {
+            const left = ((sVal - min) / range) * 100;
+            const width = ((eVal - sVal) / range) * 100;
+            fill.style.left = `${left}%`;
+            fill.style.width = `${width}%`;
+          } else {
+            fill.style.left = `0%`;
+            fill.style.width = `0%`;
+          }
+        }
+      });
+    }
+
+    // Modal popup sliders
+    const modalStart = document.getElementById('modal-slider-opening-start');
+    const modalEnd = document.getElementById('modal-slider-opening-end');
+    if (modalStart && modalEnd) {
+      const min = parseInt(modalStart.value);
+      const max = parseInt(modalEnd.value);
+      const range = max - min;
+      categories.forEach(type => {
+        const sEl = document.getElementById(`modal-slider-${type}-start`);
+        const eEl = document.getElementById(`modal-slider-${type}-end`);
+        const fill = document.getElementById(`modal-fill-${type}`);
+        if (sEl && eEl && fill) {
+          const sVal = parseInt(sEl.value);
+          const eVal = parseInt(eEl.value);
+          if (range > 0) {
+            const left = ((sVal - min) / range) * 100;
+            const width = ((eVal - sVal) / range) * 100;
+            fill.style.left = `${left}%`;
+            fill.style.width = `${width}%`;
+          } else {
+            fill.style.left = `0%`;
+            fill.style.width = `0%`;
+          }
+        }
+      });
+    }
+  }
+
+  // Handle overlapping thumbs by raising z-index on active slider interaction
+  const wireZIndexSwap = (startId, endId) => {
+    const s = document.getElementById(startId);
+    const e = document.getElementById(endId);
+    if (s && e) {
+      s.addEventListener('input', () => {
+        s.style.zIndex = "4";
+        e.style.zIndex = "3";
+      });
+      e.addEventListener('input', () => {
+        e.style.zIndex = "4";
+        s.style.zIndex = "3";
+      });
+    }
+  };
+  
+  // Wire up z-index swapping for main and modal dual sliders
+  ['calm', 'flow', 'drive', 'after'].forEach(type => {
+    wireZIndexSwap(`slider-${type}-start`, `slider-${type}-end`);
+    wireZIndexSwap(`modal-slider-${type}-start`, `modal-slider-${type}-end`);
+  });
+
   function updateTrafficTimeline(e) {
     const targetEl = e ? e.target : null;
     const startInput = document.getElementById('slider-opening-start');
@@ -2423,6 +2503,7 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     }
     saveLocationsToLocalStorage();
+    updateDualSliderHighlights();
   }
 
   function loadActiveDaySchedule() {
@@ -2687,6 +2768,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ${formatHour(schedule.afterStart)} - ${formatHour(schedule.afterEnd)} (After Hours)
       `;
     }
+    updateDualSliderHighlights();
   }
 
   function loadActiveDayModalSchedule() {

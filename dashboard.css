@@ -6638,4 +6638,99 @@ ul {
   }
 }
 
+/* Premium Dual-Range Slider Component */
+.dual-range-container {
+  position: relative;
+  width: 100%;
+  height: 24px;
+  margin: 6px 0;
+  display: flex;
+  align-items: center;
+}
+
+.dual-range-track {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: #1c1c28;
+  border-radius: 3px;
+  z-index: 1;
+}
+
+.dual-range-highlight {
+  position: absolute;
+  height: 6px;
+  background: linear-gradient(90deg, var(--color-purple-primary), var(--color-purple-light));
+  border-radius: 3px;
+  z-index: 2;
+}
+
+.dual-slider {
+  position: absolute;
+  width: 100%;
+  height: 24px;
+  background: transparent !important;
+  -webkit-appearance: none;
+  appearance: none;
+  pointer-events: none;
+  margin: 0;
+  outline: none;
+  border: none !important;
+  z-index: 3;
+}
+
+/* Hide WebKit and Mozilla browser tracks so custom track is visible */
+.dual-slider::-webkit-slider-runnable-track {
+  background: transparent !important;
+  border: none !important;
+}
+
+.dual-slider::-moz-range-track {
+  background: transparent !important;
+  border: none !important;
+}
+
+/* WebKit Slider Thumb */
+.dual-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--color-purple-light);
+  cursor: pointer;
+  border: 2px solid var(--color-purple-primary);
+  box-shadow: 0 0 10px rgba(124, 58, 237, 0.4);
+  transition: transform 0.1s, background-color 0.2s;
+  pointer-events: auto; /* Re-enable pointer events for thumb only */
+  position: relative;
+  z-index: 4;
+}
+
+.dual-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  background: var(--color-text-primary);
+}
+
+/* Mozilla Slider Thumb */
+.dual-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--color-purple-light);
+  cursor: pointer;
+  border: 2px solid var(--color-purple-primary);
+  box-shadow: 0 0 10px rgba(124, 58, 237, 0.4);
+  transition: transform 0.1s, background-color 0.2s;
+  pointer-events: auto; /* Re-enable pointer events for thumb only */
+  position: relative;
+  z-index: 4;
+}
+
+.dual-slider::-moz-range-thumb:hover {
+  transform: scale(1.2);
+  background: var(--color-text-primary);
+}
+
 

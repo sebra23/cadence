@@ -499,15 +499,11 @@
                         <span>Morning Calm:</span>
                         <strong id="label-calm-range">8:00 AM - 11:00 AM</strong>
                       </div>
-                      <div class="range-sliders-wrapper">
-                        <div class="range-slider-row">
-                          <span class="slider-type-label">Start:</span>
-                          <input type="range" id="slider-calm-start" min="6" max="23" value="8" class="premium-slider slider-purple w-full">
-                        </div>
-                        <div class="range-slider-row">
-                          <span class="slider-type-label">End:</span>
-                          <input type="range" id="slider-calm-end" min="6" max="23" value="11" class="premium-slider slider-purple w-full">
-                        </div>
+                      <div class="dual-range-container">
+                        <div class="dual-range-track"></div>
+                        <div class="dual-range-highlight" id="fill-calm"></div>
+                        <input type="range" id="slider-calm-start" min="6" max="23" value="8" class="dual-slider">
+                        <input type="range" id="slider-calm-end" min="6" max="23" value="11" class="dual-slider">
                       </div>
                     </div>
                     
@@ -517,15 +513,11 @@
                         <span>Midday Flow:</span>
                         <strong id="label-flow-range">11:00 AM - 3:00 PM</strong>
                       </div>
-                      <div class="range-sliders-wrapper">
-                        <div class="range-slider-row">
-                          <span class="slider-type-label">Start:</span>
-                          <input type="range" id="slider-flow-start" min="6" max="23" value="11" class="premium-slider slider-purple w-full">
-                        </div>
-                        <div class="range-slider-row">
-                          <span class="slider-type-label">End:</span>
-                          <input type="range" id="slider-flow-end" min="6" max="23" value="15" class="premium-slider slider-purple w-full">
-                        </div>
+                      <div class="dual-range-container">
+                        <div class="dual-range-track"></div>
+                        <div class="dual-range-highlight" id="fill-flow"></div>
+                        <input type="range" id="slider-flow-start" min="6" max="23" value="11" class="dual-slider">
+                        <input type="range" id="slider-flow-end" min="6" max="23" value="15" class="dual-slider">
                       </div>
                     </div>
                     
@@ -535,15 +527,11 @@
                         <span>Peak Drive:</span>
                         <strong id="label-drive-range">3:00 PM - 7:00 PM</strong>
                       </div>
-                      <div class="range-sliders-wrapper">
-                        <div class="range-slider-row">
-                          <span class="slider-type-label">Start:</span>
-                          <input type="range" id="slider-drive-start" min="6" max="23" value="15" class="premium-slider slider-purple w-full">
-                        </div>
-                        <div class="range-slider-row">
-                          <span class="slider-type-label">End:</span>
-                          <input type="range" id="slider-drive-end" min="6" max="23" value="19" class="premium-slider slider-purple w-full">
-                        </div>
+                      <div class="dual-range-container">
+                        <div class="dual-range-track"></div>
+                        <div class="dual-range-highlight" id="fill-drive"></div>
+                        <input type="range" id="slider-drive-start" min="6" max="23" value="15" class="dual-slider">
+                        <input type="range" id="slider-drive-end" min="6" max="23" value="19" class="dual-slider">
                       </div>
                     </div>
                     
@@ -553,15 +541,11 @@
                         <span>After Hours:</span>
                         <strong id="label-after-range">7:00 PM - 9:00 PM</strong>
                       </div>
-                      <div class="range-sliders-wrapper">
-                        <div class="range-slider-row">
-                          <span class="slider-type-label">Start:</span>
-                          <input type="range" id="slider-after-start" min="6" max="23" value="19" class="premium-slider slider-purple w-full">
-                        </div>
-                        <div class="range-slider-row">
-                          <span class="slider-type-label">End:</span>
-                          <input type="range" id="slider-after-end" min="6" max="23" value="21" class="premium-slider slider-purple w-full">
-                        </div>
+                      <div class="dual-range-container">
+                        <div class="dual-range-track"></div>
+                        <div class="dual-range-highlight" id="fill-after"></div>
+                        <input type="range" id="slider-after-start" min="6" max="23" value="19" class="dual-slider">
+                        <input type="range" id="slider-after-end" min="6" max="23" value="21" class="dual-slider">
                       </div>
                     </div>
                   </div>
@@ -1511,15 +1495,11 @@
                     </span>
                     <strong id="modal-label-calm-range">8:00 AM - 11:00 AM</strong>
                   </div>
-                  <div class="range-sliders-wrapper" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                    <div class="range-slider-row" style="display: flex; align-items: center; gap: 6px;">
-                      <span style="font-size: 0.7rem; color: var(--color-text-muted);">Start:</span>
-                      <input type="range" id="modal-slider-calm-start" min="6" max="23" value="8" class="premium-slider slider-purple w-full">
-                    </div>
-                    <div class="range-slider-row" style="display: flex; align-items: center; gap: 6px;">
-                      <span style="font-size: 0.7rem; color: var(--color-text-muted);">End:</span>
-                      <input type="range" id="modal-slider-calm-end" min="6" max="23" value="11" class="premium-slider slider-purple w-full">
-                    </div>
+                  <div class="dual-range-container">
+                    <div class="dual-range-track"></div>
+                    <div class="dual-range-highlight" id="modal-fill-calm"></div>
+                    <input type="range" id="modal-slider-calm-start" min="6" max="23" value="8" class="dual-slider">
+                    <input type="range" id="modal-slider-calm-end" min="6" max="23" value="11" class="dual-slider">
                   </div>
                 </div>
                 
@@ -1531,15 +1511,11 @@
                     </span>
                     <strong id="modal-label-flow-range">11:00 AM - 3:00 PM</strong>
                   </div>
-                  <div class="range-sliders-wrapper" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                    <div class="range-slider-row" style="display: flex; align-items: center; gap: 6px;">
-                      <span style="font-size: 0.7rem; color: var(--color-text-muted);">Start:</span>
-                      <input type="range" id="modal-slider-flow-start" min="6" max="23" value="11" class="premium-slider slider-purple w-full">
-                    </div>
-                    <div class="range-slider-row" style="display: flex; align-items: center; gap: 6px;">
-                      <span style="font-size: 0.7rem; color: var(--color-text-muted);">End:</span>
-                      <input type="range" id="modal-slider-flow-end" min="6" max="23" value="15" class="premium-slider slider-purple w-full">
-                    </div>
+                  <div class="dual-range-container">
+                    <div class="dual-range-track"></div>
+                    <div class="dual-range-highlight" id="modal-fill-flow"></div>
+                    <input type="range" id="modal-slider-flow-start" min="6" max="23" value="11" class="dual-slider">
+                    <input type="range" id="modal-slider-flow-end" min="6" max="23" value="15" class="dual-slider">
                   </div>
                 </div>
                 
@@ -1551,15 +1527,11 @@
                     </span>
                     <strong id="modal-label-drive-range">3:00 PM - 7:00 PM</strong>
                   </div>
-                  <div class="range-sliders-wrapper" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                    <div class="range-slider-row" style="display: flex; align-items: center; gap: 6px;">
-                      <span style="font-size: 0.7rem; color: var(--color-text-muted);">Start:</span>
-                      <input type="range" id="modal-slider-drive-start" min="6" max="23" value="15" class="premium-slider slider-purple w-full">
-                    </div>
-                    <div class="range-slider-row" style="display: flex; align-items: center; gap: 6px;">
-                      <span style="font-size: 0.7rem; color: var(--color-text-muted);">End:</span>
-                      <input type="range" id="modal-slider-drive-end" min="6" max="23" value="19" class="premium-slider slider-purple w-full">
-                    </div>
+                  <div class="dual-range-container">
+                    <div class="dual-range-track"></div>
+                    <div class="dual-range-highlight" id="modal-fill-drive"></div>
+                    <input type="range" id="modal-slider-drive-start" min="6" max="23" value="15" class="dual-slider">
+                    <input type="range" id="modal-slider-drive-end" min="6" max="23" value="19" class="dual-slider">
                   </div>
                 </div>
                 
@@ -1571,15 +1543,11 @@
                     </span>
                     <strong id="modal-label-after-range">7:00 PM - 9:00 PM</strong>
                   </div>
-                  <div class="range-sliders-wrapper" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                    <div class="range-slider-row" style="display: flex; align-items: center; gap: 6px;">
-                      <span style="font-size: 0.7rem; color: var(--color-text-muted);">Start:</span>
-                      <input type="range" id="modal-slider-after-start" min="6" max="23" value="19" class="premium-slider slider-purple w-full">
-                    </div>
-                    <div class="range-slider-row" style="display: flex; align-items: center; gap: 6px;">
-                      <span style="font-size: 0.7rem; color: var(--color-text-muted);">End:</span>
-                      <input type="range" id="modal-slider-after-end" min="6" max="23" value="21" class="premium-slider slider-purple w-full">
-                    </div>
+                  <div class="dual-range-container">
+                    <div class="dual-range-track"></div>
+                    <div class="dual-range-highlight" id="modal-fill-after"></div>
+                    <input type="range" id="modal-slider-after-start" min="6" max="23" value="19" class="dual-slider">
+                    <input type="range" id="modal-slider-after-end" min="6" max="23" value="21" class="dual-slider">
                   </div>
                 </div>
               </div>
