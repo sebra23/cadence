@@ -4512,10 +4512,32 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         const cards = document.querySelectorAll('.sidebar-location-card');
         if (cards[idx]) {
-          const trackTextEl = cards[idx].querySelector('.sidebar-loc-playing-track-text');
-          if (trackTextEl) {
-            trackTextEl.textContent = getNowPlayingForStore(loc);
-          }
+          ensureLocationZones(loc);
+          (loc.zones || []).forEach(zone => {
+            const trackTextEl = cards[idx].querySelector(`.sidebar-loc-playing-track-text[data-zone-id="${zone.id}"]`);
+            if (trackTextEl) {
+              const zonePlaying = getNowPlayingForZone(loc, zone);
+              trackTextEl.textContent = zonePlaying;
+              trackTextEl.title = zonePlaying;
+              
+              const isCurrent = (loc.id === activeLocationId);
+              const isZoneActive = isCurrent && zone.id === activeZoneId;
+              const isPlaying = isPlaylistPlaying && isZoneActive;
+              
+              const parentEl = trackTextEl.closest('.sidebar-zone-item');
+              if (parentEl) {
+                parentEl.style.borderLeftColor = isZoneActive ? 'var(--color-purple)' : 'transparent';
+                // First element in the right flex container is the icon span
+                const iconSpan = parentEl.querySelector('div > span:first-child');
+                if (iconSpan) {
+                  iconSpan.textContent = isZoneActive ? '🔊' : '🎵';
+                  iconSpan.style.animation = isPlaying ? 'pulse-audio 1.5s infinite' : 'none';
+                }
+              }
+              trackTextEl.style.color = isZoneActive ? 'var(--color-purple-light)' : 'rgba(255, 255, 255, 0.7)';
+              trackTextEl.style.fontWeight = isZoneActive ? '600' : 'normal';
+            }
+          });
         }
       });
     }
@@ -4586,6 +4608,54 @@ document.addEventListener('DOMContentLoaded', () => {
     const track = candidates[index];
     return `${track.title} - ${track.artist}`;
   }
+  function getNowPlayingForZone(loc, zone) {
+    const isCurrentLoc = (loc.id === activeLocationId);
+    if (isCurrentLoc) {
+      if (zone.id === activeZoneId) {
+        if (activePlaylistTrack) {
+          return `${activePlaylistTrack.title} - ${activePlaylistTrack.artist}${isPlaylistPlaying ? '' : ' (Paused)'}`;
+        }
+        return isPlaylistPlaying ? "Custom Ambient Soundscape" : "Playback Idle";
+      }
+      if (!isPlaylistPlaying) {
+        return "Playback Idle";
+      }
+    }
+    
+    // Stable mock based on loc and zone IDs
+    const localTimeStr = getStoreLocalTime(loc.timezone);
+    let hour = 12;
+    if (localTimeStr) {
+      const match = localTimeStr.match(/^(\d+):(\d+)\s*(AM|PM)/i);
+      if (match) {
+        let h = parseInt(match[1]);
+        const isPm = match[3].toUpperCase() === 'PM';
+        if (isPm && h !== 12) h += 12;
+        if (!isPm && h === 12) h = 0;
+        hour = h;
+      }
+    }
+
+    let category = 'calm';
+    if (hour >= 8 && hour < 11) category = 'calm';
+    else if (hour >= 11 && hour < 15) category = 'flow';
+    else if (hour >= 15 && hour < 19) category = 'drive';
+    else category = 'after';
+
+    const catalog = (themedTracksDict.sunday || []).concat(themedTracksDict.summer || [], themedTracksDict.synth || []);
+    const candidates = catalog.filter(t => t.category === category);
+    if (candidates.length === 0) return "Equator Wind - Latitude 0";
+    
+    let hash = 0;
+    const str = loc.id + '-' + zone.id;
+    for (let i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    hash = Math.abs(hash);
+    const index = hash % candidates.length;
+    const track = candidates[index];
+    return `${track.title} - ${track.artist}`;
+  }
 
   function renderSidebarLocations() {
     const listContainer = document.getElementById('sidebar-locations-list');
@@ -4593,13 +4663,13 @@ document.addEventListener('DOMContentLoaded', () => {
     listContainer.innerHTML = '';
     
     locations.forEach(loc => {
+      ensureLocationZones(loc);
       const isCurrent = (loc.id === activeLocationId);
       const card = document.createElement('div');
       card.className = `sidebar-location-card${isCurrent ? ' active' : ''}`;
       card.dataset.id = loc.id;
       
       const localTimeStr = getStoreLocalTime(loc.timezone);
-      const nowPlayingTrackStr = getNowPlayingForStore(loc);
       
       card.innerHTML = `
         <div class="sidebar-loc-header">
@@ -4616,12 +4686,26 @@ document.addEventListener('DOMContentLoaded', () => {
           <span>Local Time: ${localTimeStr} (${loc.timezone})</span>
         </div>
         
-        <div class="sidebar-loc-playing" style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed rgba(255, 255, 255, 0.06); font-size: 0.8rem; color: var(--color-text-secondary); display: flex; align-items: center; gap: 8px;">
-          <span class="playing-pulse-icon" style="color: var(--color-purple-light); font-size: 1rem; display: inline-block; animation: pulse-audio 1.5s infinite;">🎵</span>
-          <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1;">
-            <span style="font-weight: 500; color: #fff;">Now Playing:</span> 
-            <span class="sidebar-loc-playing-track-text" style="color: var(--color-purple-light); font-weight: 500;">${nowPlayingTrackStr}</span>
-          </div>
+        <div class="sidebar-loc-zones" style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed rgba(255, 255, 255, 0.06); display: flex; flex-direction: column; gap: 6px;">
+          <div style="font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted); margin-bottom: 2px;">Zones &amp; Playback</div>
+          ${(loc.zones || []).map(zone => {
+            const zonePlaying = getNowPlayingForZone(loc, zone);
+            const isZoneActive = isCurrent && zone.id === activeZoneId;
+            const isPlaying = isPlaylistPlaying && isZoneActive;
+            const icon = isZoneActive ? '🔊' : '🎵';
+            const textColor = isZoneActive ? 'var(--color-purple-light)' : 'rgba(255, 255, 255, 0.7)';
+            const fontWeight = isZoneActive ? '600' : 'normal';
+            
+            return `
+              <div class="sidebar-zone-item" data-zone-id="${zone.id}" style="display: flex; align-items: center; justify-content: space-between; font-size: 0.78rem; background: rgba(255, 255, 255, 0.01); padding: 5px 8px; border-radius: 6px; border-left: 2px solid ${isZoneActive ? 'var(--color-purple)' : 'transparent'}; transition: all 0.2s ease;">
+                <div style="font-weight: 500; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100px; flex-shrink: 0;" title="${zone.name}">${zone.name}</div>
+                <div style="display: flex; align-items: center; gap: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-grow: 1; justify-content: flex-end;">
+                  <span style="font-size: 0.8rem; flex-shrink: 0; animation: ${isPlaying ? 'pulse-audio 1.5s infinite' : 'none'};">${icon}</span>
+                  <span class="sidebar-loc-playing-track-text" data-zone-id="${zone.id}" style="color: ${textColor}; font-weight: ${fontWeight}; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${zonePlaying}">${zonePlaying}</span>
+                </div>
+              </div>
+            `;
+          }).join('')}
         </div>
 
         <div class="sidebar-loc-actions" style="margin-top: 12px;">
