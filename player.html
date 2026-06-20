@@ -733,6 +733,29 @@
       };
     }
 
+    // Merge workspace songs in player.html
+    try {
+      let ownedSongs = [];
+      const scopedOwnedKey = getScopedKey('cady-owned-songs');
+      const savedOwnedSongs = localStorage.getItem(scopedOwnedKey);
+      if (savedOwnedSongs) {
+        ownedSongs = JSON.parse(savedOwnedSongs);
+      }
+      const existingAudioUrls = new Set(ownedSongs.map(s => s.audioUrl));
+      let ownedSongsUpdated = false;
+      workspaceSongs.forEach(song => {
+        if (!existingAudioUrls.has(song.audioUrl)) {
+          ownedSongs.push(song);
+          ownedSongsUpdated = true;
+        }
+      });
+      if (ownedSongsUpdated) {
+        localStorage.setItem(scopedOwnedKey, JSON.stringify(ownedSongs));
+      }
+    } catch (e) {
+      console.error("Failed to sync workspace songs in player:", e);
+    }
+
     // Set UI metadata
     document.title = `${activeStore.name} - Cady Player`;
     document.getElementById('lbl-store-name').textContent = activeStore.name;
@@ -814,7 +837,7 @@
         { id: 50, title: "After Hours #14", bpm: 84, category: "after", artist: "Air", album: "Coming Home", basePrompt: "The brand's most beautiful track. Rhodes theme that feels like coming home. Perfect ending note.", imageId: "1501854140801-50d01698950b" }
       ];
 
-      return rawSongs.map(song => {
+      const mappedRawSongs = rawSongs.map(song => {
         const promptText = `brand="${brand}" + prompt="[PERSONA: ${currentPersonaId}] ${song.basePrompt}"`;
         const durationSeconds = 210;
         const durationString = "3:30";
@@ -831,14 +854,761 @@
           coverUrl: `https://images.unsplash.com/photo-${song.imageId}?q=80&w=150&auto=format&fit=crop`
         };
       });
+
+      let ownedSongs = [];
+      try {
+        const savedOwned = localStorage.getItem(getScopedKey('cady-owned-songs'));
+        if (savedOwned) {
+          ownedSongs = JSON.parse(savedOwned);
+        }
+      } catch (e) {}
+
+      const customSunoSongs = ownedSongs.filter(s => s && s.audioUrl);
+      const seenTitles = new Set(customSunoSongs.map(s => s.title.toLowerCase().trim()));
+      const filteredRawSongs = mappedRawSongs.filter(s => !seenTitles.has(s.title.toLowerCase().trim()));
+
+      const combinedSongs = [...customSunoSongs, ...filteredRawSongs].slice(0, 120);
+      return combinedSongs.map((song, index) => {
+        return {
+          ...song,
+          id: index + 1
+        };
+      });
     }
 
     const playlistSongs = generateMockPlaylist(activeStore.name);
+    if (document.querySelector('.playlist-count')) {
+      document.querySelector('.playlist-count').textContent = `${playlistSongs.length} Tracks Adaptable`;
+    }
     let activeTrack = playlistSongs[0];
     let isPlaying = false;
     let playbackSeconds = 0;
     let playbackInterval = null;
     let volumeLevel = 0.6;
+    let nativeAudio = null;
+    const workspaceSongs = [
+  {
+    "id": 100,
+    "title": "Angels Dont Come",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "calm",
+    "bpm": 65,
+    "duration": "3:55",
+    "durationSeconds": 235,
+    "audioUrl": "My Workspace/Angels Dont Come.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 101,
+    "title": "Animal Inside",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "flow",
+    "bpm": 86,
+    "duration": "4:14",
+    "durationSeconds": 254,
+    "audioUrl": "My Workspace/Animal Inside.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1518241353330-0f7941c2d9b5?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 102,
+    "title": "Aperitivo Door",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "flow",
+    "bpm": 87,
+    "duration": "3:21",
+    "durationSeconds": 201,
+    "audioUrl": "My Workspace/Aperitivo Door.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 103,
+    "title": "Basement Beast",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "drive",
+    "bpm": 108,
+    "duration": "3:35",
+    "durationSeconds": 215,
+    "audioUrl": "My Workspace/Basement Beast.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1497250681960-ef046c08a56e?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 104,
+    "title": "Bathroom Sponge",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "calm",
+    "bpm": 69,
+    "duration": "4:13",
+    "durationSeconds": 253,
+    "audioUrl": "My Workspace/Bathroom Sponge.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 105,
+    "title": "Birthday Cake Nobody Ate",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "calm",
+    "bpm": 70,
+    "duration": "1:35",
+    "durationSeconds": 95,
+    "audioUrl": "My Workspace/Birthday Cake Nobody Ate.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1485182708500-e8f17318ac7c?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 106,
+    "title": "Blue Cushion",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "calm",
+    "bpm": 71,
+    "duration": "3:35",
+    "durationSeconds": 215,
+    "audioUrl": "My Workspace/Blue Cushion.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 107,
+    "title": "Blue Mountains",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "calm",
+    "bpm": 72,
+    "duration": "3:38",
+    "durationSeconds": 218,
+    "audioUrl": "My Workspace/Blue Mountains.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 108,
+    "title": "Cart Full Nothing",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "flow",
+    "bpm": 93,
+    "duration": "2:44",
+    "durationSeconds": 164,
+    "audioUrl": "My Workspace/Cart Full Nothing.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 109,
+    "title": "Casual Luxury",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "flow",
+    "bpm": 94,
+    "duration": "3:33",
+    "durationSeconds": 213,
+    "audioUrl": "My Workspace/Casual Luxury.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1518609878373-06d740f60d8b?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 110,
+    "title": "Chasing Sunset",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "after",
+    "bpm": 80,
+    "duration": "4:04",
+    "durationSeconds": 244,
+    "audioUrl": "My Workspace/Chasing Sunset.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1501854140801-50d01698950b?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 111,
+    "title": "Citrus Punctuation",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "flow",
+    "bpm": 96,
+    "duration": "3:32",
+    "durationSeconds": 212,
+    "audioUrl": "My Workspace/Citrus Punctuation.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1475113548554-5a36f1f523d6?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 112,
+    "title": "Coffee Cup Static",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "calm",
+    "bpm": 77,
+    "duration": "4:28",
+    "durationSeconds": 268,
+    "audioUrl": "My Workspace/Coffee Cup Static.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 113,
+    "title": "Cool My Desire",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "drive",
+    "bpm": 118,
+    "duration": "4:34",
+    "durationSeconds": 274,
+    "audioUrl": "My Workspace/Cool My Desire.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1488646953014-85cb44e25828?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 114,
+    "title": "Cork Pop Sound",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "flow",
+    "bpm": 85,
+    "duration": "1:42",
+    "durationSeconds": 102,
+    "audioUrl": "My Workspace/Cork Pop Sound.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1528605248644-14dd04022da1?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 115,
+    "title": "Door Closing",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "flow",
+    "bpm": 86,
+    "duration": "3:54",
+    "durationSeconds": 234,
+    "audioUrl": "My Workspace/Door Closing.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 116,
+    "title": "Door Locked",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "calm",
+    "bpm": 67,
+    "duration": "3:39",
+    "durationSeconds": 219,
+    "audioUrl": "My Workspace/Door Locked.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1500485035595-cbe6f645feb1?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 117,
+    "title": "Doorway Mercy",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "calm",
+    "bpm": 68,
+    "duration": "4:25",
+    "durationSeconds": 265,
+    "audioUrl": "My Workspace/Doorway Mercy.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 118,
+    "title": "Doorway Reservation",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "flow",
+    "bpm": 89,
+    "duration": "3:43",
+    "durationSeconds": 223,
+    "audioUrl": "My Workspace/Doorway Reservation.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 119,
+    "title": "Evening Shift Uniform",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "drive",
+    "bpm": 108,
+    "duration": "3:48",
+    "durationSeconds": 228,
+    "audioUrl": "My Workspace/Evening Shift Uniform.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 120,
+    "title": "Expensive Amber",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "after",
+    "bpm": 74,
+    "duration": "3:38",
+    "durationSeconds": 218,
+    "audioUrl": "My Workspace/Expensive Amber.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1490730141103-6cac27aaab94?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 121,
+    "title": "Ficus Leaf Refrain",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "calm",
+    "bpm": 72,
+    "duration": "3:18",
+    "durationSeconds": 198,
+    "audioUrl": "My Workspace/Ficus Leaf Refrain.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1506157786151-b8491531f063?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 122,
+    "title": "First-Time Echo",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "calm",
+    "bpm": 73,
+    "duration": "3:54",
+    "durationSeconds": 234,
+    "audioUrl": "My Workspace/First-Time Echo.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1518495973542-4542c06a5843?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 123,
+    "title": "Ground Wire Spark",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "drive",
+    "bpm": 112,
+    "duration": "4:01",
+    "durationSeconds": 241,
+    "audioUrl": "My Workspace/Ground Wire Spark.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 124,
+    "title": "Horizon Clothespin",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "calm",
+    "bpm": 75,
+    "duration": "3:49",
+    "durationSeconds": 229,
+    "audioUrl": "My Workspace/Horizon Clothespin.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 125,
+    "title": "Hostage Velvet Coat",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "after",
+    "bpm": 79,
+    "duration": "2:52",
+    "durationSeconds": 172,
+    "audioUrl": "My Workspace/Hostage Velvet Coat.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1483821838846-899ee6942741?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 126,
+    "title": "Hotel Receipt",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "after",
+    "bpm": 80,
+    "duration": "3:55",
+    "durationSeconds": 235,
+    "audioUrl": "My Workspace/Hotel Receipt.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1473496191134-8b59079e54a5?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 127,
+    "title": "Ice Class Percussion",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "flow",
+    "bpm": 98,
+    "duration": "3:58",
+    "durationSeconds": 238,
+    "audioUrl": "My Workspace/Ice Class Percussion.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1511192336575-5a79af67a629?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 128,
+    "title": "Ignition Glass",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "drive",
+    "bpm": 117,
+    "duration": "3:40",
+    "durationSeconds": 220,
+    "audioUrl": "My Workspace/Ignition Glass.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 129,
+    "title": "Left Light On",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "flow",
+    "bpm": 86,
+    "duration": "1:40",
+    "durationSeconds": 100,
+    "audioUrl": "My Workspace/Left Light On.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 130,
+    "title": "Light on Corners",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "calm",
+    "bpm": 67,
+    "duration": "3:55",
+    "durationSeconds": 235,
+    "audioUrl": "My Workspace/Light on Corners.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 131,
+    "title": "Little Name Tragedy",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "after",
+    "bpm": 85,
+    "duration": "3:16",
+    "durationSeconds": 196,
+    "audioUrl": "My Workspace/Little Name Tragedy.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1453728013993-6d66e9c9123a?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 132,
+    "title": "Long Shadow",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "after",
+    "bpm": 70,
+    "duration": "3:42",
+    "durationSeconds": 222,
+    "audioUrl": "My Workspace/Long Shadow.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 133,
+    "title": "Low Tide Witness",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "after",
+    "bpm": 71,
+    "duration": "3:50",
+    "durationSeconds": 230,
+    "audioUrl": "My Workspace/Low Tide Witness.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1471478331149-c72f17e33c73?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 134,
+    "title": "Midday Melt",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "flow",
+    "bpm": 91,
+    "duration": "2:56",
+    "durationSeconds": 176,
+    "audioUrl": "My Workspace/Midday Melt.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 135,
+    "title": "Moon Sliver",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "after",
+    "bpm": 73,
+    "duration": "2:21",
+    "durationSeconds": 141,
+    "audioUrl": "My Workspace/Moon Sliver.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 136,
+    "title": "Neon Diploma",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "flow",
+    "bpm": 93,
+    "duration": "3:47",
+    "durationSeconds": 227,
+    "audioUrl": "My Workspace/Neon Diploma.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 137,
+    "title": "Neon Velocity",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "drive",
+    "bpm": 110,
+    "duration": "4:15",
+    "durationSeconds": 255,
+    "audioUrl": "My Workspace/Neon Velocity.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 138,
+    "title": "Orange Leaves",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "flow",
+    "bpm": 95,
+    "duration": "3:44",
+    "durationSeconds": 224,
+    "audioUrl": "My Workspace/Orange Leaves.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1541701494587-cb58502866ab?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 139,
+    "title": "Rusted Panel Roof",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "flow",
+    "bpm": 96,
+    "duration": "1:38",
+    "durationSeconds": 98,
+    "audioUrl": "My Workspace/Rusted Panel Roof.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 140,
+    "title": "Seven Letters",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "calm",
+    "bpm": 77,
+    "duration": "3:29",
+    "durationSeconds": 209,
+    "audioUrl": "My Workspace/Seven Letters.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1567095761054-7a02e69e5c43?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 141,
+    "title": "Shaded Corners",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "calm",
+    "bpm": 78,
+    "duration": "3:07",
+    "durationSeconds": 187,
+    "audioUrl": "My Workspace/Shaded Corners.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 142,
+    "title": "Silver Faces Filters",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "flow",
+    "bpm": 85,
+    "duration": "2:44",
+    "durationSeconds": 164,
+    "audioUrl": "My Workspace/Silver Faces Filters.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 143,
+    "title": "Skin-Remember",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "after",
+    "bpm": 81,
+    "duration": "3:29",
+    "durationSeconds": 209,
+    "audioUrl": "My Workspace/Skin-Remember.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 144,
+    "title": "Soft Focus Lounge",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "calm",
+    "bpm": 67,
+    "duration": "3:05",
+    "durationSeconds": 185,
+    "audioUrl": "My Workspace/Soft Focus Lounge.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1618005198140-d5a800dd7215?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 145,
+    "title": "Static Coffee Cup",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "calm",
+    "bpm": 68,
+    "duration": "4:18",
+    "durationSeconds": 258,
+    "audioUrl": "My Workspace/Static Coffee Cup.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1620641788421-7a1c342ea413?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 146,
+    "title": "Subwoofer Heartbeat",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "drive",
+    "bpm": 119,
+    "duration": "3:31",
+    "durationSeconds": 211,
+    "audioUrl": "My Workspace/Subwoofer Heartbeat.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb6?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 147,
+    "title": "Subwoofer Heartbeat_1",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "drive",
+    "bpm": 120,
+    "duration": "3:15",
+    "durationSeconds": 195,
+    "audioUrl": "My Workspace/Subwoofer Heartbeat_1.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 148,
+    "title": "Terrace Magic",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "flow",
+    "bpm": 91,
+    "duration": "3:28",
+    "durationSeconds": 208,
+    "audioUrl": "My Workspace/Terrace Magic.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 149,
+    "title": "Terrace Magic_1",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "flow",
+    "bpm": 92,
+    "duration": "3:36",
+    "durationSeconds": 216,
+    "audioUrl": "My Workspace/Terrace Magic_1.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1520038410233-7141be7e6f97?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 150,
+    "title": "The Room Not",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "calm",
+    "bpm": 73,
+    "duration": "2:17",
+    "durationSeconds": 137,
+    "audioUrl": "My Workspace/The Room Not.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1522158674515-40144795606d?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 151,
+    "title": "Thin-Finger Chain",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "calm",
+    "bpm": 74,
+    "duration": "3:34",
+    "durationSeconds": 214,
+    "audioUrl": "My Workspace/Thin-Finger Chain.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1526218626227-23314a2c40a5?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 152,
+    "title": "Three Inches Left",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "calm",
+    "bpm": 75,
+    "duration": "2:30",
+    "durationSeconds": 150,
+    "audioUrl": "My Workspace/Three Inches Left.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1557672172-298e090bd0f1?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 153,
+    "title": "Too Much Soup",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "calm",
+    "bpm": 76,
+    "duration": "3:34",
+    "durationSeconds": 214,
+    "audioUrl": "My Workspace/Too Much Soup.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1571115177098-24ec43ede31e?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 154,
+    "title": "Too-Loud Laugh",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "drive",
+    "bpm": 111,
+    "duration": "2:50",
+    "durationSeconds": 170,
+    "audioUrl": "My Workspace/Too-Loud Laugh.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1585314062329-30141b770952?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 155,
+    "title": "Tragic Little Witness",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "after",
+    "bpm": 77,
+    "duration": "3:57",
+    "durationSeconds": 237,
+    "audioUrl": "My Workspace/Tragic Little Witness.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1594909122845-11baa439b7bf?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 156,
+    "title": "Velvet Sky Wrinkle",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "after",
+    "bpm": 78,
+    "duration": "4:14",
+    "durationSeconds": 254,
+    "audioUrl": "My Workspace/Velvet Sky Wrinkle.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1604871000636-074fa5117945?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 157,
+    "title": "Voicemail Havent",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "after",
+    "bpm": 79,
+    "duration": "0:33",
+    "durationSeconds": 33,
+    "audioUrl": "My Workspace/Voicemail Havent.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 158,
+    "title": "Warm Cupstring",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "calm",
+    "bpm": 67,
+    "duration": "2:00",
+    "durationSeconds": 120,
+    "audioUrl": "My Workspace/Warm Cupstring.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=250&auto=format&fit=crop"
+  },
+  {
+    "id": 159,
+    "title": "Warmth From Engine",
+    "artist": "My Workspace",
+    "album": "Workspace Collection",
+    "category": "flow",
+    "bpm": 88,
+    "duration": "3:25",
+    "durationSeconds": 205,
+    "audioUrl": "My Workspace/Warmth From Engine.m4a",
+    "coverUrl": "https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?q=80&w=250&auto=format&fit=crop"
+  }
+];
+
 
     // Timezone local clock calculations
     function getStoreTimeDetails(timezone) {
@@ -1261,15 +2031,39 @@
     // Playback state controller
     function playTrack(track) {
       stopPlayback();
+      if (nativeAudio) {
+        nativeAudio.pause();
+        nativeAudio = null;
+      }
       activeTrack = track;
       playbackSeconds = 0;
       isPlaying = true;
       
-      synthEngine.start();
-      
-      // Update arpeggiator parameters instantly
-      if (synthEngine.audioCtx) {
-        // Trigger parameters update
+      if (track.audioUrl) {
+        nativeAudio = new Audio(encodeURI(track.audioUrl));
+        nativeAudio.volume = volumeLevel;
+        nativeAudio.addEventListener('ended', () => {
+          if (playbackSeconds < track.durationSeconds) {
+            nativeAudio.currentTime = 0;
+            nativeAudio.play().catch(e => console.warn("Failed to loop native audio in player:", e));
+          }
+        });
+        nativeAudio.play().catch(e => console.warn("Failed to play native audio in player:", e));
+
+        if (synthEngine.audioCtx) {
+          if (synthEngine.audioCtx.state === 'suspended') {
+            synthEngine.audioCtx.resume();
+          }
+          if (synthEngine.nodes.masterVolume) {
+            synthEngine.nodes.masterVolume.gain.setValueAtTime(0, synthEngine.audioCtx.currentTime);
+          }
+          synthEngine.start();
+        }
+      } else {
+        synthEngine.start();
+        if (synthEngine.audioCtx && synthEngine.nodes.masterVolume) {
+          synthEngine.nodes.masterVolume.gain.setValueAtTime(volumeLevel * 0.22, synthEngine.audioCtx.currentTime);
+        }
       }
 
       playbackInterval = setInterval(() => {
@@ -1288,6 +2082,9 @@
     function stopPlayback() {
       isPlaying = false;
       clearInterval(playbackInterval);
+      if (nativeAudio) {
+        nativeAudio.pause();
+      }
       synthEngine.stop();
       updatePlayerStateUI();
     }
@@ -1296,7 +2093,35 @@
       if (isPlaying) return;
       isPlaying = true;
       
-      synthEngine.start();
+      if (activeTrack && activeTrack.audioUrl) {
+        if (!nativeAudio) {
+          nativeAudio = new Audio(encodeURI(activeTrack.audioUrl));
+          nativeAudio.currentTime = playbackSeconds;
+          nativeAudio.volume = volumeLevel;
+          nativeAudio.addEventListener('ended', () => {
+            if (playbackSeconds < activeTrack.durationSeconds) {
+              nativeAudio.currentTime = 0;
+              nativeAudio.play().catch(e => console.warn("Failed to loop native audio:", e));
+            }
+          });
+        }
+        nativeAudio.play().catch(e => console.warn("Failed to resume native audio:", e));
+
+        if (synthEngine.audioCtx) {
+          if (synthEngine.audioCtx.state === 'suspended') {
+            synthEngine.audioCtx.resume();
+          }
+          if (synthEngine.nodes.masterVolume) {
+            synthEngine.nodes.masterVolume.gain.setValueAtTime(0, synthEngine.audioCtx.currentTime);
+          }
+          synthEngine.start();
+        }
+      } else {
+        synthEngine.start();
+        if (synthEngine.audioCtx && synthEngine.nodes.masterVolume) {
+          synthEngine.nodes.masterVolume.gain.setValueAtTime(volumeLevel * 0.22, synthEngine.audioCtx.currentTime);
+        }
+      }
 
       playbackInterval = setInterval(() => {
         if (playbackSeconds < activeTrack.durationSeconds) {
@@ -1359,6 +2184,9 @@
       volumeLevel = Math.max(0, Math.min(1, pct));
       volumeFill.style.width = `${volumeLevel * 100}%`;
       synthEngine.updateVolume();
+      if (nativeAudio) {
+        nativeAudio.volume = volumeLevel;
+      }
     });
 
     // Scrubber Adjust

@@ -6769,3 +6769,282 @@ ul {
 }
 
 
+/* ==========================================================================
+   26. Cady AI Radio Styling
+   ========================================================================== */
+
+/* Fade-in animation for page transitions */
+@keyframes radioFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.radio-page-container {
+  animation: radioFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  padding: 8px 4px 40px 4px;
+}
+
+/* Glassmorphic settings card layout */
+.settings-card {
+  background: rgba(17, 17, 24, 0.6) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--border-radius-md) !important;
+  padding: 24px;
+  margin-bottom: 24px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.settings-card:hover {
+  border-color: rgba(124, 58, 237, 0.25) !important;
+  box-shadow: 0 12px 40px rgba(124, 58, 237, 0.05);
+}
+
+/* Radio playlist card enhancements */
+.radio-playlist-card {
+  background: rgba(17, 17, 24, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.radio-playlist-card:hover {
+  background: rgba(25, 20, 35, 0.6);
+  border-color: rgba(167, 139, 250, 0.25);
+  box-shadow: 0 12px 30px rgba(124, 58, 237, 0.15), 0 4px 12px rgba(0, 0, 0, 0.3);
+  transform: translateY(-5px);
+}
+
+.radio-playlist-card .play-btn {
+  background: var(--color-purple-primary);
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.4);
+  transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.radio-playlist-card .play-btn:hover {
+  background: var(--color-purple-light);
+  transform: scale(1.1) translateY(-2px);
+  box-shadow: 0 10px 28px rgba(124, 58, 237, 0.55);
+}
+
+/* Table controls and elements in developer panel */
+.btn-table-action {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  transition: var(--transition-smooth);
+  cursor: pointer;
+}
+
+.btn-table-action:hover {
+  background: rgba(124, 58, 237, 0.15);
+  border-color: var(--color-purple-light);
+  color: #fff;
+}
+
+.playlist-table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.playlist-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.02) !important;
+}
+
+/* Thumbs down dislike button */
+.player-dislike-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 50%;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.player-dislike-btn:hover {
+  color: #ef4444; /* red-500 */
+  background: rgba(239, 68, 68, 0.08);
+  transform: scale(1.15);
+}
+
+.player-dislike-btn:active {
+  transform: scale(0.9);
+}
+
+.player-dislike-btn.disliked {
+  animation: dislikeFlash 0.5s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+  color: #ef4444 !important;
+}
+
+@keyframes dislikeFlash {
+  0% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(1.4);
+    background: rgba(239, 68, 68, 0.2);
+  }
+  65% {
+    transform: scale(0.8);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Glassmorphic Lyrics Overlay Modal */
+.player-lyrics-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(6, 6, 9, 0.82);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999; /* Higher than sidebar, player, and other widgets */
+  animation: overlayFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes overlayFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.lyrics-overlay-card {
+  width: 90%;
+  max-width: 640px;
+  height: 80vh;
+  background: rgba(20, 20, 28, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--border-radius-lg);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5), 
+              0 0 50px rgba(124, 58, 237, 0.06);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: modalSlideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes modalSlideUp {
+  from {
+    transform: translateY(60px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.lyrics-overlay-header {
+  padding: 24px 32px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.01);
+}
+
+.btn-close-lyrics {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-secondary);
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.btn-close-lyrics:hover {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  transform: rotate(90deg);
+}
+
+.lyrics-overlay-body {
+  padding: 32px;
+  overflow-y: auto;
+  flex-grow: 1;
+  scrollbar-width: thin;
+  /* Beautiful fadeout masks at the top and bottom of scrollable area */
+  mask-image: linear-gradient(to bottom, 
+    transparent 0%, 
+    #000 8%, 
+    #000 92%, 
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(to bottom, 
+    transparent 0%, 
+    #000 8%, 
+    #000 92%, 
+    transparent 100%
+  );
+}
+
+.lyrics-text-container {
+  font-family: var(--font-outfit);
+  font-size: 1.35rem;
+  line-height: 2;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.85);
+  text-align: center;
+  padding: 30px 0;
+  letter-spacing: -0.01em;
+  white-space: pre-line;
+}
+
+/* Custom scrollbar behavior in lyrics drawer */
+.lyrics-overlay-body::-webkit-scrollbar {
+  width: 5px;
+}
+.lyrics-overlay-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+.lyrics-overlay-body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+}
+.lyrics-overlay-body::-webkit-scrollbar-thumb:hover {
+  background: var(--color-purple-light);
+}
+
+/* Adjust developer config actions spacing */
+#admin-configs-body td button {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  transition: all 0.2s ease;
+}
+#admin-configs-body td button:hover {
+  transform: translateY(-1px);
+}
+
+
+

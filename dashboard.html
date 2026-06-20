@@ -78,6 +78,13 @@
             <!-- Antenna icon -->
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 0 1 10 10c0 2.22-.73 4.26-1.96 5.92"/><path d="M2.23 6.08A10 10 0 0 0 2 12c0 2.22.73 4.26 1.96 5.92"/><circle cx="12" cy="12" r="2"/><path d="M12 6a6 6 0 0 1 6 6c0 1.33-.44 2.56-1.18 3.56"/><path d="M7.18 8.44A6 6 0 0 0 6 12c0 1.33.44 2.56 1.18 3.56"/></svg>
           </a>
+          <a href="#" class="sidebar-link" id="sidebar-link-radio" title="Cady Radio">
+            <!-- Radio icon -->
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="2"/>
+              <path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/>
+            </svg>
+          </a>
           <!-- Plus Icon (Mobile only) -->
           <a href="#" class="sidebar-link show-only-on-mobile" id="sidebar-link-plus" title="Add Menu">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -1015,6 +1022,10 @@
                   </div>
                   
                   <div class="right-actions">
+                    <button id="btn-playlist-regenerate-radio" class="playlist-action-btn hidden" title="Clear and Regenerate Station via Evolink AI" style="color: #c084fc; margin-right: 8px;">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                    </button>
+
                     <button id="btn-playlist-shuffle" class="playlist-action-btn shuffle-btn" title="Shuffle Playback">
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
                     </button>
@@ -1289,6 +1300,122 @@
                 </div>
               </div>
         </section>
+
+      <!-- Cady AI Radio Section -->
+      <section id="radio-page-container" class="radio-page-container hidden">
+        <!-- Browse View -->
+        <div id="radio-browse-view">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
+            <div>
+              <h1 style="font-family: var(--font-outfit); font-size: 2.2rem; font-weight: 800; background: linear-gradient(135deg, #ffffff 40%, #c084fc 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px;">Cady AI Radio</h1>
+              <p style="color: var(--color-text-secondary); font-size: 0.95rem;">Discover and stream Cady-owned original AI music channels continuously. Vibe-first discovery, no configuration needed.</p>
+            </div>
+            <button id="btn-toggle-radio-admin" class="btn-outline" style="font-size: 0.85rem; padding: 10px 18px; display: flex; align-items: center; gap: 8px; font-weight: 500; cursor: pointer; border-radius: var(--border-radius-sm);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              <span>Developer Panel</span>
+            </button>
+          </div>
+
+          <div class="spotify-covers-row" id="radio-playlists-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 24px;">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+
+        <!-- Admin / Developer View -->
+        <div id="radio-admin-view" class="hidden" style="margin-top: 32px; padding-top: 24px; border-top: 1px solid rgba(255, 255, 255, 0.08);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+            <div>
+              <h2 style="font-size: 1.4rem; font-family: var(--font-outfit); font-weight: 700; color: #fff; margin: 0;">Cady Radio Developer Panel</h2>
+              <p style="color: var(--color-text-secondary); font-size: 0.8rem; margin: 4px 0 0 0;">Configure playlist parameters, force mock generations, and fill music channels.</p>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span id="radio-mode-badge" class="store-status-badge pending" style="font-size: 0.75rem; font-weight: 600; padding: 4px 10px; border-radius: 4px;">Mock AI generation</span>
+              <button id="btn-admin-seed-configs" class="btn-outline btn-small" style="font-size: 0.78rem; padding: 6px 12px; border-color: rgba(255,255,255,0.15); border-radius: 4px; cursor: pointer;">Re-Seed Default Playlists</button>
+              <button id="btn-close-radio-admin" class="btn-secondary btn-small" style="font-size: 0.78rem; padding: 6px 12px; border-radius: 4px; cursor: pointer;">Back to Channels</button>
+            </div>
+          </div>
+
+          <!-- Controls Settings Card -->
+          <div class="settings-card" style="background: rgba(17, 17, 24, 0.6); border: 1px solid var(--color-border); border-radius: var(--border-radius-md); padding: 20px; margin-bottom: 24px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <label class="switch-container" style="display: flex; align-items: center; gap: 10px; cursor: pointer; color: #fff; font-size: 0.88rem; font-weight: 500;">
+                <input type="checkbox" id="checkbox-force-mock" style="width: 16px; height: 16px; accent-color: var(--color-purple-primary); cursor: pointer;">
+                <span>Force Local Mock Mode (Skip LLM API calls)</span>
+              </label>
+            </div>
+            <div style="font-size: 0.8rem; color: var(--color-text-secondary);">
+              Evolink API Key Loaded: <span id="api-key-status" style="font-weight: 600;">Checking...</span>
+            </div>
+          </div>
+
+          <!-- Configs List -->
+          <div class="settings-card" style="background: rgba(17, 17, 24, 0.6); border: 1px solid var(--color-border); border-radius: var(--border-radius-md); padding: 24px; margin-bottom: 24px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);">
+            <h3 style="font-size: 1.1rem; font-weight: 600; color: #fff; margin-bottom: 16px;">AI Playlist Configs</h3>
+            <div class="playlist-table-container" style="overflow-x: auto;">
+              <table class="playlist-table" id="admin-configs-table" style="width: 100%;">
+                <thead>
+                  <tr>
+                    <th>Playlist</th>
+                    <th>Vibes (Primary/Sec)</th>
+                    <th>Mix / Vocal / Lang</th>
+                    <th>Themes Allowed</th>
+                    <th style="text-align: center;">Min Tracks</th>
+                    <th style="text-align: center;">Current</th>
+                    <th style="text-align: right; width: 220px;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-configs-body">
+                  <!-- Rendered dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Generation Logs & Recent Jobs -->
+          <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px;">
+            <div class="settings-card" style="background: rgba(17, 17, 24, 0.6); border: 1px solid var(--color-border); border-radius: var(--border-radius-md); padding: 24px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);">
+              <h3 style="font-size: 1.1rem; font-weight: 600; color: #fff; margin-bottom: 16px;">Recent Tracks Generated</h3>
+              <div class="playlist-table-container" style="overflow-y: auto; max-height: 350px;">
+                <table class="playlist-table" style="width: 100%;">
+                  <thead>
+                    <tr>
+                      <th>Title</th>
+                      <th>Playlist</th>
+                      <th>Concept</th>
+                      <th style="text-align: right;">Lyrics</th>
+                    </tr>
+                  </thead>
+                  <tbody id="admin-tracks-log-body" style="font-size: 0.8rem;">
+                    <!-- Rendered dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="settings-card" style="background: rgba(17, 17, 24, 0.6); border: 1px solid var(--color-border); border-radius: var(--border-radius-md); padding: 24px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);">
+              <h3 style="font-size: 1.1rem; font-weight: 600; color: #fff; margin-bottom: 16px;">AI Generation Jobs</h3>
+              <div class="playlist-table-container" style="overflow-y: auto; max-height: 350px;">
+                <table class="playlist-table" style="width: 100%;">
+                  <thead>
+                    <tr>
+                      <th>Job ID</th>
+                      <th>Playlist</th>
+                      <th>Status</th>
+                      <th style="text-align: right;">Started</th>
+                    </tr>
+                  </thead>
+                  <tbody id="admin-jobs-log-body" style="font-size: 0.8rem;">
+                    <!-- Rendered dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       </div>
     </main>
@@ -2155,6 +2282,11 @@
           <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
         </svg>
       </button>
+      <button class="player-dislike-btn" title="Dislike and Skip Track" style="background: transparent; border: none; color: var(--color-text-secondary); cursor: pointer; padding: 4px; display: flex; align-items: center; transition: color 0.2s, transform 0.2s;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/>
+        </svg>
+      </button>
     </div>
 
     <div class="player-center">
@@ -2344,8 +2476,32 @@
     </div>
   </div>
 
+  <!-- Cady Lyrics Overlay -->
+  <div id="player-lyrics-overlay" class="player-lyrics-overlay hidden">
+    <div class="lyrics-overlay-card">
+      <div class="lyrics-overlay-header">
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <span style="font-size: 0.7rem; font-weight: 700; color: var(--color-purple-light); letter-spacing: 0.05em; text-transform: uppercase;">Lyrics</span>
+          <h2 id="lyrics-overlay-title" style="margin: 0; font-size: 1.5rem; font-family: var(--font-outfit); font-weight: 800; color: #fff;">Song Title</h2>
+          <p id="lyrics-overlay-artist" style="margin: 0; font-size: 0.85rem; color: var(--color-text-secondary);">Cady AI Radio</p>
+        </div>
+        <button id="btn-close-lyrics" class="btn-close-lyrics" title="Close Lyrics">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="lyrics-overlay-body">
+        <div id="lyrics-overlay-text" class="lyrics-text-container">
+          <!-- Lyrics lines will be placed here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- JS Logic -->
   <script src="config.js"></script>
-  <script src="dashboard.js?v=3"></script>
+  <script src="dashboard.js?v=10"></script>
 </body>
 </html>
