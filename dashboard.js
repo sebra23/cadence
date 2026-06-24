@@ -10237,24 +10237,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
 
-      // Auto-purge placeholder tracks in Live API mode on initial load
+      // Mark data as initialized
       if (!cadyRadioDataCleaned) {
         cadyRadioDataCleaned = true;
-        const useLiveApi = (EVOLINK_API_KEY || !IS_LOCAL) && !window.CADY_RADIO_FORCE_MOCK;
-        if (useLiveApi && cadyRadioTracks.length > 0) {
-          const originalLength = cadyRadioTracks.length;
-          cadyRadioTracks = cadyRadioTracks.filter(t => {
-            // Do not purge seeded default tracks
-            if (t.id && String(t.id).startsWith("ai-track-seeded-")) {
-              return true;
-            }
-            return !localMp3s.some(mp3 => t.audioUrl && t.audioUrl.includes(mp3));
-          });
-          if (cadyRadioTracks.length !== originalLength) {
-            saveCadyRadioTracks();
-            console.log(`Purged ${originalLength - cadyRadioTracks.length} failed/placeholder live tracks.`);
-          }
-        }
         
         // Fetch static shared track seeds asynchronously
         fetchSeedTracks();
