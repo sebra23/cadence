@@ -959,7 +959,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (linkSettings) linkSettings.classList.remove('active');
       if (linkLibrary) linkLibrary.classList.remove('active');
       
-      if (playerBar) playerBar.classList.add('hidden');
+      if (playerBar) {
+        if (activePlaylistTrack) playerBar.classList.remove('hidden');
+        else playerBar.classList.add('hidden');
+      }
       
       if (mainDashboard) {
         if (window.innerWidth >= 1024) {
@@ -1015,7 +1018,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (linkSettings) linkSettings.classList.add('active');
       if (linkLibrary) linkLibrary.classList.remove('active');
 
-      if (playerBar) playerBar.classList.add('hidden');
+      if (playerBar) {
+        if (activePlaylistTrack) playerBar.classList.remove('hidden');
+        else playerBar.classList.add('hidden');
+      }
       
       if (mainDashboard) {
         if (window.innerWidth >= 1024) {
@@ -1070,7 +1076,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (linkRadio) linkRadio.classList.remove('active');
       }
 
-      if (playerBar) playerBar.classList.add('hidden');
+      if (playerBar) {
+        const isCadyRadioDetail = (activeDetailPlaylist && activeDetailPlaylist.startsWith('cady-'));
+        if (activePlaylistTrack || isCadyRadioDetail) {
+          playerBar.classList.remove('hidden');
+        } else {
+          playerBar.classList.add('hidden');
+        }
+      }
       
       if (mainDashboard) {
         if (window.innerWidth >= 1024) {
@@ -1102,7 +1115,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (linkLibrary) linkLibrary.classList.remove('active');
       if (linkRadio) linkRadio.classList.add('active');
 
-      if (playerBar && !activePlaylistTrack) playerBar.classList.add('hidden');
+      if (playerBar) playerBar.classList.remove('hidden');
 
       if (mainDashboard) {
         if (window.innerWidth >= 1024) {
@@ -4332,12 +4345,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const playIconSvg = `<svg class="play-hover-svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>`;
+        const pauseIconSvg = `<svg class="pause-hover-svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="color: var(--color-purple-light);"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`;
+        const indexNumberHtml = isCurrent && isPlaylistPlaying ? pauseIconSvg : (idx + 1);
+        const buttonIconSvg = isCurrent && isPlaylistPlaying ? pauseIconSvg : playIconSvg;
+        const buttonTitle = isCurrent && isPlaylistPlaying ? "Pause" : "Play";
 
         row.innerHTML = `
           <td class="col-num">
             <div class="track-index-wrapper">
-              <span class="track-index-number">${isCurrent && isPlaylistPlaying ? '🎵' : idx + 1}</span>
-              <button class="play-hover-btn" title="Play">${playIconSvg}</button>
+              <span class="track-index-number" style="${isCurrent ? 'color: var(--color-purple-light);' : ''}">${indexNumberHtml}</span>
+              <button class="play-hover-btn" title="${buttonTitle}">${buttonIconSvg}</button>
             </div>
           </td>
           <td class="col-title">
@@ -4454,6 +4471,10 @@ document.addEventListener('DOMContentLoaded', () => {
                </button>`);
 
         const playIconSvg = `<svg class="play-hover-svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>`;
+        const pauseIconSvg = `<svg class="pause-hover-svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="color: var(--color-purple-light);"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`;
+        const indexNumberHtml = isCurrent && isPlaylistPlaying ? pauseIconSvg : (idx + 1);
+        const buttonIconSvg = isCurrent && isPlaylistPlaying ? pauseIconSvg : playIconSvg;
+        const buttonTitle = isCurrent && isPlaylistPlaying ? "Pause" : "Play";
         const coverArt = track.coverUrl || 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=150&auto=format&fit=crop';
 
         const numColContentHtml = track.generating
@@ -4463,8 +4484,8 @@ document.addEventListener('DOMContentLoaded', () => {
                </span>
              </div>`
           : `<div class="track-index-wrapper">
-               <span class="track-index-number">${isCurrent && isPlaylistPlaying ? '🎵' : idx + 1}</span>
-               <button class="play-hover-btn" title="Play">${playIconSvg}</button>
+               <span class="track-index-number" style="${isCurrent ? 'color: var(--color-purple-light);' : ''}">${indexNumberHtml}</span>
+               <button class="play-hover-btn" title="${buttonTitle}">${buttonIconSvg}</button>
              </div>`;
 
         const bpmHtml = track.generating
@@ -6299,6 +6320,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function updateTableActiveStates() {
+    const playIconSvg = `<svg class="play-hover-svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>`;
+    const pauseIconSvg = `<svg class="pause-hover-svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="color: var(--color-purple-light);"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`;
+
     const tbody = document.getElementById('playlist-tracks-body');
     if (tbody) {
       const rows = tbody.querySelectorAll('tr');
@@ -6306,23 +6330,31 @@ document.addEventListener('DOMContentLoaded', () => {
         const trackId = parseInt(row.dataset.trackId);
         const isCurrent = activePlaylistTrack && activePlaylistTrack.id === trackId;
         const indexNumSpan = row.querySelector('.track-index-number');
+        const hoverBtn = row.querySelector('.play-hover-btn');
         
         if (isCurrent) {
           row.classList.add('active-track');
           if (indexNumSpan) {
             if (isPlaylistPlaying) {
-              indexNumSpan.innerHTML = `🎵`;
-              indexNumSpan.style.color = 'var(--color-purple-light)';
+              indexNumSpan.innerHTML = pauseIconSvg;
             } else {
               indexNumSpan.innerHTML = trackId;
-              indexNumSpan.style.color = '';
             }
+            indexNumSpan.style.color = 'var(--color-purple-light)';
+          }
+          if (hoverBtn) {
+            hoverBtn.title = isPlaylistPlaying ? "Pause" : "Play";
+            hoverBtn.innerHTML = isPlaylistPlaying ? pauseIconSvg : playIconSvg;
           }
         } else {
           row.classList.remove('active-track');
           if (indexNumSpan) {
             indexNumSpan.innerHTML = trackId;
             indexNumSpan.style.color = '';
+          }
+          if (hoverBtn) {
+            hoverBtn.title = "Play";
+            hoverBtn.innerHTML = playIconSvg;
           }
         }
       });
@@ -6346,22 +6378,31 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const indexNumSpan = row.querySelector('.track-index-number');
+        const hoverBtn = row.querySelector('.play-hover-btn');
+        
         if (isCurrent) {
           row.classList.add('active-track');
           if (indexNumSpan) {
             if (isPlaylistPlaying) {
-              indexNumSpan.innerHTML = `🎵`;
-              indexNumSpan.style.color = 'var(--color-purple-light)';
+              indexNumSpan.innerHTML = pauseIconSvg;
             } else {
               indexNumSpan.innerHTML = idx + 1;
-              indexNumSpan.style.color = '';
             }
+            indexNumSpan.style.color = 'var(--color-purple-light)';
+          }
+          if (hoverBtn) {
+            hoverBtn.title = isPlaylistPlaying ? "Pause" : "Play";
+            hoverBtn.innerHTML = isPlaylistPlaying ? pauseIconSvg : playIconSvg;
           }
         } else {
           row.classList.remove('active-track');
           if (indexNumSpan) {
             indexNumSpan.innerHTML = idx + 1;
             indexNumSpan.style.color = '';
+          }
+          if (hoverBtn) {
+            hoverBtn.title = "Play";
+            hoverBtn.innerHTML = playIconSvg;
           }
         }
       });
@@ -6960,6 +7001,15 @@ document.addEventListener('DOMContentLoaded', () => {
           mainDashboard.style.marginRight = '';
         }
       }
+
+      const playerBar = document.getElementById('playlist-player-bar');
+      if (playerBar) {
+        if (activePlaylistTrack || playlistId.startsWith('cady-')) {
+          playerBar.classList.remove('hidden');
+        } else {
+          playerBar.classList.add('hidden');
+        }
+      }
     }
 
     if (cardQuickLib) {
@@ -7287,13 +7337,22 @@ document.addEventListener('DOMContentLoaded', () => {
         const trackRow = document.createElement('tr');
         trackRow.dataset.trackId = track.id;
         
+        const isCurrent = activePlaylistTrack && activePlaylistTrack.id === track.id;
+        if (isCurrent) {
+          trackRow.classList.add('active-track');
+        }
+        
         const playIconSvg = `<svg class="play-hover-svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>`;
+        const pauseIconSvg = `<svg class="pause-hover-svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="color: var(--color-purple-light);"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`;
+        const indexNumberHtml = isCurrent && isPlaylistPlaying ? pauseIconSvg : track.id;
+        const buttonIconSvg = isCurrent && isPlaylistPlaying ? pauseIconSvg : playIconSvg;
+        const buttonTitle = isCurrent && isPlaylistPlaying ? "Pause" : "Play";
         
         trackRow.innerHTML = `
           <td class="col-num">
             <div class="track-index-wrapper">
-              <span class="track-index-number">${track.id}</span>
-              <button class="play-hover-btn" title="Play">${playIconSvg}</button>
+              <span class="track-index-number" style="${isCurrent ? 'color: var(--color-purple-light);' : ''}">${indexNumberHtml}</span>
+              <button class="play-hover-btn" title="${buttonTitle}">${buttonIconSvg}</button>
             </div>
           </td>
           <td class="col-title">

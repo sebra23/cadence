@@ -405,7 +405,7 @@ ul {
    ========================================================================== */
 .main-dashboard {
   flex-grow: 1;
-  padding: 24px 20px 84px 20px; /* Extra bottom padding to clear mobile menu bar */
+  padding: 24px 20px 110px 20px; /* Extra bottom padding to clear mobile menu bar and player bar */
 }
 
 .dashboard-scroll-body {
@@ -3652,7 +3652,23 @@ ul {
 
 /* Fixed Bottom Player Bar */
 .bottom-player-bar {
-  display: none !important;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 90px;
+  background: rgba(11, 11, 16, 0.75);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  z-index: 1000;
+  display: grid;
+  grid-template-columns: 280px 1fr 280px;
+  align-items: center;
+  padding: 0 24px;
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5);
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
 }
 
 @keyframes slideUp {
