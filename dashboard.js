@@ -11016,18 +11016,18 @@ document.addEventListener('DOMContentLoaded', () => {
         name: 'Cady Emo Rap',
         primary_vibe: 'Flow',
         secondary_vibe: 'Deep',
-        genre_mix: 'UK emo rap, cinematic spoken rap, dark folk guitar, minimal UK garage, deep sub bass',
-        energy_range: 'low to medium',
-        vocal_style: 'intimate clear British male emo-rap vocals, restrained emotional delivery, crisp pronunciation',
+        genre_mix: 'UK theatrical emo rap, acoustic spoken rap, cinematic singer-songwriter rap, dark folk guitar, minimal hip hop, deep sub bass',
+        energy_range: 'low to high dynamic',
+        vocal_style: 'clear British male vocal, half-spoken half-rapped delivery, theatrical inner-dialogue performance, raw emotional intensity, crisp pronunciation',
         language: 'English',
-        themes: 'inner conflict, heartbreak, late-night thoughts, family pressure, ambition, shame, spiritual doubt, resilience, urban isolation',
-        listener_context: 'late-night city walks, winter drives, introspection, emotional focus',
+        themes: 'inner conflict, self-doubt, ambition, shame, mental struggle, spiritual doubt, ego, healing, resilience, identity, family pressure, late-night introspection',
+        listener_context: 'headphone listening, emotional focus, late-night walks, winter drives, introspection, self-reflection',
         explicit_allowed: false,
         minimum_ready_tracks: 10,
         max_tracks_per_day: 20,
         generation_frequency: 'daily',
         active: true,
-        generation_prompt: 'UK-driven emo rap with cinematic spoken-rap storytelling, intimate clear British male vocal, dark folk guitar, minimal UK garage pulse, deep sub bass, sparse drums, cold urban pads, poetic inner monologue, restrained psychological tension, heartbreak, fragmented memories, spiritual doubt, family pressure, ambition, shame, and quiet resilience. One voice slowly splits into two perspectives rather than obvious dialogue. Emotional chorus, reflective spoken outro, raw but elegant production, crisp vocals, no battle rap, no polished pop, no muddy mix.'
+        generation_prompt: 'Theatrical UK emo rap with acoustic guitar-driven spoken-rap storytelling, clear upfront British male vocal, crisp pronunciation, half-spoken half-rapped delivery, raw emotional intensity, and dynamic shifts between fragile vulnerability and aggressive self-interrogation. Songs should feel like a psychological conversation where one voice slowly splits into two perspectives: doubt, ego, fear, ambition, shame, and resilience. Use dark folk guitar, sparse hip hop drums, deep sub bass, minimal UK garage pulse, dramatic pauses, intimate verses, rapid conversational rap sections, emotional melodic chorus, spiritual and philosophical imagery, dark humor, and a reflective spoken-word outro. Keep vocals louder than instruments, intelligible lyrics, minimal reverb, no muddy mix, no excessive vocal layers, no polished pop, no generic trap flexing, no cartoon villain voice, no direct artist imitation.'
       }
     ];
 
