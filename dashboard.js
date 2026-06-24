@@ -7118,7 +7118,8 @@ document.addEventListener('DOMContentLoaded', () => {
         cadyRadioJobs = [];
         cadyRadioFeedback = [];
         
-        cadyRadioSeedConfigs();
+        cadyRadioSeedConfigs(true);
+        fetchSeedTracks();
         renderRadioAdminPanel();
         renderRadioPlaylists();
         showToast("Database Reset", "Radio channels and tracks successfully cleared and re-seeded.", "success");
