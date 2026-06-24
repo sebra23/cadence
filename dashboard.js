@@ -10111,6 +10111,15 @@ document.addEventListener('DOMContentLoaded', () => {
       likeText.textContent = isAlreadyOwned ? "Remove from liked songs" : "Add to liked songs";
     }
 
+    const deleteBtn = document.getElementById('btn-sheet-delete');
+    if (deleteBtn) {
+      if (track.playlist_id && track.playlist_id.startsWith('cady-')) {
+        deleteBtn.classList.remove('hidden');
+      } else {
+        deleteBtn.classList.add('hidden');
+      }
+    }
+
     // Reset submenu
     if (addPlaylistBtn) addPlaylistBtn.classList.remove('expanded');
     if (submenu) submenu.classList.remove('expanded');
@@ -10229,6 +10238,24 @@ document.addEventListener('DOMContentLoaded', () => {
             coverUrl: activeSheetTrack.coverUrl || 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=150&auto=format&fit=crop'
           };
           addTrackToLibrary(newTrack);
+        }
+      }
+      closeTrackMenu();
+    });
+  }
+
+  // Admin Delete action
+  const sheetDeleteBtn = document.getElementById('btn-sheet-delete');
+  if (sheetDeleteBtn) {
+    sheetDeleteBtn.addEventListener('click', () => {
+      if (activeSheetTrack) {
+        if (confirm(`Are you sure you want to delete "${activeSheetTrack.title}" from Cady Radio?`)) {
+          loadCadyRadioData();
+          cadyRadioTracks = cadyRadioTracks.filter(t => t.id !== activeSheetTrack.id);
+          saveCadyRadioTracks();
+          showToast("Song Deleted", `"${activeSheetTrack.title}" removed from Cady Radio database.`, "success");
+          renderRadioAdminPanel();
+          renderLibraryTracks();
         }
       }
       closeTrackMenu();
