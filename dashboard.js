@@ -9360,6 +9360,56 @@ document.addEventListener('DOMContentLoaded', () => {
       cadyRadioTracks = JSON.parse(localStorage.getItem(KEY_RADIO_TRACKS)) || [];
       cadyRadioFeedback = JSON.parse(localStorage.getItem(KEY_RADIO_FEEDBACK)) || [];
       cadyRadioJobs = JSON.parse(localStorage.getItem(KEY_RADIO_JOBS)) || [];
+
+      // Legacy user-scoped localStorage keys migration
+      const legacyKeys = Object.keys(localStorage);
+      let migratedTracksCount = 0;
+      legacyKeys.forEach(k => {
+        if (k !== KEY_RADIO_TRACKS && k.endsWith('-radio-tracks') && k.startsWith('cady-')) {
+          try {
+            const legacyTracks = JSON.parse(localStorage.getItem(k));
+            if (Array.isArray(legacyTracks) && legacyTracks.length > 0) {
+              legacyTracks.forEach(track => {
+                const exists = cadyRadioTracks.some(t => t.id === track.id || (t.title === track.title && t.artist === track.artist && t.playlist_id === track.playlist_id));
+                if (!exists) {
+                  cadyRadioTracks.push(track);
+                  migratedTracksCount++;
+                }
+              });
+            }
+          } catch (err) {
+            console.error("Failed to parse legacy tracks from key " + k, err);
+          }
+        }
+      });
+      if (migratedTracksCount > 0) {
+        saveCadyRadioTracks();
+        console.log(`Migrated ${migratedTracksCount} tracks from legacy user-scoped keys.`);
+      }
+
+      let migratedConfigsCount = 0;
+      legacyKeys.forEach(k => {
+        if (k !== KEY_RADIO_CONFIGS && k.endsWith('-radio-configs') && k.startsWith('cady-')) {
+          try {
+            const legacyConfigs = JSON.parse(localStorage.getItem(k));
+            if (Array.isArray(legacyConfigs) && legacyConfigs.length > 0) {
+              legacyConfigs.forEach(conf => {
+                const exists = cadyRadioConfigs.some(c => c.id === conf.id);
+                if (!exists) {
+                  cadyRadioConfigs.push(conf);
+                  migratedConfigsCount++;
+                }
+              });
+            }
+          } catch (err) {
+            console.error("Failed to parse legacy configs from key " + k, err);
+          }
+        }
+      });
+      if (migratedConfigsCount > 0) {
+        saveCadyRadioConfigs();
+        console.log(`Migrated ${migratedConfigsCount} configs from legacy user-scoped keys.`);
+      }
       
       // Always migrate any track with an expired/broken media.evolink.ai URL to a local MP3
       let migrated = false;
