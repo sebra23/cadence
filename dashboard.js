@@ -10240,7 +10240,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Auto-purge placeholder tracks in Live API mode on initial load
       if (!cadyRadioDataCleaned) {
         cadyRadioDataCleaned = true;
-        const useLiveApi = EVOLINK_API_KEY && !window.CADY_RADIO_FORCE_MOCK;
+        const useLiveApi = (EVOLINK_API_KEY || !IS_LOCAL) && !window.CADY_RADIO_FORCE_MOCK;
         if (useLiveApi && cadyRadioTracks.length > 0) {
           const originalLength = cadyRadioTracks.length;
           cadyRadioTracks = cadyRadioTracks.filter(t => {
@@ -11075,7 +11075,7 @@ JSON schema:
 }
 `;
 
-    const useLiveApi = EVOLINK_API_KEY && !window.CADY_RADIO_FORCE_MOCK;
+    const useLiveApi = (EVOLINK_API_KEY || !IS_LOCAL) && !window.CADY_RADIO_FORCE_MOCK;
     if (useLiveApi) {
       console.log("Calling Evolink chat completions for Cady Radio...");
       fetch(`${EVOLINK_BASE_URL}/v1/chat/completions`, {
@@ -11505,7 +11505,7 @@ JSON schema:
     loadCadyRadioData();
     
     const badge = document.getElementById('radio-mode-badge');
-    const useLiveApi = EVOLINK_API_KEY && !window.CADY_RADIO_FORCE_MOCK;
+    const useLiveApi = (EVOLINK_API_KEY || !IS_LOCAL) && !window.CADY_RADIO_FORCE_MOCK;
     if (badge) {
       if (useLiveApi) {
         badge.textContent = "Live API completions (Evolink)";
@@ -11518,8 +11518,10 @@ JSON schema:
     
     const keyStatus = document.getElementById('api-key-status');
     if (keyStatus) {
-      if (EVOLINK_API_KEY) {
-        keyStatus.textContent = "YES (sk-..." + EVOLINK_API_KEY.substring(EVOLINK_API_KEY.length - 4) + ")";
+      if (EVOLINK_API_KEY || !IS_LOCAL) {
+        keyStatus.textContent = EVOLINK_API_KEY 
+          ? "YES (sk-..." + EVOLINK_API_KEY.substring(EVOLINK_API_KEY.length - 4) + ")"
+          : "YES (Proxied via Netlify)";
         keyStatus.style.color = "#34d399";
       } else {
         keyStatus.textContent = "NO (Using simulated fallback)";
