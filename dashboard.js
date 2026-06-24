@@ -11254,6 +11254,7 @@ Preferred structures by category:
 
 TASK:
 Create one new track that fits this Cady playlist but does not repeat previous songs.
+You must strictly follow the playlist's themes and guidelines. Pay close attention to the "Internal playlist prompt" config. Under no circumstances should the lyrics, style prompt, or titles include words or themes that violate these guidelines (for example, if the prompt says "Avoid neon", ensure the lyrics and style prompt do not contain the word "neon" or related concepts).
 LYRICS must use vocal register and emotional delivery tags in the section headers.
 Example:
 [Verse 1: Chest Voice, Conversational]
