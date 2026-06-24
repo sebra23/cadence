@@ -12848,13 +12848,19 @@ JSON schema:
 
   function cleanJsonResponse(str) {
     let cleaned = str.trim();
-    if (cleaned.startsWith("```json")) {
-      cleaned = cleaned.substring(7);
-    } else if (cleaned.startsWith("```")) {
-      cleaned = cleaned.substring(3);
-    }
-    if (cleaned.endsWith("```")) {
-      cleaned = cleaned.substring(0, cleaned.length - 3);
+    const firstBrace = cleaned.indexOf('{');
+    const lastBrace = cleaned.lastIndexOf('}');
+    if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+      cleaned = cleaned.substring(firstBrace, lastBrace + 1);
+    } else {
+      if (cleaned.startsWith("```json")) {
+        cleaned = cleaned.substring(7);
+      } else if (cleaned.startsWith("```")) {
+        cleaned = cleaned.substring(3);
+      }
+      if (cleaned.endsWith("```")) {
+        cleaned = cleaned.substring(0, cleaned.length - 3);
+      }
     }
     return cleaned.trim();
   }
