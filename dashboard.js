@@ -724,6 +724,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let synthEngine;
   let nativeAudio = null;
+  let nextAudio = null;
+  let isCrossfading = false;
+  let isCrossfadeEnabled = true;
   let auditionAudio = null;
   let playerVolumeRatio = 1.0;
   let curationTracksGenerating = false;
@@ -6721,6 +6724,11 @@ document.addEventListener('DOMContentLoaded', () => {
           const pct = (playerCurrentTimeSeconds / track.durationSeconds) * 100;
           scrubberFill.style.width = `${pct}%`;
         }
+        // Crossfade check
+        const timeLeft = track.durationSeconds - playerCurrentTimeSeconds;
+        if (isCrossfadeEnabled && timeLeft === 5 && !isCrossfading && !isRepeat) {
+          triggerCrossfadeTransition();
+        }
       } else {
         if (isRepeat) {
           playerCurrentTimeSeconds = 0;
@@ -6833,6 +6841,11 @@ document.addEventListener('DOMContentLoaded', () => {
       nativeAudio.pause();
       nativeAudio = null;
     }
+    if (nextAudio) {
+      nextAudio.pause();
+      nextAudio = null;
+    }
+    isCrossfading = false;
     updateLiveStatusWidget();
   }
 
@@ -6857,21 +6870,229 @@ document.addEventListener('DOMContentLoaded', () => {
     if (currentIndex !== -1 && currentIndex < playlistSongs.length - 1) {
       playPlaylistTrack(playlistSongs[currentIndex + 1]);
     } else {
+      // Playlist / Station ended! Autoplay transition to next station / playlist
       const isRadio = window.CADY_RADIO_ORIGIN || (activePlaylistTrack && activePlaylistTrack.playlist_id);
-      if (isRadio) {
-        playPlaylistTrack(playlistSongs[0]);
-      } else {
-        // Replay songs based on user, location, time of day and store traffic data
-        const block = getCurrentTrafficBlock();
-        const targetCategory = (block === 'closed' || block === 'Store Closed') ? 'calm' : block;
-        const matchingSongs = playlistSongs.filter(s => s.category === targetCategory);
-        if (matchingSongs.length > 0) {
-          playPlaylistTrack(matchingSongs[0]);
+      if (isRadio && activePlaylistTrack && activePlaylistTrack.playlist_id) {
+        const currentId = activePlaylistTrack.playlist_id;
+        const configIndex = cadyRadioConfigs.findIndex(c => c.id === currentId);
+        if (configIndex !== -1) {
+          const nextConfig = cadyRadioConfigs[(configIndex + 1) % cadyRadioConfigs.length];
+          playCadyRadioPlaylist(nextConfig.id);
+          showToast("Next Station", `Station ended. Autoplay transitioning to ${nextConfig.name}...`, "info");
         } else {
           playPlaylistTrack(playlistSongs[0]);
         }
+      } else {
+        const moodPlaylists = ['summer', 'sunday', 'synth', 'focus', 'workout', 'sensual', 'sleep', 'happy', 'radar', 'kaskade', 'singer', 'synthwave', 'friday-new', 'retrowave', 'italian'];
+        const currentId = activePlaylistTrack ? (activePlaylistTrack.playlist_id || activeDetailPlaylist) : activeDetailPlaylist;
+        const moodIndex = moodPlaylists.indexOf(currentId);
+        if (moodIndex !== -1) {
+          const nextId = moodPlaylists[(moodIndex + 1) % moodPlaylists.length];
+          playMoodPlaylist(nextId);
+          showToast("Next Playlist", `Playlist ended. Autoplay transitioning to next mood...`, "info");
+        } else {
+          // Replay songs based on user, location, time of day and store traffic data
+          const block = getCurrentTrafficBlock();
+          const targetCategory = (block === 'closed' || block === 'Store Closed') ? 'calm' : block;
+          const matchingSongs = playlistSongs.filter(s => s.category === targetCategory);
+          if (matchingSongs.length > 0) {
+            playPlaylistTrack(matchingSongs[0]);
+          } else {
+            playPlaylistTrack(playlistSongs[0]);
+          }
+        }
       }
     }
+  }
+
+  function getNextTrack() {
+    if (playlistSongs.length === 0) return null;
+    
+    if (isShuffle) {
+      const otherSongs = activePlaylistTrack 
+        ? playlistSongs.filter(s => s.id !== activePlaylistTrack.id) 
+        : playlistSongs;
+      return otherSongs[Math.floor(Math.random() * otherSongs.length)] || playlistSongs[0];
+    }
+
+    if (!activePlaylistTrack) {
+      return playlistSongs[0];
+    }
+
+    const currentIndex = playlistSongs.findIndex(s => s.id === activePlaylistTrack.id);
+    if (currentIndex !== -1 && currentIndex < playlistSongs.length - 1) {
+      return playlistSongs[currentIndex + 1];
+    } else {
+      // Playlist / Station ended! Find the first song of the next playlist
+      const isRadio = window.CADY_RADIO_ORIGIN || (activePlaylistTrack && activePlaylistTrack.playlist_id);
+      if (isRadio && activePlaylistTrack && activePlaylistTrack.playlist_id) {
+        const currentId = activePlaylistTrack.playlist_id;
+        const configIndex = cadyRadioConfigs.findIndex(c => c.id === currentId);
+        if (configIndex !== -1) {
+          const nextConfig = cadyRadioConfigs[(configIndex + 1) % cadyRadioConfigs.length];
+          const nextTracks = cadyRadioTracks.filter(t => t.playlist_id === nextConfig.id && !t.generating);
+          if (nextTracks.length > 0) {
+            return nextTracks[0];
+          }
+        }
+        return playlistSongs[0];
+      } else {
+        const moodPlaylists = ['summer', 'sunday', 'synth', 'focus', 'workout', 'sensual', 'sleep', 'happy', 'radar', 'kaskade', 'singer', 'synthwave', 'friday-new', 'retrowave', 'italian'];
+        const currentId = activePlaylistTrack ? (activePlaylistTrack.playlist_id || activeDetailPlaylist) : activeDetailPlaylist;
+        const moodIndex = moodPlaylists.indexOf(currentId);
+        if (moodIndex !== -1) {
+          const nextId = moodPlaylists[(moodIndex + 1) % moodPlaylists.length];
+          return {
+            id: 9999,
+            title: getMoodPlaylistTitle(nextId),
+            artist: getMoodPlaylistArtist(nextId),
+            album: "Spotify Browse Vibe",
+            playlist_id: nextId,
+            category: nextId === "workout" ? "drive" : "flow",
+            bpm: 100,
+            duration: "4:00",
+            durationSeconds: 240
+          };
+        } else {
+          return playlistSongs[0];
+        }
+      }
+    }
+  }
+
+  function triggerCrossfadeTransition() {
+    const nextTrack = getNextTrack();
+    if (!nextTrack || !nextTrack.audioUrl || !nativeAudio) return;
+
+    isCrossfading = true;
+    console.log(`Starting crossfade transition to next track: ${nextTrack.title}`);
+
+    // Create the next audio element
+    nextAudio = new Audio(encodeURI(nextTrack.audioUrl));
+    nextAudio.volume = 0; // start silent
+
+    // Start playing the next track
+    nextAudio.play().then(() => {
+      // Slowly crossfade over 5 seconds (5000ms)
+      const fadeSteps = 20;
+      const fadeIntervalTime = 250; // 5000ms / 20 steps = 250ms per step
+      let currentStep = 0;
+
+      const fadeInterval = setInterval(() => {
+        if (!isCrossfading || !nextAudio) {
+          clearInterval(fadeInterval);
+          return;
+        }
+        currentStep++;
+        const ratio = currentStep / fadeSteps; // 0 to 1
+
+        if (nativeAudio) {
+          nativeAudio.volume = Math.max(0, playerVolumeRatio * (1 - ratio));
+        }
+        if (nextAudio) {
+          nextAudio.volume = Math.min(playerVolumeRatio, playerVolumeRatio * ratio);
+        }
+
+        if (currentStep >= fadeSteps) {
+          clearInterval(fadeInterval);
+          completeCrossfade(nextTrack);
+        }
+      }, fadeIntervalTime);
+    }).catch(e => {
+      console.warn("Failed to play next audio during crossfade:", e);
+      isCrossfading = false;
+      nextAudio = null;
+    });
+  }
+
+  function completeCrossfade(nextTrack) {
+    console.log("Crossfade completed!");
+    
+    // Stop and clean up old audio
+    if (nativeAudio) {
+      nativeAudio.pause();
+    }
+    
+    // Clear timer loop of current song
+    clearInterval(playlistPlaybackTimer);
+    
+    // Switch active elements
+    nativeAudio = nextAudio;
+    nextAudio = null;
+    isCrossfading = false;
+
+    // Check if we also transitioned to a different playlist!
+    const isDifferentPlaylist = activePlaylistTrack && nextTrack.playlist_id !== activePlaylistTrack.playlist_id;
+    
+    // Set next track as active
+    activePlaylistTrack = nextTrack;
+    playerCurrentTimeSeconds = 0;
+
+    if (isDifferentPlaylist && nextTrack.playlist_id) {
+      // Load the new playlist tracks into playlistSongs
+      loadCadyRadioData();
+      const nextPlaylistTracks = cadyRadioTracks.filter(t => t.playlist_id === nextTrack.playlist_id && !t.generating);
+      if (nextPlaylistTracks.length > 0) {
+        playlistSongs = [...nextPlaylistTracks];
+      }
+      showToast("Next Station", `Automatically transitioned to ${getPlaylistDetails(nextTrack.playlist_id).title}`, "info");
+    }
+
+    // Update Player Bar content
+    const titleEl = document.getElementById('player-track-title');
+    const artistEl = document.getElementById('player-track-artist');
+    const timeTotalEl = document.getElementById('player-time-total');
+    const timeCurrentEl = document.getElementById('player-time-current');
+    const scrubberFill = document.getElementById('player-scrubber-fill');
+    const coverArtBox = document.querySelector('.bottom-player-bar .player-cover-art');
+
+    if (titleEl) titleEl.textContent = nextTrack.title;
+    if (artistEl) artistEl.textContent = nextTrack.artist;
+    if (timeTotalEl) timeTotalEl.textContent = nextTrack.duration;
+    if (timeCurrentEl) timeCurrentEl.textContent = "0:00";
+    if (scrubberFill) scrubberFill.style.width = "0%";
+
+    if (coverArtBox) {
+      if (nextTrack.coverUrl) {
+        coverArtBox.style.background = `url(${nextTrack.coverUrl}) center/cover no-repeat`;
+        coverArtBox.innerHTML = '';
+      } else {
+        coverArtBox.style.background = getCategoryGradient(nextTrack.category);
+        coverArtBox.innerHTML = `<span style="font-weight:bold; font-size:1.1rem; color:#fff;">${nextTrack.category.charAt(0).toUpperCase()}</span>`;
+      }
+    }
+
+    updatePlayStateUI();
+    updateLiveStatusWidget();
+
+    // Re-start playback timer loop for the new track
+    playlistPlaybackTimer = setInterval(() => {
+      if (playerCurrentTimeSeconds < nextTrack.durationSeconds) {
+        playerCurrentTimeSeconds++;
+        if (timeCurrentEl) timeCurrentEl.textContent = formatTime(playerCurrentTimeSeconds);
+        if (scrubberFill) {
+          const pct = (playerCurrentTimeSeconds / nextTrack.durationSeconds) * 100;
+          scrubberFill.style.width = `${pct}%`;
+        }
+        // Start crossfade check again for next track
+        const timeLeft = nextTrack.durationSeconds - playerCurrentTimeSeconds;
+        if (isCrossfadeEnabled && timeLeft === 5 && !isCrossfading && !isRepeat) {
+          triggerCrossfadeTransition();
+        }
+      } else {
+        if (isRepeat) {
+          playerCurrentTimeSeconds = 0;
+          if (timeCurrentEl) timeCurrentEl.textContent = "0:00";
+          if (scrubberFill) scrubberFill.style.width = "0%";
+          if (nativeAudio) {
+            nativeAudio.currentTime = 0;
+            nativeAudio.play().catch(e => console.warn(e));
+          }
+        } else {
+          playNextTrack();
+        }
+      }
+    }, 1000);
   }
 
   function playPrevTrack() {
@@ -9067,6 +9288,16 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
+    const btnCrossfade = document.getElementById('player-btn-crossfade');
+    if (btnCrossfade) {
+      btnCrossfade.addEventListener('click', () => {
+        isCrossfadeEnabled = !isCrossfadeEnabled;
+        btnCrossfade.classList.toggle('active', isCrossfadeEnabled);
+        btnCrossfade.setAttribute('title', isCrossfadeEnabled ? "Crossfade: 5s (Active)" : "Crossfade: Off");
+        showToast(isCrossfadeEnabled ? "Crossfade On" : "Crossfade Off", isCrossfadeEnabled ? "Smooth 5-second transitions enabled between songs." : "Songs will transition immediately.", "info");
+      });
+    }
+
     // Scrubber click adjustment
     const scrubberWrapper = document.getElementById('player-scrubber-wrapper');
     const scrubberFill = document.getElementById('player-scrubber-fill');
@@ -10779,6 +11010,24 @@ document.addEventListener('DOMContentLoaded', () => {
         generation_frequency: 'daily',
         active: true,
         generation_prompt: 'Delicate solo grand piano chords, slow emotional cello layers, ethereal ambient room reverb.'
+      },
+      {
+        id: 'cady-emo-rap',
+        name: 'Cady Emo Rap',
+        primary_vibe: 'Flow',
+        secondary_vibe: 'Deep',
+        genre_mix: 'UK emo rap, cinematic spoken rap, dark folk guitar, minimal UK garage, deep sub bass',
+        energy_range: 'low to medium',
+        vocal_style: 'intimate clear British male emo-rap vocals, restrained emotional delivery, crisp pronunciation',
+        language: 'English',
+        themes: 'inner conflict, heartbreak, late-night thoughts, family pressure, ambition, shame, spiritual doubt, resilience, urban isolation',
+        listener_context: 'late-night city walks, winter drives, introspection, emotional focus',
+        explicit_allowed: false,
+        minimum_ready_tracks: 10,
+        max_tracks_per_day: 20,
+        generation_frequency: 'daily',
+        active: true,
+        generation_prompt: 'UK-driven emo rap with cinematic spoken-rap storytelling, intimate clear British male vocal, dark folk guitar, minimal UK garage pulse, deep sub bass, sparse drums, cold urban pads, poetic inner monologue, restrained psychological tension, heartbreak, fragmented memories, spiritual doubt, family pressure, ambition, shame, and quiet resilience. One voice slowly splits into two perspectives rather than obvious dialogue. Emotional chorus, reflective spoken outro, raw but elegant production, crisp vocals, no battle rap, no polished pop, no muddy mix.'
       }
     ];
 
@@ -11446,7 +11695,8 @@ JSON schema:
         'cady-reggaeton-latin': '1533174072545-7a4b6ad7a6c3',
         'cady-neon-synthwave': '1508739773434-c26b3d09e071',
         'cady-country-roads': '1447752875215-b2761acb3c5d',
-        'cady-classical-focus': '1520523839897-bd0b52f945a0'
+        'cady-classical-focus': '1520523839897-bd0b52f945a0',
+        'cady-emo-rap': '1509198397868-475647b2a1e5'
       };
       const imageId = coverImages[playlist.id] || "1518241353330-0f7941c2d9b5";
       const coverSrc = `https://images.unsplash.com/photo-${imageId}?q=80&w=200&auto=format&fit=crop`;
@@ -12214,6 +12464,28 @@ JSON schema:
         tags: ["classical", "strings", "cinematic", "focus"],
         cover_id: "1520523839897-bd0b52f945a0"
       }
+    ],
+    'cady-emo-rap': [
+      {
+        title: "London Rain",
+        creative_concept: "A reflective and moody UK emo-rap song about walking through London in the rain.",
+        style_prompt: "UK emo rap, spoken rap, British male vocal, dark acoustic guitar, minimal garage beat, deep sub bass, 90 bpm",
+        lyrics: "[Verse 1: Spoken Rap, Intimate]\nWalking down the high street, rain is falling cold\nStories of the city, secrets left untold\nLate-night thoughts are keeping me awake\nThinking of the promises I chose to break\n\n[Chorus: Restrained Melody]\nUnder London rain, I'm finding my own way\nChasing out the shadows of yesterday\nTwo voices calling, but I stand alone\nIn these wet streets, I've found a home\n\n[Verse 2: Spoken Rap, Reflective]\nFamily pressure building, heavy on my chest\nTrying to be the first, trying to be the best\nBut the shame is lingering, the doubt is creeping in\nWondering if I can ever really win",
+        cover_art_prompt: "Moody dark rainy street in London at night, glowing neon reflections in puddles, cinematic view.",
+        spotify_canvas_prompt: "A slow looping video of rain droplets falling into a puddle reflecting neon city lights.",
+        tags: ["wrap", "emo", "uk", "moody"],
+        cover_id: "1509198397868-475647b2a1e5"
+      },
+      {
+        title: "Split Perspective",
+        creative_concept: "A raw psychological monologue about ambition and resilience despite inner conflict.",
+        style_prompt: "cinematic spoken rap, British male vocal, dark folk guitar, deep sub bass, slow garage pulse, 92 bpm",
+        lyrics: "[Verse 1: Spoken Rap, Close]\nOne voice says I'll make it, reach the highest peak\nOther voice is whispering, telling me I'm weak\nInner conflict building, who am I to trust?\nTurning all my golden dreams back to ash and dust\n\n[Chorus: Reflective, Emotional]\nAnd I split in two, looking at the stars\nCounting down the minutes, counting up the scars\nResilience is quiet, it doesn't need to shout\nFinding my own way through the dark and the doubt\n\n[Verse 2: Spoken Rap, Intimate]\nAmbition is a fire, burning in my soul\nBut the isolation takes a heavy toll\nStanding on the bridge, watching headlights go\nListening to the silent river move below",
+        cover_art_prompt: "Silhouette of a man walking across a bridge at night, city skyline in the background, misty atmosphere.",
+        spotify_canvas_prompt: "A slow looping silhouette of a passenger looking out of a window during a night drive.",
+        tags: ["wrap", "emo", "spoken-word", "reflection"],
+        cover_id: "1509198397868-475647b2a1e5"
+      }
     ]
   };
 
@@ -12436,7 +12708,8 @@ JSON schema:
           'cady-reggaeton-latin': '1533174072545-7a4b6ad7a6c3',
           'cady-neon-synthwave': '1508739773434-c26b3d09e071',
           'cady-country-roads': '1447752875215-b2761acb3c5d',
-          'cady-classical-focus': '1520523839897-bd0b52f945a0'
+          'cady-classical-focus': '1520523839897-bd0b52f945a0',
+          'cady-emo-rap': '1509198397868-475647b2a1e5'
         };
         const coverId = covers[playlistId] || '1518241353330-0f7941c2d9b5';
         return {
