@@ -8842,6 +8842,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function playMoodPlaylist(playlistId) {
       recordPlaylistPlay(playlistId);
+      if (playlistId && playlistId.startsWith('cady-')) {
+        playCadyRadioPlaylist(playlistId);
+        return;
+      }
       if (playlistId === 'new-music-daily') {
         const todayStart = new Date().setHours(0, 0, 0, 0);
         let dailyTracks = cadyRadioTracks.filter(t => {
