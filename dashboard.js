@@ -7343,6 +7343,12 @@ document.addEventListener('DOMContentLoaded', () => {
         fetchSeedTracks();
         renderRadioAdminPanel();
         renderRadioPlaylists();
+        
+        // If currently viewing the Adaptive Mix detail page, regenerate/refresh it instantly
+        if (activeDetailPage === 'playlist-detail') {
+          startPlaylistGeneration("", true);
+        }
+
         showToast("Database Reset", "Radio channels and tracks successfully cleared and re-seeded.", "success");
       });
     }
@@ -10547,6 +10553,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function saveCadyRadioTracks() {
     localStorage.setItem(KEY_RADIO_TRACKS, JSON.stringify(cadyRadioTracks));
+    const cachePrefix = getScopedKey('cady-playlist-cache-');
+    Object.keys(localStorage).forEach(key => {
+      if (key.startsWith(cachePrefix) || key.startsWith('cady-playlist-cache-')) {
+        localStorage.removeItem(key);
+      }
+    });
   }
 
   function saveCadyRadioFeedback() {
