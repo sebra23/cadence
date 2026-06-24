@@ -11527,11 +11527,25 @@ JSON schema:
 
   // Sidebar Collapsible Logic (Song Creator Widget)
   const btnSongCreatorToggle = document.getElementById('btn-song-creator-toggle');
+  const btnHeaderToggleCreator = document.getElementById('btn-header-toggle-creator');
   const songCreatorSidebar = document.getElementById('song-creator-sidebar');
+  
   if (btnSongCreatorToggle && songCreatorSidebar) {
     btnSongCreatorToggle.addEventListener('click', () => {
       songCreatorSidebar.classList.toggle('collapsed');
       updateSidebarMargin();
+    });
+  }
+  
+  if (btnHeaderToggleCreator && songCreatorSidebar) {
+    btnHeaderToggleCreator.addEventListener('click', () => {
+      if (window.innerWidth >= 1024) {
+        songCreatorSidebar.classList.toggle('collapsed');
+        updateSidebarMargin();
+      } else {
+        // On mobile/tablet, scroll smoothly to the song creator widget
+        songCreatorSidebar.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     });
   }
 

@@ -982,10 +982,16 @@
 
           <!-- Spotify-Style Detailed view -->
           <div id="library-detail-view" class="hidden">
-            <div class="spotify-detail-header">
+            <div class="spotify-detail-header" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
               <button id="btn-library-back" class="spotify-detail-back">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
                 Back to Browse
+              </button>
+              <button id="btn-header-toggle-creator" class="spotify-detail-back" style="background: linear-gradient(135deg, var(--color-purple-primary) 0%, #7c3aed 100%); border-color: var(--color-border); font-weight: 700; color: #fff; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sparkles-icon">
+                  <path d="M12 3v3M12 18v3M4.93 4.93l2.12 2.12M16.95 16.95l2.12 2.12M3 12h3M18 12h3M4.93 19.07l2.12-2.12M16.95 7.05l2.12-2.12"/>
+                </svg>
+                <span>Song Creator</span>
               </button>
             </div>
 
