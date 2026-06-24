@@ -921,7 +921,93 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (e) {
       console.error("Failed to save locations to localStorage", e);
     }
-  }  function switchPage(pageId) {
+  }
+
+  function updateSidebarMargin() {
+    const mainDashboard = document.querySelector('.main-dashboard');
+    if (!mainDashboard) return;
+    
+    if (window.innerWidth >= 1024) {
+      const settingsPage = document.getElementById('settings-page-container');
+      const libraryPage = document.getElementById('library-page-container');
+      
+      const settingsVisible = settingsPage && !settingsPage.classList.contains('hidden');
+      const libraryVisible = libraryPage && !libraryPage.classList.contains('hidden');
+      
+      if (settingsVisible) {
+        mainDashboard.style.marginRight = '0px';
+      } else if (libraryVisible) {
+        const sidebar = document.getElementById('song-creator-sidebar');
+        if (sidebar && sidebar.classList.contains('collapsed')) {
+          mainDashboard.style.marginRight = '0px';
+        } else {
+          mainDashboard.style.marginRight = '340px';
+        }
+      } else {
+        mainDashboard.style.marginRight = '340px';
+      }
+    } else {
+      mainDashboard.style.marginRight = '';
+    }
+  }
+
+  function updateRadioPlaylistsPlayState() {
+    const cards = document.querySelectorAll('.radio-playlist-card');
+    cards.forEach(card => {
+      const playlistId = card.getAttribute('data-playlist');
+      const coverArtContainer = card.querySelector('.cover-art-container');
+      const playBtn = card.querySelector('.play-btn');
+      
+      const isActive = activePlaylistTrack && activePlaylistTrack.playlist_id === playlistId;
+      
+      if (isActive) {
+        // Toggle play button icon to pause
+        if (playBtn) {
+          playBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`;
+        }
+        
+        // Ensure overlay exists
+        if (coverArtContainer) {
+          let overlay = coverArtContainer.querySelector('.radio-playing-overlay');
+          if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.className = 'radio-playing-overlay';
+            overlay.setAttribute('style', 'position: absolute; inset: 0; background: rgba(6, 6, 10, 0.6); display: flex; align-items: center; justify-content: center; backdrop-filter: blur(2px); z-index: 10;');
+            overlay.innerHTML = `
+              <div class="radio-playing-bars" style="display: flex; align-items: flex-end; gap: 4px; width: 32px; height: 32px;">
+                <div class="bar" style="width: 4px; background: var(--color-purple-light); border-radius: 2px;"></div>
+                <div class="bar" style="width: 4px; background: var(--color-purple-light); border-radius: 2px;"></div>
+                <div class="bar" style="width: 4px; background: var(--color-purple-light); border-radius: 2px;"></div>
+                <div class="bar" style="width: 4px; background: var(--color-purple-light); border-radius: 2px;"></div>
+              </div>
+            `;
+            coverArtContainer.appendChild(overlay);
+          }
+          
+          // Toggle animating class on bars based on playback status
+          const bars = overlay.querySelector('.radio-playing-bars');
+          if (bars) {
+            bars.classList.toggle('animating', isPlaylistPlaying);
+          }
+        }
+      } else {
+        // Toggle play button icon to play
+        if (playBtn) {
+          playBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 2px;"><path d="M8 5v14l11-7z"/></svg>`;
+        }
+        
+        // Remove overlay if it exists
+        if (coverArtContainer) {
+          const overlay = coverArtContainer.querySelector('.radio-playing-overlay');
+          if (overlay) {
+            overlay.remove();
+          }
+        }
+      }
+    });
+  }
+
+  function switchPage(pageId) {
     const onboardingPage = document.getElementById('onboarding-page-container');
     const playlistPage = document.getElementById('adaptive-playlist-section');
     const settingsPage = document.getElementById('settings-page-container');
@@ -964,13 +1050,7 @@ document.addEventListener('DOMContentLoaded', () => {
         else playerBar.classList.add('hidden');
       }
       
-      if (mainDashboard) {
-        if (window.innerWidth >= 1024) {
-          mainDashboard.style.marginRight = '340px';
-        } else {
-          mainDashboard.style.marginRight = '';
-        }
-      }
+      updateSidebarMargin();
     } else if (pageId === 'players') {
       if (onboardingPage) onboardingPage.classList.add('hidden');
       if (playlistPage) playlistPage.classList.remove('hidden');
@@ -987,13 +1067,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (playerBar) playerBar.classList.remove('hidden');
       
-      if (mainDashboard) {
-        if (window.innerWidth >= 1024) {
-          mainDashboard.style.marginRight = '340px';
-        } else {
-          mainDashboard.style.marginRight = '';
-        }
-      }
+      updateSidebarMargin();
       
       // Scroll to top
       const scrollBody = document.querySelector('.dashboard-scroll-body');
@@ -1023,13 +1097,7 @@ document.addEventListener('DOMContentLoaded', () => {
         else playerBar.classList.add('hidden');
       }
       
-      if (mainDashboard) {
-        if (window.innerWidth >= 1024) {
-          mainDashboard.style.marginRight = '0px';
-        } else {
-          mainDashboard.style.marginRight = '';
-        }
-      }
+      updateSidebarMargin();
     } else if (pageId === 'library') {
       if (onboardingPage) onboardingPage.classList.add('hidden');
       if (playlistPage) playlistPage.classList.add('hidden');
@@ -1085,13 +1153,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
       
-      if (mainDashboard) {
-        if (window.innerWidth >= 1024) {
-          mainDashboard.style.marginRight = '340px';
-        } else {
-          mainDashboard.style.marginRight = '';
-        }
-      }
+      updateSidebarMargin();
       
       // Scroll to top
       const scrollBody = document.querySelector('.dashboard-scroll-body');
@@ -1117,13 +1179,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (playerBar) playerBar.classList.remove('hidden');
 
-      if (mainDashboard) {
-        if (window.innerWidth >= 1024) {
-          mainDashboard.style.marginRight = '340px';
-        } else {
-          mainDashboard.style.marginRight = '';
-        }
-      }
+      updateSidebarMargin();
 
       // Scroll to top
       const scrollBody = document.querySelector('.dashboard-scroll-body');
@@ -1137,15 +1193,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Handle sidebar margin adjust on window resize
   window.addEventListener('resize', () => {
-    const mainDashboard = document.querySelector('.main-dashboard');
-    if (!mainDashboard) return;
-    
-    const settingsVisible = !document.getElementById('settings-page-container')?.classList.contains('hidden');
-    if (window.innerWidth >= 1024) {
-      mainDashboard.style.marginRight = settingsVisible ? '0px' : '340px';
-    } else {
-      mainDashboard.style.marginRight = '';
-    }
+    updateSidebarMargin();
   });
   
   function syncBrandNamePlaceholders() {
@@ -6317,6 +6365,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     updateTableActiveStates();
+    updateRadioPlaylistsPlayState();
   }
 
   function updateTableActiveStates() {
@@ -6992,15 +7041,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const scrollBody = document.querySelector('.dashboard-scroll-body');
       if (scrollBody) scrollBody.scrollTop = 0;
 
-      // Update dashboard margin-right for the fixed sidebar (Song Creator)
-      const mainDashboard = document.querySelector('.main-dashboard');
-      if (mainDashboard) {
-        if (window.innerWidth >= 1024) {
-          mainDashboard.style.marginRight = '340px';
-        } else {
-          mainDashboard.style.marginRight = '';
-        }
-      }
+      updateSidebarMargin();
 
       const playerBar = document.getElementById('playlist-player-bar');
       if (playerBar) {
@@ -7039,15 +7080,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (browseView) browseView.classList.remove('hidden');
         if (detailView) detailView.classList.add('hidden');
 
-        // Keep dashboard margin-right at 340px for the persistent Song Creator sidebar
-        const mainDashboard = document.querySelector('.main-dashboard');
-        if (mainDashboard) {
-          if (window.innerWidth >= 1024) {
-            mainDashboard.style.marginRight = '340px';
-          } else {
-            mainDashboard.style.marginRight = '';
-          }
-        }
+        updateSidebarMargin();
 
         // Reset the top filter pill to "All" to avoid a blank/black browse screen
         const allPill = Array.from(document.querySelectorAll('.spotify-filter-pill')).find(p => p.getAttribute('data-filter') === 'all');
@@ -10492,9 +10525,9 @@ JSON schema:
         'cady-nordic-pop': '1517411032315-54ef2cb783bb',
         'cady-afrobeats-good-vibes': '1508700115892-45ecd05ae2ad',
         'cady-edm-energy': '1470229722913-7c0e2dbbafd3',
-        'cady-rock-indie': '1459749411175-04ed5292ceea',
-        'cady-bars-beats': '1515462277126-270d878326e5',
-        'cady-jazz-lounge': '1511153059451-b8432cfc31a4',
+        'cady-rock-indie': '1459749411175-04bf5292ceea',
+        'cady-bars-beats': '1515462277126-2dd0c162007a',
+        'cady-jazz-lounge': '1511192336575-5a79af67a629',
         'cady-reggaeton-latin': '1533174072545-7a4b6ad7a6c3',
         'cady-neon-synthwave': '1508739773434-c26b3d09e071',
         'cady-country-roads': '1447752875215-b2761acb3c5d',
@@ -10504,7 +10537,7 @@ JSON schema:
       const coverSrc = `https://images.unsplash.com/photo-${imageId}?q=80&w=200&auto=format&fit=crop`;
 
       card.innerHTML = `
-        <div style="position: relative; width: 100%; aspect-ratio: 1; border-radius: 6px; overflow: hidden; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+        <div class="cover-art-container" style="position: relative; width: 100%; aspect-ratio: 1; border-radius: 6px; overflow: hidden; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
           <img src="${coverSrc}" style="width: 100%; height: 100%; object-fit: cover;" alt="${playlist.name}">
           <span style="position: absolute; top: 8px; left: 8px; background: var(--color-purple-primary); color: #fff; font-size: 0.65rem; font-weight: 700; padding: 3px 8px; border-radius: 4px; letter-spacing: 0.05em; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 2px 6px rgba(0,0,0,0.2);">AI Radio</span>
         </div>
@@ -10529,12 +10562,18 @@ JSON schema:
       if (playBtn) {
         playBtn.addEventListener('click', (e) => {
           e.stopPropagation();
-          playCadyRadioPlaylist(playlist.id);
+          const isActive = activePlaylistTrack && activePlaylistTrack.playlist_id === playlist.id;
+          if (isActive) {
+            playPlaylistTrack(activePlaylistTrack);
+          } else {
+            playCadyRadioPlaylist(playlist.id);
+          }
         });
       }
 
       container.appendChild(card);
     });
+    updateRadioPlaylistsPlayState();
   }
 
   function renderRadioAdminPanel() {
@@ -11114,7 +11153,7 @@ JSON schema:
         cover_art_prompt: "Grunge aesthetic close-up of a beat-up electric guitar sitting against a brick wall, red and black tones.",
         spotify_canvas_prompt: "A looping video of dust falling through stage lights on a drum kit, vintage overlay.",
         tags: ["rock", "indie", "alternative", "raw"],
-        cover_id: "1459749411175-04ed5292ceea"
+        cover_id: "1459749411175-04bf5292ceea"
       },
       {
         title: "Wildfire Horizons",
@@ -11124,7 +11163,7 @@ JSON schema:
         cover_art_prompt: "Epic landscape photography of a winding highway through red rock canyons at sunset.",
         spotify_canvas_prompt: "Looping point-of-view driving footage down a desert road during golden hour.",
         tags: ["rock", "indie", "roadtrip", "soaring"],
-        cover_id: "1459749411175-04ed5292ceea"
+        cover_id: "1459749411175-04bf5292ceea"
       }
     ],
     'cady-bars-beats': [
@@ -11136,7 +11175,7 @@ JSON schema:
         cover_art_prompt: "Dark urban street corner at night with glowing purple streetlights, graffiti overlay.",
         spotify_canvas_prompt: "A slow looping video of smoke rising from a subway grate against neon store lights.",
         tags: ["hiphop", "trap", "workout", "confident"],
-        cover_id: "1515462277126-270d878326e5"
+        cover_id: "1515462277126-2dd0c162007a"
       },
       {
         title: "Rhyme Horizon",
@@ -11146,7 +11185,7 @@ JSON schema:
         cover_art_prompt: "Warm retro illustration of a fire escape looking over a city skyline at sunset, flat design.",
         spotify_canvas_prompt: "A looping animation of a record spinning on a vintage turntable, warm tones.",
         tags: ["hiphop", "boombap", "chill", "melodic"],
-        cover_id: "1515462277126-270d878326e5"
+        cover_id: "1515462277126-2dd0c162007a"
       }
     ],
     'cady-jazz-lounge': [
@@ -11158,7 +11197,7 @@ JSON schema:
         cover_art_prompt: "Warm, atmospheric photo of a vintage saxophone sitting on a wooden table in a dimly lit lounge.",
         spotify_canvas_prompt: "A slow looping video of jazz club stage lights refracting through a glass of whiskey.",
         tags: ["jazz", "lounge", "chill", "late-night"],
-        cover_id: "1511153059451-b8432cfc31a4"
+        cover_id: "1511192336575-5a79af67a629"
       },
       {
         title: "Velvet Midnight",
@@ -11168,7 +11207,7 @@ JSON schema:
         cover_art_prompt: "Abstract minimalist album cover with velvet purple and navy blue gradients, starry specks.",
         spotify_canvas_prompt: "A slow, seamless loop of warm purple and indigo waves rippling gently.",
         tags: ["lounge", "soul", "ambient", "midnight"],
-        cover_id: "1511153059451-b8432cfc31a4"
+        cover_id: "1511192336575-5a79af67a629"
       }
     ],
     'cady-reggaeton-latin': [
@@ -11483,6 +11522,16 @@ JSON schema:
           }
         }
       }, 100);
+    });
+  }
+
+  // Sidebar Collapsible Logic (Song Creator Widget)
+  const btnSongCreatorToggle = document.getElementById('btn-song-creator-toggle');
+  const songCreatorSidebar = document.getElementById('song-creator-sidebar');
+  if (btnSongCreatorToggle && songCreatorSidebar) {
+    btnSongCreatorToggle.addEventListener('click', () => {
+      songCreatorSidebar.classList.toggle('collapsed');
+      updateSidebarMargin();
     });
   }
 

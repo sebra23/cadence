@@ -406,6 +406,7 @@ ul {
 .main-dashboard {
   flex-grow: 1;
   padding: 24px 20px 110px 20px; /* Extra bottom padding to clear mobile menu bar and player bar */
+  transition: margin-right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .dashboard-scroll-body {
@@ -6103,6 +6104,10 @@ ul {
 /* ==========================================================================
    26. Library Detailed View Fixed Right Sidebar (Song Creator)
    ========================================================================== */
+#library-page-container .song-creator-toggle-btn {
+  display: none !important;
+}
+
 @media (min-width: 1024px) {
   #library-detail-view .spotify-detail-grid {
     grid-template-columns: 1fr !important;
@@ -6127,6 +6132,55 @@ ul {
     box-shadow: none !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+
+  #library-page-container .song-creator-widget.collapsed {
+    transform: translateX(100%) !important;
+  }
+
+  #library-page-container .song-creator-toggle-btn {
+    position: absolute;
+    left: -40px;
+    top: 180px;
+    width: 40px;
+    height: 160px;
+    background: #06060a;
+    border: 1px solid var(--color-border);
+    border-right: none;
+    border-radius: var(--border-radius-md) 0 0 var(--border-radius-md);
+    color: #fff;
+    cursor: pointer;
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    z-index: 100;
+    box-shadow: -5px 0 15px rgba(0,0,0,0.5);
+    transition: all 0.3s ease;
+  }
+
+  #library-page-container .song-creator-toggle-btn:hover {
+    background: #0f0f18;
+    color: var(--color-purple-light);
+  }
+
+  #library-page-container .song-creator-toggle-btn .toggle-text {
+    writing-mode: vertical-rl;
+    text-transform: uppercase;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    transform: rotate(180deg);
+  }
+
+  #library-page-container .song-creator-toggle-btn .chevron-icon {
+    transition: transform 0.3s ease;
+  }
+
+  #library-page-container .song-creator-widget.collapsed .song-creator-toggle-btn .chevron-icon {
+    transform: rotate(180deg);
   }
 }
 
@@ -7060,6 +7114,26 @@ ul {
 }
 #admin-configs-body td button:hover {
   transform: translateY(-1px);
+}
+
+/* Equalizer Playing Animation for Cady Radio Cards */
+.radio-playing-bars .bar {
+  animation: radioBars 1.2s ease-in-out infinite alternate;
+  animation-play-state: paused;
+}
+
+.radio-playing-bars.animating .bar {
+  animation-play-state: running;
+}
+
+.radio-playing-bars .bar:nth-child(1) { animation-delay: 0.1s; height: 30%; }
+.radio-playing-bars .bar:nth-child(2) { animation-delay: 0.4s; height: 75%; }
+.radio-playing-bars .bar:nth-child(3) { animation-delay: 0.2s; height: 50%; }
+.radio-playing-bars .bar:nth-child(4) { animation-delay: 0.6s; height: 90%; }
+
+@keyframes radioBars {
+  0% { height: 20%; }
+  100% { height: 100%; }
 }
 
 

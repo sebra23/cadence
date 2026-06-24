@@ -1,0 +1,94 @@
+@import "tailwindcss";
+
+@theme {
+  --color-zenith-bg: #F6F8F6;
+  --color-zenith-sidebar: #F1F4F1;
+  --color-zenith-card: #ffffff;
+  --color-zenith-border: #E2E6E2;
+  --color-zenith-text: #2D312E;
+  --color-zenith-muted: #687069;
+  --color-zenith-primary: #4D5E4D;
+  --color-zenith-accent: #D5E2D5;
+  --color-zenith-alertBg: #FDECEB;
+  --color-zenith-alertText: #962A24;
+
+  --color-brand-bg: #F6F8F6;
+  --color-brand-sidebar: #F1F4F1;
+  --color-brand-card: #ffffff;
+  --color-brand-border: #E2E6E2;
+  --color-brand-text-primary: #2D312E;
+  --color-brand-text-secondary: #687069;
+  
+  --color-accent-primary: #4D5E4D;
+  --color-accent-success: #059669;
+  --color-accent-warning: #755754;
+  --color-accent-danger: #962A24;
+  --color-accent-danger-bg: #FDECEB;
+  
+  --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+:root {
+  --background: #F6F8F6;
+  --foreground: #2D312E;
+  --card: #ffffff;
+  --border: #E2E6E2;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom Scrollbar for Zenith style */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D5E2D5;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4D5E4D;
+}
+
+/* Soft drop shadow matching Zenith cards */
+.soft-shadow {
+  box-shadow: 0 10px 40px -10px rgba(77, 94, 77, 0.08);
+}
+
+.glass-pill {
+  background: rgba(246, 248, 246, 0.7);
+  backdrop-filter: blur(20px);
+}
+
+/* Glowing Indicator utility */
+.glow-dot-emerald {
+  box-shadow: 0 0 6px #059669;
+}
+.glow-dot-indigo {
+  box-shadow: 0 0 6px #4D5E4D;
+}
+.glow-dot-rose {
+  box-shadow: 0 0 6px #962A24;
+}
+.glow-dot-amber {
+  box-shadow: 0 0 6px #755754;
+}

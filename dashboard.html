@@ -1123,7 +1123,16 @@
           </div> <!-- Closes library-detail-view -->
 
           <!-- Song Creator Sidebar (visible for the whole library page) -->
-          <div class="song-creator-widget">
+          <div class="song-creator-widget collapsed" id="song-creator-sidebar">
+            <button class="song-creator-toggle-btn" id="btn-song-creator-toggle" title="Toggle Song Creator">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sparkles-icon">
+                <path d="M12 3v3M12 18v3M4.93 4.93l2.12 2.12M16.95 16.95l2.12 2.12M3 12h3M18 12h3M4.93 19.07l2.12-2.12M16.95 7.05l2.12-2.12"/>
+              </svg>
+              <span class="toggle-text">Song Creator</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="chevron-icon">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+            </button>
                 <!-- Loading overlay specifically inside the widget -->
                 <div class="song-creator-loading-overlay hidden" id="song-creator-loading-overlay">
                   <div class="song-creator-loader-card">
