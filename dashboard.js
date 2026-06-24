@@ -6476,6 +6476,24 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
+    const btnExportTracks = document.getElementById('btn-admin-export-tracks');
+    if (btnExportTracks) {
+      btnExportTracks.addEventListener('click', () => {
+        if (!cadyRadioTracks || cadyRadioTracks.length === 0) {
+          showToast("Export Failed", "There are no generated tracks to export.", "warning");
+          return;
+        }
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(cadyRadioTracks, null, 2));
+        const downloadAnchor = document.createElement('a');
+        downloadAnchor.setAttribute("href", dataStr);
+        downloadAnchor.setAttribute("download", "cady_radio_tracks_seed.json");
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        downloadAnchor.remove();
+        showToast("Tracks Exported", "Exported " + cadyRadioTracks.length + " tracks to cady_radio_tracks_seed.json", "success");
+      });
+    }
+
     if (forceMockCheck) {
       forceMockCheck.addEventListener('change', (e) => {
         window.CADY_RADIO_FORCE_MOCK = e.target.checked;
@@ -9322,10 +9340,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================
   // Cady Radio Module Implementation
   // ==========================================
-  const KEY_RADIO_CONFIGS = getScopedKey('cady-radio-configs');
-  const KEY_RADIO_TRACKS = getScopedKey('cady-radio-tracks');
-  const KEY_RADIO_FEEDBACK = getScopedKey('cady-radio-feedback');
-  const KEY_RADIO_JOBS = getScopedKey('cady-radio-jobs');
+  const KEY_RADIO_CONFIGS = 'cady-radio-configs';
+  const KEY_RADIO_TRACKS = 'cady-radio-tracks';
+  const KEY_RADIO_FEEDBACK = 'cady-radio-feedback';
+  const KEY_RADIO_JOBS = 'cady-radio-jobs';
 
   let cadyRadioConfigs = [];
   let cadyRadioTracks = [];
@@ -9380,10 +9398,42 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log(`Purged ${originalLength - cadyRadioTracks.length} failed/placeholder live tracks.`);
           }
         }
+        
+        // Fetch static shared track seeds asynchronously
+        fetchSeedTracks();
       }
     } catch (e) {
       console.error("Failed to load Cady Radio data", e);
     }
+  }
+
+  function fetchSeedTracks() {
+    fetch('cady_radio_tracks_seed.json')
+      .then(res => {
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        return res.json();
+      })
+      .then(seedTracks => {
+        if (Array.isArray(seedTracks) && seedTracks.length > 0) {
+          let mergedCount = 0;
+          seedTracks.forEach(track => {
+            const exists = cadyRadioTracks.some(t => t.id === track.id || (t.title === track.title && t.artist === track.artist && t.playlist_id === track.playlist_id));
+            if (!exists) {
+              cadyRadioTracks.push(track);
+              mergedCount++;
+            }
+          });
+          if (mergedCount > 0) {
+            saveCadyRadioTracks();
+            console.log(`Merged ${mergedCount} seeded tracks from server.`);
+            renderRadioPlaylists();
+            renderLibraryTracks();
+          }
+        }
+      })
+      .catch(err => {
+        console.log("No cady_radio_tracks_seed.json found or failed to load. Using localStorage only.", err.message);
+      });
   }
 
   function saveCadyRadioConfigs() {
