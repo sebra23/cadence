@@ -10592,7 +10592,7 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log(`Seeded ${cadyRadioTracks.length} default Cady Radio tracks.`);
     }
 
-    if (!force && cadyRadioConfigs.length >= 23) {
+    if (!force && cadyRadioConfigs.length >= 24) {
       return;
     }
 
