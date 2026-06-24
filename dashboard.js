@@ -10692,7 +10692,7 @@ document.addEventListener('DOMContentLoaded', () => {
         max_tracks_per_day: 20,
         generation_frequency: 'daily',
         active: true,
-        generation_prompt: 'Bright and sun-drenched melodies, conveying pure optimism and daylight breeze. Acoustic strums and organic drums.'
+        generation_prompt: 'Bright and sun-drenched melodies, conveying pure optimism and daylight breeze. Acoustic strums and organic drums. Avoid neon, cyberpunk, or nighttime references.'
       },
       {
         id: 'cady-emotional',
@@ -10998,7 +10998,7 @@ document.addEventListener('DOMContentLoaded', () => {
         max_tracks_per_day: 20,
         generation_frequency: 'daily',
         active: true,
-        generation_prompt: 'Theatrical UK emo rap with acoustic guitar-driven spoken-rap storytelling, clear upfront British male vocal, crisp pronunciation, half-spoken half-rapped delivery, raw emotional intensity, and dynamic shifts between fragile vulnerability and aggressive self-interrogation. Songs should feel like a psychological conversation where one voice slowly splits into two perspectives: doubt, ego, fear, ambition, shame, and resilience. Use dark folk guitar, sparse hip hop drums, deep sub bass, minimal UK garage pulse, dramatic pauses, intimate verses, rapid conversational rap sections, emotional melodic chorus, spiritual and philosophical imagery, dark humor, and a reflective spoken-word outro. Keep vocals louder than instruments, intelligible lyrics, minimal reverb, no muddy mix, no excessive vocal layers, no polished pop, no generic trap flexing, no cartoon villain voice, no direct artist imitation.'
+        generation_prompt: 'Theatrical UK emo rap with acoustic guitar-driven spoken-rap storytelling, clear upfront British male vocal, crisp pronunciation, half-spoken half-rapped delivery, raw emotional intensity, and dynamic shifts between fragile vulnerability and aggressive self-interrogation. Songs should feel like a psychological conversation where one voice slowly splits into two perspectives: doubt, ego, fear, ambition, shame, and resilience. Use dark folk guitar, sparse hip hop drums, deep sub bass, minimal UK garage pulse, dramatic pauses, intimate verses, rapid conversational rap sections, emotional melodic chorus, spiritual and philosophical imagery, dark humor, and a reflective spoken-word outro. Keep vocals louder than instruments, intelligible lyrics, minimal reverb, no muddy mix, no excessive vocal layers, no polished pop, no generic trap flexing, no cartoon villain voice, no direct artist imitation, no neon references.'
       }
     ];
 
@@ -12442,8 +12442,8 @@ JSON schema:
         creative_concept: "A reflective and moody UK emo-rap song about walking through London in the rain.",
         style_prompt: "UK emo rap, spoken rap, British male vocal, dark acoustic guitar, minimal garage beat, deep sub bass, 90 bpm",
         lyrics: "[Verse 1: Spoken Rap, Intimate]\nWalking down the high street, rain is falling cold\nStories of the city, secrets left untold\nLate-night thoughts are keeping me awake\nThinking of the promises I chose to break\n\n[Chorus: Restrained Melody]\nUnder London rain, I'm finding my own way\nChasing out the shadows of yesterday\nTwo voices calling, but I stand alone\nIn these wet streets, I've found a home\n\n[Verse 2: Spoken Rap, Reflective]\nFamily pressure building, heavy on my chest\nTrying to be the first, trying to be the best\nBut the shame is lingering, the doubt is creeping in\nWondering if I can ever really win",
-        cover_art_prompt: "Moody dark rainy street in London at night, glowing neon reflections in puddles, cinematic view.",
-        spotify_canvas_prompt: "A slow looping video of rain droplets falling into a puddle reflecting neon city lights.",
+        cover_art_prompt: "Moody dark rainy street in London at night, glowing wet reflections in puddles, cinematic view.",
+        spotify_canvas_prompt: "A slow looping video of rain droplets falling into a puddle reflecting city streetlights.",
         tags: ["wrap", "emo", "uk", "moody"],
         cover_id: "1509198397868-475647b2a1e5"
       },
