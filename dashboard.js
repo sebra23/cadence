@@ -897,6 +897,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let locations = [];
   let activeLocationId = 'london-flagship';
+  let editingLocationId = null;
   let storeSchedules = null;
   let activeZoneId = 'zone-default';
   let modalStoreZones = [];
@@ -930,9 +931,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.innerWidth >= 1024) {
       const settingsPage = document.getElementById('settings-page-container');
       const libraryPage = document.getElementById('library-page-container');
+      const locationsSidebar = document.getElementById('locations-sidebar');
+      const roadmapSidebar = document.getElementById('roadmap-sidebar');
       
       const settingsVisible = settingsPage && !settingsPage.classList.contains('hidden');
       const libraryVisible = libraryPage && !libraryPage.classList.contains('hidden');
+      
+      const rightSidebarVisible = (locationsSidebar && !locationsSidebar.classList.contains('hidden')) || 
+                                  (roadmapSidebar && !roadmapSidebar.classList.contains('hidden'));
       
       if (settingsVisible) {
         mainDashboard.style.marginRight = '0px';
@@ -944,10 +950,44 @@ document.addEventListener('DOMContentLoaded', () => {
           mainDashboard.style.marginRight = '340px';
         }
       } else {
-        mainDashboard.style.marginRight = '340px';
+        mainDashboard.style.marginRight = rightSidebarVisible ? '340px' : '0px';
       }
     } else {
       mainDashboard.style.marginRight = '';
+    }
+  }
+
+  function toggleRightSidebar() {
+    const locationsSidebar = document.getElementById('locations-sidebar');
+    const roadmapSidebar = document.getElementById('roadmap-sidebar');
+    const toggleBtn = document.getElementById('player-btn-sidebar-toggle');
+    
+    let activeSidebar = locationsSidebar;
+    if (roadmapSidebar && !roadmapSidebar.classList.contains('hidden')) {
+      activeSidebar = roadmapSidebar;
+    } else if (locationsSidebar && !locationsSidebar.classList.contains('hidden')) {
+      activeSidebar = locationsSidebar;
+    } else {
+      if (trafficScheduleActive) {
+        activeSidebar = locationsSidebar;
+      } else {
+        activeSidebar = roadmapSidebar;
+      }
+    }
+    
+    if (activeSidebar) {
+      const isCurrentlyHidden = activeSidebar.classList.contains('hidden');
+      
+      if (isCurrentlyHidden) {
+        activeSidebar.classList.remove('hidden');
+        if (toggleBtn) toggleBtn.classList.add('active');
+        localStorage.setItem('cady-sidebar-toggled-off', 'false');
+      } else {
+        activeSidebar.classList.add('hidden');
+        if (toggleBtn) toggleBtn.classList.remove('active');
+        localStorage.setItem('cady-sidebar-toggled-off', 'true');
+      }
+      updateSidebarMargin();
     }
   }
 
@@ -1026,6 +1066,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (radioPage) radioPage.classList.add('hidden');
     if (linkRadio && !window.CADY_RADIO_ORIGIN) linkRadio.classList.remove('active');
 
+    // Sidebar toggled off preference persistence
+    const sidebarToggledOff = localStorage.getItem('cady-sidebar-toggled-off') === 'true';
+    const toggleBtn = document.getElementById('player-btn-sidebar-toggle');
+    if (toggleBtn) {
+      toggleBtn.classList.toggle('active', !sidebarToggledOff);
+      if (pageId === 'dashboard' || pageId === 'players') {
+        toggleBtn.classList.remove('hidden');
+      } else {
+        toggleBtn.classList.add('hidden');
+      }
+    }
+
     if (pageId === 'dashboard') {
       if (onboardingPage) onboardingPage.classList.remove('hidden');
       if (playlistPage) playlistPage.classList.add('hidden');
@@ -1034,9 +1086,15 @@ document.addEventListener('DOMContentLoaded', () => {
       
       if (trafficScheduleActive) {
         if (roadmapSidebar) roadmapSidebar.classList.add('hidden');
-        if (locationsSidebar) locationsSidebar.classList.remove('hidden');
+        if (locationsSidebar) {
+          if (sidebarToggledOff) locationsSidebar.classList.add('hidden');
+          else locationsSidebar.classList.remove('hidden');
+        }
       } else {
-        if (roadmapSidebar) roadmapSidebar.classList.remove('hidden');
+        if (roadmapSidebar) {
+          if (sidebarToggledOff) roadmapSidebar.classList.add('hidden');
+          else roadmapSidebar.classList.remove('hidden');
+        }
         if (locationsSidebar) locationsSidebar.classList.add('hidden');
       }
       
@@ -1058,7 +1116,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (libraryPage) libraryPage.classList.add('hidden');
       
       if (roadmapSidebar) roadmapSidebar.classList.add('hidden');
-      if (locationsSidebar) locationsSidebar.classList.remove('hidden');
+      if (locationsSidebar) {
+        if (sidebarToggledOff) locationsSidebar.classList.add('hidden');
+        else locationsSidebar.classList.remove('hidden');
+      }
       
       if (linkDashboard) linkDashboard.classList.remove('active');
       if (linkPlayers) linkPlayers.classList.add('active');
@@ -1241,9 +1302,8 @@ document.addEventListener('DOMContentLoaded', () => {
       localStorage.setItem('cady-active-email', emailVal);
     }
     
-    if (activeUserEmail && activeUserEmail.toLowerCase().trim() === 'seb@cady.fm') {
-      localStorage.setItem(getScopedKey('cady-onboarding-completed'), 'true');
-    }
+    // Always inactivate onboarding flow for now
+    localStorage.setItem(getScopedKey('cady-onboarding-completed'), 'true');
     
     extractBrandName();
     loadUserData();
@@ -1845,10 +1905,7 @@ document.addEventListener('DOMContentLoaded', () => {
       curationCard.classList.add('expanded'); // Expand Step 2 sound finding
     }
 
-    // Trigger live Evolink API track generation for step 2 only if not skipping
-    if (!skipGeneration) {
-      generateStep1AuditionTracks(false);
-    }
+    // Removed Suno generation transition - we now use space profile selections.
     
     // Smoothly scroll down to show curation card
     setTimeout(() => {
@@ -3068,6 +3125,78 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 3000);
   }
 
+  // Space Profile Selection Handler
+  const profileCards = document.querySelectorAll('.profile-card');
+  const profileSelectionStatus = document.getElementById('profile-selection-status');
+  const accSummaryCuration = document.getElementById('acc-summary-curation');
+
+  const profileLabels = {
+    private: "Private Person",
+    hotel: "Hotel",
+    restaurant: "Restaurant",
+    retailer: "Retailer",
+    public: "Public Space",
+    other: "Other"
+  };
+
+  function selectProfile(profileId, triggerSave = true) {
+    profileCards.forEach(c => {
+      if (c.getAttribute('data-profile') === profileId) {
+        c.classList.add('selected');
+      } else {
+        c.classList.remove('selected');
+      }
+    });
+
+    const label = profileLabels[profileId] || "Other";
+    if (profileSelectionStatus) {
+      profileSelectionStatus.textContent = `Selected: ${label}`;
+      profileSelectionStatus.style.color = '#fff';
+    }
+    if (accSummaryCuration) {
+      accSummaryCuration.textContent = `Profile: ${label}`;
+    }
+
+    if (btnContinueToTraffic) {
+      btnContinueToTraffic.disabled = false;
+      btnContinueToTraffic.style.opacity = '1';
+      btnContinueToTraffic.style.cursor = 'pointer';
+    }
+
+    if (triggerSave) {
+      try {
+        localStorage.setItem(getScopedKey('cady-space-profile'), profileId);
+        // Force regeneration of cached playlist when profile changes
+        // Iterate through localStorage to find and clear any playlist caches
+        for (let i = localStorage.length - 1; i >= 0; i--) {
+          const key = localStorage.key(i);
+          if (key && key.includes('cady-playlist-cache-')) {
+            localStorage.removeItem(key);
+          }
+        }
+      } catch (e) {
+        console.error("Failed to save space profile to localStorage", e);
+      }
+    }
+  }
+
+  profileCards.forEach(card => {
+    card.addEventListener('click', () => {
+      const profileId = card.getAttribute('data-profile');
+      selectProfile(profileId, true);
+    });
+  });
+
+  // Initialize selected profile from localStorage if present
+  try {
+    const savedProfile = localStorage.getItem(getScopedKey('cady-space-profile'));
+    if (savedProfile && profileLabels[savedProfile]) {
+      selectProfile(savedProfile, false);
+    }
+  } catch (e) {
+    console.error("Failed to read saved space profile from localStorage", e);
+  }
+
   // Continue to Store Traffic button
   const btnContinueToTraffic = document.getElementById('btn-continue-to-traffic');
   const storeTrafficSection = document.getElementById('store-traffic-section');
@@ -3104,9 +3233,12 @@ document.addEventListener('DOMContentLoaded', () => {
         step2.querySelector('.step-icon-wrapper').innerHTML = '✓';
         step2.querySelector('.step-icon-wrapper').style.backgroundColor = '#10b981';
         step2.querySelector('.step-icon-wrapper').style.borderColor = '#10b981';
+        
+        const savedProfile = localStorage.getItem(getScopedKey('cady-space-profile')) || 'other';
+        const label = profileLabels[savedProfile] || 'Other';
         step2.querySelector('.step-content').innerHTML = `
           <h3>Find Your Sound</h3>
-          <p><span style="color:#10b981; font-weight:500;">✓ Soundscapes Selected</span><br>AI curation models trained. Operating parameters generated.</p>
+          <p><span style="color:#10b981; font-weight:500;">✓ Profile: ${label}</span><br>Space categorized. Curation models trained.</p>
         `;
       }
       
@@ -4154,6 +4286,39 @@ document.addEventListener('DOMContentLoaded', () => {
   let activeLibraryCategoryFilter = 'all';
   let activeDetailPlaylist = 'library';
   let showLibraryDetail;
+  function cleanSpaceProfileMetadata(title, artist) {
+    let cleanTitle = title || "";
+    let cleanArtist = artist || "";
+
+    const suffixes = [
+      " (Lounge Mix)",
+      " (Bistro Edit)",
+      " (Retail Mix)",
+      " (Personal Mix)",
+      " (Ambient Edit)",
+      " (Refined Mix)"
+    ];
+    suffixes.forEach(suffix => {
+      if (cleanTitle.endsWith(suffix)) {
+        cleanTitle = cleanTitle.substring(0, cleanTitle.length - suffix.length);
+      }
+    });
+
+    const prefixes = [
+      "Hotel Lounge Project ft. ",
+      "Bistro Jazz Syndicate ft. ",
+      "Retail Beats Collective ft. ",
+      "Lo-Fi Study Club ft. ",
+      "Ambient Space Group ft. "
+    ];
+    prefixes.forEach(prefix => {
+      if (cleanArtist.startsWith(prefix)) {
+        cleanArtist = cleanArtist.substring(prefix.length);
+      }
+    });
+
+    return { title: cleanTitle, artist: cleanArtist };
+  }
   
   function saveOwnedSongs() {
     try {
@@ -4250,12 +4415,43 @@ document.addEventListener('DOMContentLoaded', () => {
       { id: 50, title: "After Hours #14", bpm: 84, category: "after", artist: "Air", album: "Coming Home", basePrompt: "The brand's most beautiful track. Rhodes theme that feels like coming home. Perfect ending note.", imageId: "1501854140801-50d01698950b" }
     ];
 
+    const spaceProfile = localStorage.getItem(getScopedKey('cady-space-profile')) || 'other';
+
     const mappedRawSongs = rawSongs.map(song => {
       const promptText = `brand="${brand}" + prompt="[PERSONA: ${currentPersonaId}] ${song.basePrompt}"`;
       
       let title = song.title;
       if (prompt && song.id % 3 === 0) {
         title = title + " (Refined Mix)";
+      }
+
+      // Apply space profile skews
+      let bpm = song.bpm;
+      let artist = song.artist;
+      
+      if (spaceProfile === 'hotel') {
+        bpm = Math.round(song.bpm * 0.92);
+        title = title + " (Lounge Mix)";
+        artist = `Hotel Lounge Project ft. ${song.artist}`;
+      } else if (spaceProfile === 'restaurant') {
+        bpm = Math.round(song.bpm * 0.96);
+        title = title + " (Bistro Edit)";
+        artist = `Bistro Jazz Syndicate ft. ${song.artist}`;
+      } else if (spaceProfile === 'retailer') {
+        bpm = Math.round(song.bpm * 1.06);
+        title = title + " (Retail Mix)";
+        artist = `Retail Beats Collective ft. ${song.artist}`;
+      } else if (spaceProfile === 'private') {
+        title = title + " (Personal Mix)";
+        artist = `Lo-Fi Study Club ft. ${song.artist}`;
+      } else if (spaceProfile === 'public') {
+        title = title + " (Ambient Edit)";
+        artist = `Ambient Space Group ft. ${song.artist}`;
+        if (song.category === 'calm' || song.category === 'after') {
+          bpm = Math.max(68, Math.min(bpm, 80));
+        } else {
+          bpm = Math.max(85, Math.min(bpm, 105));
+        }
       }
 
       // 3 minutes 30 seconds static length
@@ -4267,10 +4463,10 @@ document.addEventListener('DOMContentLoaded', () => {
       return {
         id: song.id,
         title: title,
-        artist: song.artist,
+        artist: artist,
         album: song.album + " " + song.category.charAt(0).toUpperCase() + song.category.slice(1),
         category: song.category,
-        bpm: song.bpm,
+        bpm: bpm,
         duration: durationString,
         durationSeconds: durationSeconds,
         prompt: promptText,
@@ -4279,11 +4475,102 @@ document.addEventListener('DOMContentLoaded', () => {
       };
     });
 
-    const customSunoSongs = (typeof ownedSongs !== 'undefined' ? ownedSongs : []).filter(s => s && s.audioUrl);
+    // Retrieve all successfully generated songs from the Cady Radio archive
+    const radioArchiveTracks = (typeof cadyRadioTracks !== 'undefined' ? cadyRadioTracks : [])
+      .filter(t => t && t.audioUrl && !t.generating);
+
+    const mappedRadioSongs = radioArchiveTracks.map((t, idx) => {
+      // Determine category for this radio track
+      let category = 'flow';
+      if (t.category && (t.category === 'calm' || t.category === 'flow' || t.category === 'drive' || t.category === 'after')) {
+        category = t.category;
+      } else {
+        const pid = (t.playlist_id || "").toLowerCase();
+        if (pid.includes('chill') || pid.includes('peace') || pid.includes('calm') || pid.includes('ambient') || pid.includes('relax') || pid.includes('focus')) {
+          category = 'calm';
+        } else if (pid.includes('boost') || pid.includes('happy') || pid.includes('workout') || pid.includes('energy') || pid.includes('drive') || pid.includes('party')) {
+          category = 'drive';
+        } else if (pid.includes('groove') || pid.includes('flow') || pid.includes('vibes') || pid.includes('good') || pid.includes('feelin')) {
+          category = 'flow';
+        } else if (pid.includes('late') || pid.includes('night') || pid.includes('after') || pid.includes('sleep') || pid.includes('cozy')) {
+          category = 'after';
+        } else {
+          // Fallback based on BPM range
+          const bpmVal = t.bpm || 90;
+          if (bpmVal < 75) category = 'calm';
+          else if (bpmVal >= 75 && bpmVal < 90) category = 'after';
+          else if (bpmVal >= 90 && bpmVal < 105) category = 'flow';
+          else category = 'drive';
+        }
+      }
+
+      // Build customized title, artist and BPM based on Step 1 & Step 2 inputs
+      let title = t.title;
+      let bpm = t.bpm || 90;
+      let artist = t.artist || "Cady AI";
+
+      // Do NOT modify title and artist for archive tracks, as requested by the user.
+      // We can still apply spaceProfile skews to BPM.
+      if (spaceProfile === 'hotel') {
+        bpm = Math.round(bpm * 0.92);
+      } else if (spaceProfile === 'restaurant') {
+        bpm = Math.round(bpm * 0.96);
+      } else if (spaceProfile === 'retailer') {
+        bpm = Math.round(bpm * 1.06);
+      } else if (spaceProfile === 'public') {
+        if (category === 'calm' || category === 'after') {
+          bpm = Math.max(68, Math.min(bpm, 80));
+        } else {
+          bpm = Math.max(85, Math.min(bpm, 105));
+        }
+      }
+
+      const promptText = `brand="${brand}" + prompt="[PERSONA: ${currentPersonaId}] Radio Archive: ${t.prompt || t.title}"`;
+      return {
+        id: 2000 + idx, // Unique starting IDs for radio tracks
+        title: title,
+        artist: artist,
+        album: t.album || `Cady Radio ${category.charAt(0).toUpperCase() + category.slice(1)}`,
+        category: category,
+        bpm: bpm,
+        duration: t.duration || "3:30",
+        durationSeconds: t.durationSeconds || 210,
+        prompt: promptText,
+        audioUrl: t.audioUrl,
+        coverUrl: t.coverUrl || 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=150&auto=format&fit=crop',
+        isFromRadioArchive: true
+      };
+    });
+
+    // Prioritize radio archive tracks: use them if they exist in a category, otherwise fall back to preset songs
+    const categories = ['calm', 'flow', 'drive', 'after'];
+    const mergedSongs = [];
+
+    categories.forEach(cat => {
+      const catRadioSongs = mappedRadioSongs.filter(s => s.category === cat);
+      const catRawSongs = mappedRawSongs.filter(s => s.category === cat);
+      
+      if (catRadioSongs.length > 0) {
+        mergedSongs.push(...catRadioSongs);
+      } else {
+        mergedSongs.push(...catRawSongs);
+      }
+    });
+
+    const customSunoSongs = (typeof ownedSongs !== 'undefined' ? ownedSongs : [])
+      .filter(s => s && s.audioUrl && s.artist !== "My Workspace" && (!s.audioUrl || !s.audioUrl.startsWith("My Workspace")))
+      .map(s => {
+        const cleaned = cleanSpaceProfileMetadata(s.title, s.artist);
+        return {
+          ...s,
+          title: cleaned.title,
+          artist: cleaned.artist
+        };
+      });
     const seenTitles = new Set(customSunoSongs.map(s => s.title.toLowerCase().trim()));
-    const filteredRawSongs = mappedRawSongs.filter(s => !seenTitles.has(s.title.toLowerCase().trim()));
-    
-    const combinedSongs = [...customSunoSongs, ...filteredRawSongs].slice(0, 120);
+    const filteredMergedSongs = mergedSongs.filter(s => !seenTitles.has(s.title.toLowerCase().trim()));
+
+    const combinedSongs = [...customSunoSongs, ...filteredMergedSongs].slice(0, 120);
     return combinedSongs.map((song, index) => {
       return {
         ...song,
@@ -4418,10 +4705,17 @@ document.addEventListener('DOMContentLoaded', () => {
           <td class="col-tags"><span class="category-tag ${track.category}">${track.category.toUpperCase()}</span></td>
           <td class="col-bpm">${track.bpm ? track.bpm + ' BPM' : '95 BPM'}</td>
           <td class="col-duration">${track.duration || '3:30'}</td>
-          <td style="text-align: right; width: 100px;">
-            <button class="track-menu-btn" style="background: transparent; border: none; color: var(--color-text-secondary); cursor: pointer; padding: 6px 12px; font-size: 1.25rem; border-radius: 50%; transition: all 0.2s;" onmouseover="this.style.color='#fff'; this.style.background='rgba(255,255,255,0.08)';" onmouseout="this.style.color='var(--color-text-secondary)'; this.style.background='transparent';">
-              &#8942;
-            </button>
+          <td style="text-align: right; width: 100px; display: table-cell; vertical-align: middle;">
+            <div style="display: inline-flex; align-items: center; justify-content: flex-end; gap: 12px; width: 100%;">
+              <button class="btn-fav-track liked" title="Remove from Favourites" style="background: transparent; border: none; color: #f43f5e; cursor: pointer; padding: 6px; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="#f43f5e" stroke="currentColor" stroke-width="2">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+              </button>
+              <button class="track-menu-btn" style="background: transparent; border: none; color: var(--color-text-secondary); cursor: pointer; padding: 6px; font-size: 1.25rem; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.color='#fff'; this.style.background='rgba(255,255,255,0.08)';" onmouseout="this.style.color='var(--color-text-secondary)'; this.style.background='transparent';">
+                &#8942;
+              </button>
+            </div>
           </td>
         `;
 
@@ -4456,6 +4750,14 @@ document.addEventListener('DOMContentLoaded', () => {
           });
         }
 
+        const favBtn = row.querySelector('.btn-fav-track');
+        if (favBtn) {
+          favBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleTrackFavorite(track, favBtn);
+          });
+        }
+
         tbody.appendChild(row);
       });
     } else {
@@ -4464,6 +4766,14 @@ document.addEventListener('DOMContentLoaded', () => {
       let playlistTracks = [];
       if (isCadyRadioPlaylist) {
         playlistTracks = cadyRadioTracks.filter(t => t.playlist_id === activeDetailPlaylist);
+      } else if (activeDetailPlaylist === 'new-music-daily') {
+        const todayStart = new Date().setHours(0, 0, 0, 0);
+        playlistTracks = cadyRadioTracks.filter(t => {
+          return t.playlist_id && t.playlist_id.startsWith('cady-') && t.created_at >= todayStart;
+        });
+        if (playlistTracks.length === 0) {
+          playlistTracks = cadyRadioTracks.filter(t => t.playlist_id && t.playlist_id.startsWith('cady-')).slice(0, 10);
+        }
       } else {
         playlistTracks = themedTracksDict[activeDetailPlaylist] || [];
       }
@@ -4560,7 +4870,13 @@ document.addEventListener('DOMContentLoaded', () => {
           <td class="col-duration">${durationHtml}</td>
           <td style="text-align: right; width: 100px; display: table-cell; vertical-align: middle;">
             <div style="display: inline-flex; align-items: center; justify-content: flex-end; gap: 12px; width: 100%;">
-              ${actionButtonHtml}
+              ${track.generating ? '' : `
+              <button class="btn-fav-track${isAlreadyOwned ? ' liked' : ''}" title="${isAlreadyOwned ? 'Remove from Favourites' : 'Add to Favourites'}" style="background: transparent; border: none; color: ${isAlreadyOwned ? '#f43f5e' : 'var(--color-text-secondary)'}; cursor: pointer; padding: 6px; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.color=this.style.color === 'rgb(244, 63, 94)' || this.style.color === '#f43f5e' ? '#f43f5e' : '#fff'" onmouseout="this.style.color=this.style.color === 'rgb(244, 63, 94)' || this.style.color === '#f43f5e' ? '#f43f5e' : 'var(--color-text-secondary)'}">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="${isAlreadyOwned ? '#f43f5e' : 'none'}" stroke="currentColor" stroke-width="2">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+              </button>
+              `}
               <button class="track-menu-btn" style="background: transparent; border: none; color: var(--color-text-secondary); cursor: pointer; padding: 6px; font-size: 1.25rem; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.color='#fff'; this.style.background='rgba(255,255,255,0.08)';" onmouseout="this.style.color='var(--color-text-secondary)'; this.style.background='transparent';">
                 &#8942;
               </button>
@@ -4615,11 +4931,11 @@ document.addEventListener('DOMContentLoaded', () => {
           });
         }
 
-        const addLibBtn = row.querySelector('.btn-add-to-lib');
-        if (addLibBtn) {
-          addLibBtn.addEventListener('click', (e) => {
+        const favBtn = row.querySelector('.btn-fav-track');
+        if (favBtn) {
+          favBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            addTrackToLibraryFromShared(track);
+            toggleTrackFavorite(track, favBtn);
           });
         }
 
@@ -4655,7 +4971,15 @@ document.addEventListener('DOMContentLoaded', () => {
     ownedSongs = ownedSongs.filter(s => s.id !== trackId);
     saveOwnedSongs();
     renderLibraryTracks();
-    showToast("Track Removed", `"${track.title}" has been removed from your catalog.`, "info");
+    syncAllVisibleFavButtons(track.title, track.artist, false);
+    
+    // Also update player bar if playing
+    if (activePlaylistTrack && activePlaylistTrack.title === track.title && activePlaylistTrack.artist === track.artist) {
+      const playerLikeBtn = document.querySelector('.player-like-btn');
+      if (playerLikeBtn) playerLikeBtn.classList.remove('liked');
+    }
+    
+    showToast("Removed from Favourites", `"${track.title}" has been removed from Favourites.`, "info");
   }
 
   function injectThemedTracks(theme, mixTitle) {
@@ -4737,6 +5061,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function startPlaylistGeneration(prompt = "", instant = false) {
+    // Force instant compiling to bypass Suno AI API generations
+    instant = true;
     currentPrompt = prompt;
     
     // Reset generation state
@@ -4811,17 +5137,25 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         const parsedCache = JSON.parse(cachedData);
         if (Array.isArray(parsedCache) && parsedCache.length > 0) {
-          playlistSongs = parsedCache;
-          hasValidCache = true;
-          
-          // Verify if all workspace songs are represented in the cache.
-          // If a workspace song is missing from the cache, we invalidate the cache
-          // to force regeneration with the new songs.
-          const cachedUrls = new Set(playlistSongs.map(s => s.audioUrl));
-          const hasMissingWorkspaceSongs = workspaceSongs.some(ws => !cachedUrls.has(ws.audioUrl));
-          if (hasMissingWorkspaceSongs) {
-            console.log("Cached playlist is missing some workspace songs. Invalidating cache to regenerate.");
+          const containsLegacySongs = parsedCache.some(s => s && (
+            s.artist === "My Workspace" || 
+            (s.audioUrl && s.audioUrl.startsWith("My Workspace")) ||
+            s.title.includes("Morning Calm #") ||
+            s.title.includes("Midday Flow #") ||
+            s.title.includes("Peak Drive #") ||
+            s.title.includes("After Hours #") ||
+            s.title.includes("Lounge Mix") ||
+            s.title.includes("Bistro Edit") ||
+            s.title.includes("Retail Mix") ||
+            s.title.includes("Personal Mix") ||
+            s.title.includes("Ambient Edit")
+          ));
+          if (containsLegacySongs) {
+            console.log("Cached playlist contains legacy presets or workspace songs. Invalidating cache to force regeneration.");
             hasValidCache = false;
+          } else {
+            playlistSongs = parsedCache;
+            hasValidCache = true;
           }
         }
       } catch (e) {
@@ -4850,6 +5184,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const trackRow = document.createElement('tr');
           trackRow.dataset.trackId = track.id;
           
+          const isAlreadyOwned = ownedSongs.some(s => s.title === track.title && s.artist === track.artist);
           const playIconSvg = `<svg class="play-hover-svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>`;
           
           trackRow.innerHTML = `
@@ -4872,10 +5207,17 @@ document.addEventListener('DOMContentLoaded', () => {
             <td class="col-tags"><span class="category-tag ${track.category}">${track.category.toUpperCase()}</span></td>
             <td class="col-bpm">${track.bpm} BPM</td>
             <td class="col-duration">${track.duration}</td>
-            <td style="text-align: right; width: 100px;">
-              <button class="track-menu-btn" style="background: transparent; border: none; color: var(--color-text-secondary); cursor: pointer; padding: 6px 12px; font-size: 1.25rem; border-radius: 50%; transition: all 0.2s;" onmouseover="this.style.color='#fff'; this.style.background='rgba(255,255,255,0.08)';" onmouseout="this.style.color='var(--color-text-secondary)'; this.style.background='transparent';">
-                &#8942;
-              </button>
+            <td style="text-align: right; width: 100px; display: table-cell; vertical-align: middle;">
+              <div style="display: inline-flex; align-items: center; justify-content: flex-end; gap: 12px; width: 100%;">
+                <button class="btn-fav-track${isAlreadyOwned ? ' liked' : ''}" title="${isAlreadyOwned ? 'Remove from Favourites' : 'Add to Favourites'}" style="background: transparent; border: none; color: ${isAlreadyOwned ? '#f43f5e' : 'var(--color-text-secondary)'}; cursor: pointer; padding: 6px; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.color=this.style.color === 'rgb(244, 63, 94)' || this.style.color === '#f43f5e' ? '#f43f5e' : '#fff'" onmouseout="this.style.color=this.style.color === 'rgb(244, 63, 94)' || this.style.color === '#f43f5e' ? '#f43f5e' : 'var(--color-text-secondary)'}">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="${isAlreadyOwned ? '#f43f5e' : 'none'}" stroke="currentColor" stroke-width="2">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                  </svg>
+                </button>
+                <button class="track-menu-btn" style="background: transparent; border: none; color: var(--color-text-secondary); cursor: pointer; padding: 6px; font-size: 1.25rem; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.color='#fff'; this.style.background='rgba(255,255,255,0.08)';" onmouseout="this.style.color='var(--color-text-secondary)'; this.style.background='transparent';">
+                  &#8942;
+                </button>
+              </div>
             </td>
           `;
           
@@ -4907,6 +5249,14 @@ document.addEventListener('DOMContentLoaded', () => {
               openTrackMenu(track);
             });
           }
+
+          const favBtn = trackRow.querySelector('.btn-fav-track');
+          if (favBtn) {
+            favBtn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              toggleTrackFavorite(track, favBtn);
+            });
+          }
           tbody.appendChild(trackRow);
         });
       }
@@ -4936,6 +5286,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const trackRow = document.createElement('tr');
       trackRow.dataset.trackId = track.id;
       
+      const isAlreadyOwned = ownedSongs.some(s => s.title === track.title && s.artist === track.artist);
       const playIconSvg = `<svg class="play-hover-svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>`;
       
       trackRow.innerHTML = `
@@ -4958,10 +5309,17 @@ document.addEventListener('DOMContentLoaded', () => {
         <td class="col-tags"><span class="category-tag ${track.category}">${track.category.toUpperCase()}</span></td>
         <td class="col-bpm">${track.bpm} BPM</td>
         <td class="col-duration">${track.duration}</td>
-        <td style="text-align: right; width: 100px;">
-          <button class="track-menu-btn" style="background: transparent; border: none; color: var(--color-text-secondary); cursor: pointer; padding: 6px 12px; font-size: 1.25rem; border-radius: 50%; transition: all 0.2s;" onmouseover="this.style.color='#fff'; this.style.background='rgba(255,255,255,0.08)';" onmouseout="this.style.color='var(--color-text-secondary)'; this.style.background='transparent';">
-            &#8942;
-          </button>
+        <td style="text-align: right; width: 100px; display: table-cell; vertical-align: middle;">
+          <div style="display: inline-flex; align-items: center; justify-content: flex-end; gap: 12px; width: 100%;">
+            <button class="btn-fav-track${isAlreadyOwned ? ' liked' : ''}" title="${isAlreadyOwned ? 'Remove from Favourites' : 'Add to Favourites'}" style="background: transparent; border: none; color: ${isAlreadyOwned ? '#f43f5e' : 'var(--color-text-secondary)'}; cursor: pointer; padding: 6px; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.color=this.style.color === 'rgb(244, 63, 94)' || this.style.color === '#f43f5e' ? '#f43f5e' : '#fff'" onmouseout="this.style.color=this.style.color === 'rgb(244, 63, 94)' || this.style.color === '#f43f5e' ? '#f43f5e' : 'var(--color-text-secondary)'}">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="${isAlreadyOwned ? '#f43f5e' : 'none'}" stroke="currentColor" stroke-width="2">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+            </button>
+            <button class="track-menu-btn" style="background: transparent; border: none; color: var(--color-text-secondary); cursor: pointer; padding: 6px; font-size: 1.25rem; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.color='#fff'; this.style.background='rgba(255,255,255,0.08)';" onmouseout="this.style.color='var(--color-text-secondary)'; this.style.background='transparent';">
+              &#8942;
+            </button>
+          </div>
         </td>
       `;
       
@@ -4992,6 +5350,14 @@ document.addEventListener('DOMContentLoaded', () => {
         menuBtn.addEventListener('click', (e) => {
           e.stopPropagation();
           openTrackMenu(track);
+        });
+      }
+
+      const favBtn = trackRow.querySelector('.btn-fav-track');
+      if (favBtn) {
+        favBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          toggleTrackFavorite(track, favBtn);
         });
       }
       
@@ -5592,6 +5958,135 @@ document.addEventListener('DOMContentLoaded', () => {
     return `${track.title} - ${track.artist}`;
   }
 
+  function openEditLocationModal(locId) {
+    const loc = locations.find(l => l.id === locId);
+    if (!loc) return;
+    
+    editingLocationId = locId;
+    
+    // Update modal text
+    const modalTitle = document.querySelector('#add-location-modal .modal-header h2');
+    const modalDesc = document.querySelector('#add-location-modal .modal-header p');
+    const submitBtn = document.querySelector('#form-popup-add-store button[type="submit"]');
+    
+    if (modalTitle) modalTitle.textContent = "Edit Store & Operating Profile";
+    if (modalDesc) modalDesc.textContent = "Modify the store details, operating hours, and vibe blocks. Your adaptive playlist will regenerate if needed.";
+    if (submitBtn) submitBtn.textContent = "Save Changes";
+    
+    // Populate fields
+    document.getElementById('pop-store-name').value = loc.name || '';
+    document.getElementById('pop-store-address').value = loc.address || '';
+    document.getElementById('pop-store-timezone').value = loc.timezone || 'CET';
+    
+    // Populate schedules & zones
+    modalStoreSchedules = JSON.parse(JSON.stringify(loc.schedules || defaultModalStoreSchedules));
+    modalStoreZones = JSON.parse(JSON.stringify(loc.zones || [
+      {
+        id: 'zone-default',
+        name: 'Main Area',
+        schedules: JSON.parse(JSON.stringify(loc.schedules || defaultModalStoreSchedules))
+      }
+    ]));
+    
+    // Make sure we select the active zone
+    modalActiveZoneId = modalStoreZones[0].id;
+    renderModalZoneTabs();
+    
+    // Select 'Mon' tab pill in modal UI
+    document.querySelectorAll('#add-location-modal .weekdays-pills .day-pill').forEach(p => {
+      if (p.dataset.day === 'Mon') {
+        p.classList.add('selected-tab');
+      } else {
+        p.classList.remove('selected-tab');
+      }
+    });
+    
+    modalActiveScheduleDay = 'Mon';
+    loadActiveDayModalSchedule();
+    openModal(modals.addLocation);
+  }
+
+  function toggleZonePlayPause(locId, zoneId) {
+    const loc = locations.find(l => l.id === locId);
+    if (!loc) return;
+    
+    const isCurrent = (loc.id === activeLocationId);
+    const isZoneActive = isCurrent && (zoneId === activeZoneId);
+    
+    if (isZoneActive) {
+      if (isPlaylistPlaying) {
+        pausePlaylistPlayback();
+      } else {
+        if (activePlaylistTrack) {
+          resumePlaylistPlayback();
+        } else {
+          // Play first track of playlist
+          if (playlistSongs.length > 0) {
+            playPlaylistTrack(playlistSongs[0]);
+          } else {
+            // Generate and then play
+            startPlaylistGeneration("", true);
+            if (playlistSongs.length > 0) {
+              playPlaylistTrack(playlistSongs[0]);
+            }
+          }
+        }
+      }
+      renderSidebarLocations();
+    } else {
+      // Switch active location and zone
+      selectActiveLocation(locId);
+      activeZoneId = zoneId;
+      
+      const zoneObj = loc.zones.find(z => z.id === zoneId);
+      manualTrafficOverride = zoneObj ? (zoneObj.vibeOverride || 'auto') : 'auto';
+      const overrideSelect = document.getElementById('live-block-override-select');
+      if (overrideSelect) {
+        overrideSelect.value = manualTrafficOverride;
+      }
+      
+      renderDashboardZoneTabs();
+      startPlaylistGeneration("", true);
+      
+      if (playlistSongs.length > 0) {
+        playPlaylistTrack(playlistSongs[0]);
+      }
+      renderSidebarLocations();
+    }
+  }
+
+  function toggleLocationPlayPause(locId) {
+    const loc = locations.find(l => l.id === locId);
+    if (!loc) return;
+    
+    const isCurrent = (loc.id === activeLocationId);
+    
+    if (isCurrent) {
+      if (isPlaylistPlaying) {
+        pausePlaylistPlayback();
+      } else {
+        if (activePlaylistTrack) {
+          resumePlaylistPlayback();
+        } else {
+          if (playlistSongs.length > 0) {
+            playPlaylistTrack(playlistSongs[0]);
+          } else {
+            startPlaylistGeneration("", true);
+            if (playlistSongs.length > 0) {
+              playPlaylistTrack(playlistSongs[0]);
+            }
+          }
+        }
+      }
+      renderSidebarLocations();
+    } else {
+      // Select first zone of the location
+      ensureLocationZones(loc);
+      const zoneId = loc.zones[0].id;
+      toggleZonePlayPause(locId, zoneId);
+    }
+  }
+
   function renderSidebarLocations() {
     const listContainer = document.getElementById('sidebar-locations-list');
     if (!listContainer) return;
@@ -5600,6 +6095,8 @@ document.addEventListener('DOMContentLoaded', () => {
     locations.forEach(loc => {
       ensureLocationZones(loc);
       const isCurrent = (loc.id === activeLocationId);
+      const isLocationPlaying = isPlaylistPlaying && isCurrent;
+      
       const card = document.createElement('div');
       card.className = `sidebar-location-card${isCurrent ? ' active' : ''}`;
       card.dataset.id = loc.id;
@@ -5607,12 +6104,21 @@ document.addEventListener('DOMContentLoaded', () => {
       const localTimeStr = getStoreLocalTime(loc.timezone);
       
       card.innerHTML = `
-        <div class="sidebar-loc-header">
-          <div>
-            <h4 class="sidebar-loc-name">${loc.name}</h4>
-            <div class="sidebar-loc-address">${loc.address}</div>
+        <div class="sidebar-loc-header" style="display: flex; align-items: center; justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: 8px; overflow: hidden; margin-right: 8px;">
+            <button class="btn-loc-play-pause" data-id="${loc.id}" title="${isLocationPlaying ? 'Pause Location Playback' : 'Play Location Playback'}" style="background: none; border: none; padding: 0; color: ${isLocationPlaying ? 'var(--color-purple-light)' : 'var(--color-text-secondary)'}; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,0.05); transition: all 0.2s ease; flex-shrink: 0;">
+              ${isLocationPlaying ? `
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+              ` : `
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 1px;"><path d="M8 5v14l11-7z"/></svg>
+              `}
+            </button>
+            <div style="overflow: hidden;">
+              <h4 class="sidebar-loc-name" style="margin: 0; font-size: 0.88rem; font-weight: 600; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${loc.name}</h4>
+              <div class="sidebar-loc-address" style="font-size: 0.72rem; color: var(--color-text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${loc.address}</div>
+            </div>
           </div>
-          <span class="store-status-badge ${loc.status}" style="font-size: 0.65rem; padding: 2px 6px;">
+          <span class="store-status-badge ${loc.status}" style="font-size: 0.65rem; padding: 2px 6px; flex-shrink: 0;">
             ${loc.status.charAt(0).toUpperCase() + loc.status.slice(1)}
           </span>
         </div>
@@ -5633,25 +6139,34 @@ document.addEventListener('DOMContentLoaded', () => {
             const vibeOverride = zone.vibeOverride || 'auto';
             
             return `
-              <div class="sidebar-zone-item" data-zone-id="${zone.id}" style="display: flex; align-items: center; justify-content: space-between; font-size: 0.78rem; background: rgba(255, 255, 255, 0.01); padding: 6px 8px; border-radius: 6px; border-left: 2px solid ${isZoneActive ? 'var(--color-purple)' : 'transparent'}; transition: all 0.2s ease; gap: 8px;">
-                <div style="flex-shrink: 0; min-width: 90px; max-width: 110px;">
-                  <div style="font-weight: 600; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${zone.name}">${zone.name}</div>
-                  <select class="zone-vibe-select" data-loc-id="${loc.id}" data-zone-id="${zone.id}" style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); color: var(--color-text-secondary); font-size: 0.65rem; border-radius: 4px; padding: 2px 4px; width: 85px; margin-top: 4px; outline: none; cursor: pointer; transition: all 0.2s ease;">
-                    <option value="auto" ${vibeOverride === 'auto' ? 'selected' : ''}>⏱️ Auto</option>
-                    <option value="calm" ${vibeOverride === 'calm' ? 'selected' : ''}>🧘 Calm</option>
-                    <option value="flow" ${vibeOverride === 'flow' ? 'selected' : ''}>🌿 Flow</option>
-                    <option value="drive" ${vibeOverride === 'drive' ? 'selected' : ''}>⚡ Drive</option>
-                    <option value="after" ${vibeOverride === 'after' ? 'selected' : ''}>🌙 After</option>
-                  </select>
+              <div class="sidebar-zone-item" data-zone-id="${zone.id}" style="display: flex; align-items: center; justify-content: space-between; font-size: 0.78rem; background: rgba(255, 255, 255, 0.02); padding: 8px 10px; border-radius: 8px; border-left: 3px solid ${isZoneActive ? 'var(--color-purple-primary)' : 'transparent'}; transition: all 0.2s ease; gap: 8px; margin-bottom: 4px;">
+                <div style="display: flex; align-items: center; gap: 8px; flex-grow: 1; overflow: hidden;">
+                  <button class="btn-zone-play-pause" data-loc-id="${loc.id}" data-zone-id="${zone.id}" title="${isPlaying ? 'Pause Zone' : 'Play Zone'}" style="background: none; border: none; padding: 0; color: ${isPlaying ? 'var(--color-purple-light)' : 'var(--color-text-secondary)'}; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: rgba(255,255,255,0.03); transition: all 0.2s ease; flex-shrink: 0;">
+                    ${isPlaying ? `
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                    ` : `
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 1px;"><path d="M8 5v14l11-7z"/></svg>
+                    `}
+                  </button>
+                  <div style="overflow: hidden;">
+                    <div style="font-weight: 600; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.8rem;" title="${zone.name}">${zone.name}</div>
+                    <select class="zone-vibe-select" data-loc-id="${loc.id}" data-zone-id="${zone.id}" style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); color: var(--color-text-secondary); font-size: 0.65rem; border-radius: 4px; padding: 2px 4px; width: 85px; margin-top: 4px; outline: none; cursor: pointer; transition: all 0.2s ease;">
+                      <option value="auto" ${vibeOverride === 'auto' ? 'selected' : ''}>⏱️ Auto</option>
+                      <option value="calm" ${vibeOverride === 'calm' ? 'selected' : ''}>🧘 Calm</option>
+                      <option value="flow" ${vibeOverride === 'flow' ? 'selected' : ''}>🌿 Flow</option>
+                      <option value="drive" ${vibeOverride === 'drive' ? 'selected' : ''}>⚡ Drive</option>
+                      <option value="after" ${vibeOverride === 'after' ? 'selected' : ''}>🌙 After</option>
+                    </select>
+                  </div>
                 </div>
                 
-                <div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center; overflow: hidden; flex-grow: 1; text-align: right;">
+                <div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center; overflow: hidden; max-width: 140px; text-align: right; flex-shrink: 0;">
                   <div style="display: flex; align-items: center; gap: 4px; overflow: hidden; max-width: 100%;">
                     <span style="font-size: 0.75rem; flex-shrink: 0; animation: ${isPlaying ? 'pulse-audio 1.5s infinite' : 'none'};">${icon}</span>
-                    <span class="sidebar-loc-playing-track-text" data-zone-id="${zone.id}" style="color: ${textColor}; font-weight: ${fontWeight}; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${zonePlaying}">${zonePlaying}</span>
+                    <span class="sidebar-loc-playing-track-text" data-zone-id="${zone.id}" style="color: ${textColor}; font-weight: ${fontWeight}; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.72rem;" title="${zonePlaying}">${zonePlaying}</span>
                   </div>
                   <div style="display: flex; align-items: center; gap: 6px; margin-top: 4px;">
-                    <button class="btn-zone-share-link" data-loc-id="${loc.id}" data-zone-id="${zone.id}" title="Copy Zone Webplayer Link" style="background: none; border: none; padding: 0; margin: 0; color: var(--color-text-muted); cursor: pointer; display: flex; align-items: center; gap: 3px; font-size: 0.68rem; transition: color 0.2s ease;">
+                    <button class="btn-zone-share-link" data-loc-id="${loc.id}" data-zone-id="${zone.id}" title="Copy Zone Webplayer Link" style="background: none; border: none; padding: 0; margin: 0; color: var(--color-text-muted); cursor: pointer; display: flex; align-items: center; gap: 3px; font-size: 0.65rem; transition: color 0.2s ease;">
                       <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align: middle;"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
                       <span>Share Zone</span>
                     </button>
@@ -5662,20 +6177,26 @@ document.addEventListener('DOMContentLoaded', () => {
           }).join('')}
         </div>
 
-        <div class="sidebar-loc-actions" style="margin-top: 12px;">
-          <button class="btn-sidebar-action btn-share-webplayer" data-id="${loc.id}" title="Share Webplayer link">
+        <div class="sidebar-loc-actions" style="margin-top: 12px; display: flex; gap: 8px;">
+          <button class="btn-sidebar-action btn-share-webplayer" data-id="${loc.id}" title="Share Webplayer link" style="flex: 1; justify-content: center; font-size: 0.72rem; padding: 6px 8px; display: flex; align-items: center; gap: 4px;">
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-            Share
+            Share Webplayer
           </button>
-          <button class="btn-sidebar-action btn-sidebar-edit-schedule" data-id="${loc.id}" title="Edit Operating Schedule">
+          <button class="btn-sidebar-action btn-sidebar-edit-location primary" data-id="${loc.id}" title="Edit Location Settings & Hours" style="flex: 1; justify-content: center; font-size: 0.72rem; padding: 6px 8px; display: flex; align-items: center; gap: 4px;">
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-            Schedule
+            Edit Settings
           </button>
         </div>
       `;
       
       card.addEventListener('click', (e) => {
-        if (e.target.closest('.btn-sidebar-action') || e.target.closest('.zone-vibe-select') || e.target.closest('.btn-zone-share-link')) return;
+        if (e.target.closest('.btn-sidebar-action') || 
+            e.target.closest('.zone-vibe-select') || 
+            e.target.closest('.btn-zone-share-link') ||
+            e.target.closest('.btn-loc-play-pause') ||
+            e.target.closest('.btn-zone-play-pause') ||
+            e.target.closest('.btn-sidebar-edit-location') ||
+            e.target.closest('.btn-share-webplayer')) return;
         
         const zoneItem = e.target.closest('.sidebar-zone-item');
         if (zoneItem) {
@@ -5708,6 +6229,37 @@ document.addEventListener('DOMContentLoaded', () => {
         e.stopPropagation();
         const locId = btn.dataset.id;
         openShareModal(locId);
+      });
+    });
+
+    // Bind edit buttons
+    const editBtns = listContainer.querySelectorAll('.btn-sidebar-edit-location');
+    editBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const locId = btn.dataset.id;
+        openEditLocationModal(locId);
+      });
+    });
+
+    // Bind location play/pause buttons
+    const locPlayBtns = listContainer.querySelectorAll('.btn-loc-play-pause');
+    locPlayBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const locId = btn.dataset.id;
+        toggleLocationPlayPause(locId);
+      });
+    });
+
+    // Bind zone play/pause buttons
+    const zonePlayBtns = listContainer.querySelectorAll('.btn-zone-play-pause');
+    zonePlayBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const locId = btn.dataset.locId;
+        const zoneId = btn.dataset.zoneId;
+        toggleZonePlayPause(locId, zoneId);
       });
     });
 
@@ -6065,6 +6617,13 @@ document.addEventListener('DOMContentLoaded', () => {
     activePlaylistTrack = track;
     isPlaylistPlaying = true;
     playerCurrentTimeSeconds = 0;
+
+    // Record played playlist/station
+    if (track.playlist_id) {
+      recordPlaylistPlay(track.playlist_id);
+    } else if (activeDetailPlaylist) {
+      recordPlaylistPlay(activeDetailPlaylist);
+    }
 
     // Show player bar
     const playerBar = document.getElementById('playlist-player-bar');
@@ -6999,6 +7558,8 @@ document.addEventListener('DOMContentLoaded', () => {
         playlistType = 'Core Tag Playlist';
       } else if (playlistId.startsWith('cady-')) {
         playlistType = 'Cady AI Radio';
+      } else if (playlistId === 'new-music-daily') {
+        playlistType = 'Daily Playlist';
       } else if (playlistId !== 'library') {
         playlistType = 'Shared Playlist';
       }
@@ -7220,6 +7781,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const songCreatorVocalGender = document.getElementById('song-creator-vocal-gender');
     const songCreatorMood = document.getElementById('song-creator-mood');
     const songCreatorModel = document.getElementById('song-creator-model');
+    const songCreatorNegativeWords = document.getElementById('song-creator-negative-words');
     
     const btnSongCreatorReset = document.getElementById('btn-song-creator-reset');
     const btnSongCreatorGenerate = document.getElementById('btn-song-creator-generate');
@@ -7355,6 +7917,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (btnLyricsToggle) btnLyricsToggle.classList.remove('active');
         const songCreatorLyrics = document.getElementById('song-creator-lyrics');
         if (songCreatorLyrics) songCreatorLyrics.value = "";
+        if (songCreatorNegativeWords) songCreatorNegativeWords.value = "";
         
         showToast("Inputs Reset", "Song Creator form reset to default settings.", "info");
       });
@@ -7370,6 +7933,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const trackRow = document.createElement('tr');
         trackRow.dataset.trackId = track.id;
         
+        const isAlreadyOwned = ownedSongs.some(s => s.title === track.title && s.artist === track.artist);
         const isCurrent = activePlaylistTrack && activePlaylistTrack.id === track.id;
         if (isCurrent) {
           trackRow.classList.add('active-track');
@@ -7401,10 +7965,17 @@ document.addEventListener('DOMContentLoaded', () => {
           <td class="col-tags"><span class="category-tag ${track.category}">${track.category.toUpperCase()}</span></td>
           <td class="col-bpm">${track.bpm} BPM</td>
           <td class="col-duration">${track.duration}</td>
-          <td style="text-align: right; width: 100px;">
-            <button class="track-menu-btn" style="background: transparent; border: none; color: var(--color-text-secondary); cursor: pointer; padding: 6px 12px; font-size: 1.25rem; border-radius: 50%; transition: all 0.2s;" onmouseover="this.style.color='#fff'; this.style.background='rgba(255,255,255,0.08)';" onmouseout="this.style.color='var(--color-text-secondary)'; this.style.background='transparent';">
-              &#8942;
-            </button>
+          <td style="text-align: right; width: 100px; display: table-cell; vertical-align: middle;">
+            <div style="display: inline-flex; align-items: center; justify-content: flex-end; gap: 12px; width: 100%;">
+              <button class="btn-fav-track${isAlreadyOwned ? ' liked' : ''}" title="${isAlreadyOwned ? 'Remove from Favourites' : 'Add to Favourites'}" style="background: transparent; border: none; color: ${isAlreadyOwned ? '#f43f5e' : 'var(--color-text-secondary)'}; cursor: pointer; padding: 6px; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.color=this.style.color === 'rgb(244, 63, 94)' || this.style.color === '#f43f5e' ? '#f43f5e' : '#fff'" onmouseout="this.style.color=this.style.color === 'rgb(244, 63, 94)' || this.style.color === '#f43f5e' ? '#f43f5e' : 'var(--color-text-secondary)'}">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="${isAlreadyOwned ? '#f43f5e' : 'none'}" stroke="currentColor" stroke-width="2">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+              </button>
+              <button class="track-menu-btn" style="background: transparent; border: none; color: var(--color-text-secondary); cursor: pointer; padding: 6px; font-size: 1.25rem; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.color='#fff'; this.style.background='rgba(255,255,255,0.08)';" onmouseout="this.style.color='var(--color-text-secondary)'; this.style.background='transparent';">
+                &#8942;
+              </button>
+            </div>
           </td>
         `;
         
@@ -7436,6 +8007,14 @@ document.addEventListener('DOMContentLoaded', () => {
             openTrackMenu(track);
           });
         }
+
+        const favBtn = trackRow.querySelector('.btn-fav-track');
+        if (favBtn) {
+          favBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleTrackFavorite(track, favBtn);
+          });
+        }
         tbody.appendChild(trackRow);
       });
       updatePlaylistStats(playlistSongs.length);
@@ -7443,8 +8022,41 @@ document.addEventListener('DOMContentLoaded', () => {
       updateTableActiveStates();
     }
 
+    function cleanNegativeWords(text, negativeWordsString) {
+      if (!text || !negativeWordsString) return text;
+      let cleanedText = text;
+      const words = negativeWordsString.split(/[,\s]+/).map(w => w.trim()).filter(w => w.length > 0);
+      
+      const synonyms = {
+        'neon': 'glowing',
+        'overdrive': 'high-power',
+        'gravity': 'heaviness',
+        'sad': 'warm',
+        'pain': 'hope',
+        'hate': 'love',
+        'cry': 'sing',
+        'dark': 'bright',
+        'hurt': 'heal',
+        'fail': 'succeed',
+        'fear': 'courage',
+        'death': 'life'
+      };
+      
+      words.forEach(word => {
+        const lowerWord = word.toLowerCase();
+        const regex = new RegExp(`\\b${word}\\b`, 'gi');
+        cleanedText = cleanedText.replace(regex, (match) => {
+          const replacement = synonyms[lowerWord] || 'glowing';
+          if (match === match.toUpperCase()) return replacement.toUpperCase();
+          if (match[0] === match[0].toUpperCase()) return replacement[0].toUpperCase() + replacement.slice(1);
+          return replacement;
+        });
+      });
+      return cleanedText;
+    }
+
     // 5. Simulated Generation flow for offline/JSDOM
-    function runSimulatedSongGeneration(songTitle, songStyle) {
+    function runSimulatedSongGeneration(songTitle, songStyle, negativeWords) {
       let progress = 0;
       if (activeSongCreatorSimInterval) {
         clearInterval(activeSongCreatorSimInterval);
@@ -7472,13 +8084,13 @@ document.addEventListener('DOMContentLoaded', () => {
           if (songCreatorLoadingStatus) songCreatorLoadingStatus.textContent = "Finalizing track injection...";
           
           setTimeout(() => {
-            injectSimulatedSong(songTitle, songStyle);
+            injectSimulatedSong(songTitle, songStyle, negativeWords);
           }, 150);
         }
       }, 50); // fast execution
     }
 
-    function injectSimulatedSong(songTitle, songStyle) {
+    function injectSimulatedSong(songTitle, songStyle, negativeWords) {
       const sunoUrls = ["Apple_tune.mp3", "Proof of Sweat.mp3", "Starbucks_tune.mp3", "swarowski.mp3"];
       const audioUrl = sunoUrls[Math.floor(Math.random() * sunoUrls.length)];
       
@@ -7488,12 +8100,31 @@ document.addEventListener('DOMContentLoaded', () => {
       const duration = "3:00";
       const durationSeconds = 180;
 
+      let rawLyrics = "[Verse 1: Chest Voice, Conversational]\nWaking up and opening the blinds\nLeaving all the negative behind\nSmile at the mirror on the wall\nToday I'm standing straight, I will not fall\n\n[Chorus: Belted, Bright]\nLiving life with the sunny side up\nPouring sweet joy inside my cup\nPassing good vibes to the neighborhood\nEverything is feeling like it should";
+      let mockCoverId = "1514525253161-7a46d19cd819";
+      
+      try {
+        const allTemplates = [];
+        Object.keys(mockTrackTemplates).forEach(k => {
+          allTemplates.push(...mockTrackTemplates[k]);
+        });
+        if (allTemplates.length > 0) {
+          const randomTemplate = allTemplates[Math.floor(Math.random() * allTemplates.length)];
+          rawLyrics = randomTemplate.lyrics || rawLyrics;
+          mockCoverId = randomTemplate.cover_id || mockCoverId;
+        }
+      } catch (e) {}
+
+      let cleanedTitle = cleanNegativeWords(songTitle || "Custom Suno AI Song", negativeWords);
+      let cleanedLyrics = cleanNegativeWords(rawLyrics, negativeWords);
+      let cleanedStyle = cleanNegativeWords(songStyle || "acoustic pop", negativeWords);
+
       const newTrack = {
         id: `suno-song-${Date.now()}`,
-        title: songTitle || "Custom Suno AI Song",
+        title: cleanedTitle,
         artist: "Suno AI Creator",
-        album: "Suno Individual Generation",
-        purpose: "Suno AI Song",
+        album: "Suno Individual Curation",
+        purpose: "Suno AI Custom Curation",
         salesImpact: "Impulse buys, custom vibe",
         category: "flow",
         bpm: 110,
@@ -7501,8 +8132,10 @@ document.addEventListener('DOMContentLoaded', () => {
         duration: duration,
         durationSeconds: durationSeconds,
         audioUrl: audioUrl,
-        coverUrl: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=200&h=200&q=80",
-        userCompany: brandName
+        coverUrl: `https://images.unsplash.com/photo-${mockCoverId}?q=80&w=200&auto=format&fit=crop`,
+        userCompany: brandName,
+        lyrics: formatLyrics(cleanedLyrics),
+        style_prompt: cleanedStyle
       };
       addSongToCreatorHistory(newTrack);
       showSongPreview(newTrack);
@@ -7646,6 +8279,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const vocalGenderVal = songCreatorVocalGender ? songCreatorVocalGender.value : "any";
         const moodVal = songCreatorMood ? songCreatorMood.value : "warm";
         const modelVal = songCreatorModel ? songCreatorModel.value : "suno-v5";
+        const negativeWordsVal = songCreatorNegativeWords ? songCreatorNegativeWords.value.trim() : "";
         
         // Construct API request payload
         const payload = {
@@ -7675,6 +8309,11 @@ document.addEventListener('DOMContentLoaded', () => {
           else enhancedStyle = `${moodVal} mood`;
           enhancedPrompt += ` in a ${moodVal} key and mood`;
         }
+        if (negativeWordsVal) {
+          if (enhancedStyle) enhancedStyle += `, avoiding: ${negativeWordsVal}`;
+          else enhancedStyle = `avoiding: ${negativeWordsVal}`;
+          enhancedPrompt += ` [Avoid lyrics containing: ${negativeWordsVal}]`;
+        }
         
         if (customModeVal) {
           payload.style = enhancedStyle || "acoustic pop";
@@ -7685,7 +8324,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const isJSDOM = typeof window.JSDOM !== 'undefined' || navigator.userAgent.includes("jsdom");
         if (isJSDOM || !window.fetch) {
-          runSimulatedSongGeneration(payload.title || "Custom AI Song", payload.style || "acoustic pop");
+          runSimulatedSongGeneration(payload.title || "Custom AI Song", payload.style || "acoustic pop", negativeWordsVal);
         } else {
           runRealSongGeneration(payload);
         }
@@ -8171,6 +8810,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Music Library: Curated Mood Playlist Playback
     function getMoodPlaylistTitle(id) {
+      if (id === "new-music-daily") return "New Music Daily";
       if (id === "workout") return "Rap & Hip Hop Gym WORKOUT MOTIVATION 🔥";
       if (id === "sensual") return "Sensual Tantric Healing Playlist";
       if (id === "sleep") return "Sleep Ambient Vibe";
@@ -8191,6 +8831,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function getMoodPlaylistArtist(id) {
+      if (id === "new-music-daily") return "Cady AI Radio";
       if (id === "workout") return "Various Artists";
       if (id === "kaskade") return "Kaskade & Friends";
       if (id === "singer") return "Singer-Songwriter Collection";
@@ -8200,6 +8841,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function playMoodPlaylist(playlistId) {
+      recordPlaylistPlay(playlistId);
+      if (playlistId === 'new-music-daily') {
+        const todayStart = new Date().setHours(0, 0, 0, 0);
+        let dailyTracks = cadyRadioTracks.filter(t => {
+          return t.playlist_id && t.playlist_id.startsWith('cady-') && t.created_at >= todayStart;
+        });
+        if (dailyTracks.length === 0) {
+          dailyTracks = cadyRadioTracks.filter(t => t.playlist_id && t.playlist_id.startsWith('cady-')).slice(0, 10);
+        }
+        if (dailyTracks.length > 0) {
+          playlistSongs = [...dailyTracks];
+          playPlaylistTrack(dailyTracks[0]);
+          showToast("Playing Playlist", "Started playing New Music Daily playlist", "success");
+          return;
+        }
+      }
+
       const isTag = (playlistId === "calm" || playlistId === "flow" || playlistId === "drive" || playlistId === "after");
       if (isTag) {
         const taggedSongs = ownedSongs.filter(s => s.category === playlistId);
@@ -8249,7 +8907,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const playlistId = card.getAttribute('data-playlist');
         
         const imgEl = card.querySelector('img');
-        const titleEl = card.querySelector('.spotify-cover-card-title') || card.querySelector('h3');
+        const titleEl = card.querySelector('.spotify-cover-card-title') || card.querySelector('h2') || card.querySelector('h3');
         const descEl = card.querySelector('.spotify-cover-card-desc') || card.querySelector('p');
         
         const coverSrc = imgEl ? imgEl.src : '';
@@ -8746,22 +9404,56 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (!popStoreName || !popStoreAddress) return;
         
-        const newId = 'store-' + Date.now();
-        
-        const newStore = {
-          id: newId,
-          name: popStoreName,
-          address: popStoreAddress,
-          timezone: popStoreTimezone,
-          status: 'deployed',
-          schedules: JSON.parse(JSON.stringify(modalStoreSchedules)),
-          zones: JSON.parse(JSON.stringify(modalStoreZones))
-        };
-        
-        locations.push(newStore);
-        saveLocationsToLocalStorage();
+        if (editingLocationId) {
+          // Edit existing location
+          const loc = locations.find(l => l.id === editingLocationId);
+          if (loc) {
+            loc.name = popStoreName;
+            loc.address = popStoreAddress;
+            loc.timezone = popStoreTimezone;
+            loc.schedules = JSON.parse(JSON.stringify(modalStoreSchedules));
+            loc.zones = JSON.parse(JSON.stringify(modalStoreZones));
+            
+            saveLocationsToLocalStorage();
+            showToast("Store Updated!", `Store "${popStoreName}" successfully updated.`, "success");
+            
+            // If the updated store is the active store, refresh active location schedules/zones
+            if (editingLocationId === activeLocationId) {
+              storeSchedules = loc.schedules;
+              if (!loc.zones.some(z => z.id === activeZoneId)) {
+                activeZoneId = loc.zones[0].id;
+              }
+              const activeZoneObj = loc.zones.find(z => z.id === activeZoneId);
+              manualTrafficOverride = activeZoneObj ? (activeZoneObj.vibeOverride || 'auto') : 'auto';
+              const overrideSelect = document.getElementById('live-block-override-select');
+              if (overrideSelect) {
+                overrideSelect.value = manualTrafficOverride;
+              }
+            }
+          }
+        } else {
+          // Add new location
+          const newId = 'store-' + Date.now();
+          
+          const newStore = {
+            id: newId,
+            name: popStoreName,
+            address: popStoreAddress,
+            timezone: popStoreTimezone,
+            status: 'deployed',
+            schedules: JSON.parse(JSON.stringify(modalStoreSchedules)),
+            zones: JSON.parse(JSON.stringify(modalStoreZones))
+          };
+          
+          locations.push(newStore);
+          saveLocationsToLocalStorage();
+          showToast("Store Registered!", `Store "${popStoreName}" successfully registered & deployed.`, "success");
+          
+          selectActiveLocation(newId);
+        }
         
         formPopupAddStore.reset();
+        editingLocationId = null;
         
         // Reset modal schedules to default for next time
         modalStoreSchedules = JSON.parse(JSON.stringify(defaultModalStoreSchedules));
@@ -8772,12 +9464,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         renderSidebarLocations();
         renderLocationsList();
-        
-        showToast("Store Registered!", `Store "${popStoreName}" successfully registered & deployed.`, "success");
-        
-        selectActiveLocation(newId);
-        renderSidebarLocations();
-        startPlaylistGeneration();
+        renderDashboardZoneTabs();
+        startPlaylistGeneration("", true);
       });
     }
 
@@ -8813,6 +9501,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnCloseSharePopup) {
       btnCloseSharePopup.addEventListener('click', () => {
         closeModal(modals.shareLink);
+      });
+    }
+
+    // Sidebar toggle button listener
+    const sidebarToggleBtn = document.getElementById('player-btn-sidebar-toggle');
+    if (sidebarToggleBtn) {
+      sidebarToggleBtn.addEventListener('click', () => {
+        toggleRightSidebar();
       });
     }
 
@@ -8914,17 +9610,14 @@ document.addEventListener('DOMContentLoaded', () => {
     storeSchedules = activeLocObj.schedules;
 
     // 3. Load onboarding completed status
-    trafficScheduleActive = false;
+    // Always inactivate onboarding flow for now
+    trafficScheduleActive = true;
     const scopedOnboardingKey = getScopedKey('cady-onboarding-completed');
     const globalOnboardingKey = 'cady-onboarding-completed';
-    if (localStorage.getItem(scopedOnboardingKey) === 'true') {
-      trafficScheduleActive = true;
-    } else if (localStorage.getItem(globalOnboardingKey) === 'true') {
-      trafficScheduleActive = true;
-      try {
-        localStorage.setItem(scopedOnboardingKey, 'true');
-      } catch (e) {}
-    }
+    try {
+      localStorage.setItem(scopedOnboardingKey, 'true');
+      localStorage.setItem(globalOnboardingKey, 'true');
+    } catch (e) {}
     curationTracksGenerated = trafficScheduleActive;
     if (!curationTracksGenerated) {
       try {
@@ -8965,25 +9658,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (savedOwnedSongs) {
       try {
-        ownedSongs = JSON.parse(savedOwnedSongs);
+        ownedSongs = JSON.parse(savedOwnedSongs) || [];
+        // Filter out any legacy workspace songs that are stored
+        ownedSongs = ownedSongs.filter(s => s && s.artist !== "My Workspace" && (!s.audioUrl || !s.audioUrl.startsWith("My Workspace")));
+        ownedSongs = ownedSongs.map(s => {
+          if (!s) return s;
+          const cleaned = cleanSpaceProfileMetadata(s.title, s.artist);
+          return {
+            ...s,
+            title: cleaned.title,
+            artist: cleaned.artist
+          };
+        });
       } catch (e) {
         console.error("Failed to load saved owned songs", e);
       }
     }
-    // Merge workspace songs if they are not already present (check by audioUrl)
-    if (typeof ownedSongs !== 'undefined' && ownedSongs) {
-      const existingAudioUrls = new Set(ownedSongs.map(s => s.audioUrl));
-      let ownedSongsUpdated = false;
-      workspaceSongs.forEach(song => {
-        if (!existingAudioUrls.has(song.audioUrl)) {
-          ownedSongs.push(song);
-          ownedSongsUpdated = true;
-        }
-      });
-      if (ownedSongsUpdated) {
-        saveOwnedSongs();
-      }
-    }
+    // Bypassed merging workspaceSongs to prevent My Workspace tracks from populating the adaptive playlist.
 
     const activeStore = locations.find(l => l.id === activeLocationId);
     const storeSeed = activeStore ? activeStore.name : brandName;
@@ -9078,9 +9769,11 @@ document.addEventListener('DOMContentLoaded', () => {
           }
           const content = step2.querySelector('.step-content');
           if (content) {
+            const savedProfile = localStorage.getItem(getScopedKey('cady-space-profile')) || 'other';
+            const label = profileLabels[savedProfile] || 'Other';
             content.innerHTML = `
               <h3>Find Your Sound</h3>
-              <p><span style="color:#10b981; font-weight:500;">✓ Soundscapes Selected</span><br>AI curation models trained. Operating parameters generated.</p>
+              <p><span style="color:#10b981; font-weight:500;">✓ Profile: ${label}</span><br>Space categorized. Curation models trained.</p>
             `;
           }
         }
@@ -9338,6 +10031,14 @@ document.addEventListener('DOMContentLoaded', () => {
           : ownedSongs.filter(track => track.category === targetCategory);
       } else if (isCadyRadioPlaylist) {
         targetSongs = cadyRadioTracks.filter(t => t.playlist_id === activeDetailPlaylist && !t.generating);
+      } else if (activeDetailPlaylist === 'new-music-daily') {
+        const todayStart = new Date().setHours(0, 0, 0, 0);
+        targetSongs = cadyRadioTracks.filter(t => {
+          return t.playlist_id && t.playlist_id.startsWith('cady-') && t.created_at >= todayStart;
+        });
+        if (targetSongs.length === 0) {
+          targetSongs = cadyRadioTracks.filter(t => t.playlist_id && t.playlist_id.startsWith('cady-')).slice(0, 10);
+        }
       } else {
         targetSongs = themedTracksDict[activeDetailPlaylist] || [];
       }
@@ -9377,6 +10078,14 @@ document.addEventListener('DOMContentLoaded', () => {
           : ownedSongs.filter(track => track.category === targetCategory);
       } else if (isCadyRadioPlaylist) {
         targetSongs = cadyRadioTracks.filter(t => t.playlist_id === activeDetailPlaylist && !t.generating);
+      } else if (activeDetailPlaylist === 'new-music-daily') {
+        const todayStart = new Date().setHours(0, 0, 0, 0);
+        targetSongs = cadyRadioTracks.filter(t => {
+          return t.playlist_id && t.playlist_id.startsWith('cady-') && t.created_at >= todayStart;
+        });
+        if (targetSongs.length === 0) {
+          targetSongs = cadyRadioTracks.filter(t => t.playlist_id && t.playlist_id.startsWith('cady-')).slice(0, 10);
+        }
       } else {
         targetSongs = themedTracksDict[activeDetailPlaylist] || [];
       }
@@ -9534,7 +10243,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const useLiveApi = EVOLINK_API_KEY && !window.CADY_RADIO_FORCE_MOCK;
         if (useLiveApi && cadyRadioTracks.length > 0) {
           const originalLength = cadyRadioTracks.length;
-          cadyRadioTracks = cadyRadioTracks.filter(t => !localMp3s.some(mp3 => t.audioUrl && t.audioUrl.includes(mp3)));
+          cadyRadioTracks = cadyRadioTracks.filter(t => {
+            // Do not purge seeded default tracks
+            if (t.id && String(t.id).startsWith("ai-track-seeded-")) {
+              return true;
+            }
+            return !localMp3s.some(mp3 => t.audioUrl && t.audioUrl.includes(mp3));
+          });
           if (cadyRadioTracks.length !== originalLength) {
             saveCadyRadioTracks();
             console.log(`Purged ${originalLength - cadyRadioTracks.length} failed/placeholder live tracks.`);
@@ -9599,6 +10314,63 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function cadyRadioSeedConfigs(force = false) {
     loadCadyRadioData();
+
+    // Seed default radio tracks if empty
+    if (cadyRadioTracks.length === 0) {
+      const seedTracksData = [
+        // calm (Morning Calm category)
+        { playlistId: 'cady-chill', title: 'Sunset Breeze', artist: 'Cady Chill Collective', album: 'Cady Chill', category: 'calm', bpm: 72, cover: '1518241353330-0f7941c2d9b5' },
+        { playlistId: 'cady-chill', title: 'Late Night Reflection', artist: 'Quiet Echo', album: 'Cady Chill', category: 'calm', bpm: 68, cover: '1482440308425-276ad0f28b19' },
+        { playlistId: 'cady-chill', title: 'Dreamy Stems', artist: 'Rhodes & Calm', album: 'Cady Chill', category: 'calm', bpm: 70, cover: '1515378791036-0648a3ef77b2' },
+        { playlistId: 'cady-classical-focus', title: 'Grand Cello Coda', artist: 'Neo-Classical Piano', album: 'Classical Focus', category: 'calm', bpm: 65, cover: '1515378791036-0648a3ef77b2' },
+        { playlistId: 'cady-classical-focus', title: 'Spacious Mind Ambient', artist: 'Delicate Keys', album: 'Classical Focus', category: 'calm', bpm: 62, cover: '1475113548554-5a36f1f523d6' },
+
+        // flow (Midday Flow category)
+        { playlistId: 'cady-good-vibes', title: 'Acoustic Sunset', artist: 'Campfire Duo', album: 'Cady Good Vibes', category: 'flow', bpm: 95, cover: '1501386761578-eac5c94b800a' },
+        { playlistId: 'cady-good-vibes', title: 'Positive Outlook', artist: 'Uplifting Plucks', album: 'Cady Good Vibes', category: 'flow', bpm: 92, cover: '1506157786151-b8491531f063' },
+        { playlistId: 'cady-good-vibes', title: 'Sunlight Rays', artist: 'Sunkissed Acoustic', album: 'Cady Good Vibes', category: 'flow', bpm: 98, cover: '1528605248644-14dd04022da1' },
+        { playlistId: 'cady-neon-synthwave', title: 'Retro Saw Highway', artist: 'Cyber Synthwave', album: 'Neon Synthwave', category: 'flow', bpm: 104, cover: '1470229722913-7c0e2dbbafd3' },
+        
+        // drive (Peak Drive category)
+        { playlistId: 'cady-mood-booster', title: 'Uplifting Rhythm', artist: 'Mood Boosters', album: 'Cady Mood Booster', category: 'drive', bpm: 112, cover: '1528605248644-14dd04022da1' },
+        { playlistId: 'cady-mood-booster', title: 'Morning Confident', artist: 'The Groovers', album: 'Cady Mood Booster', category: 'drive', bpm: 116, cover: '1506157786151-b8491531f063' },
+        { playlistId: 'cady-mood-booster', title: 'Starting Over', artist: 'Bright Female Vocals', album: 'Cady Mood Booster', category: 'drive', bpm: 114, cover: '1511671782779-c97d3d27a1d4' },
+        { playlistId: 'cady-happy-hits', title: 'Summer Solstice', artist: 'Pop Anthems', album: 'Cady Happy Hits', category: 'drive', bpm: 120, cover: '1494232410401-ad00d5433cfa' },
+        { playlistId: 'cady-happy-hits', title: 'Living In Focus', artist: 'Power Pop Group', album: 'Cady Happy Hits', category: 'drive', bpm: 122, cover: '1494232410401-ad00d5433cfa' },
+
+        // after (After Hours category)
+        { playlistId: 'cady-jazz-lounge', title: 'Smoky Sax Lounge', artist: 'City Lights Trio', album: 'Cady Jazz Lounge', category: 'after', bpm: 74, cover: '1459749411175-04bf5292ceea' },
+        { playlistId: 'cady-jazz-lounge', title: 'Velvet Plucks', artist: 'Smooth Jazz Coda', album: 'Cady Jazz Lounge', category: 'after', bpm: 72, cover: '1482440308425-276ad0f28b19' },
+        { playlistId: 'cady-lo-fi-focus', title: 'Dusty Keys Study', artist: 'Chillhop Bedroom', album: 'Lo-fi Focus', category: 'after', bpm: 80, cover: '1515378791036-0648a3ef77b2' },
+        { playlistId: 'cady-lo-fi-focus', title: 'Study Session Rain', artist: 'Jazz Hop Project', album: 'Lo-fi Focus', category: 'after', bpm: 76, cover: '1475113548554-5a36f1f523d6' }
+      ];
+
+      const localMp3s = ["Apple_tune.mp3", "Proof of Sweat.mp3", "Starbucks_tune.mp3", "swarowski.mp3"];
+
+      seedTracksData.forEach((s, idx) => {
+        const audioUrl = localMp3s[idx % localMp3s.length];
+        cadyRadioTracks.push({
+          id: "ai-track-seeded-" + idx,
+          playlist_id: s.playlistId,
+          title: s.title,
+          artist: s.artist,
+          album: s.album,
+          category: s.category,
+          bpm: s.bpm,
+          duration: "3:30",
+          durationSeconds: 210,
+          audioUrl: audioUrl,
+          coverUrl: `https://images.unsplash.com/photo-${s.cover}?q=80&w=150&auto=format&fit=crop`,
+          generating: false,
+          status: "ready",
+          created_at: Date.now()
+        });
+      });
+
+      saveCadyRadioTracks();
+      console.log(`Seeded ${cadyRadioTracks.length} default Cady Radio tracks.`);
+    }
+
     if (!force && cadyRadioConfigs.length >= 23) {
       return;
     }
@@ -10051,6 +10823,69 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log("Recorded feedback event:", event);
   }
 
+  function syncAllVisibleFavButtons(trackTitle, trackArtist, isLiked) {
+    const rows = document.querySelectorAll('tr[data-title]');
+    rows.forEach(row => {
+      const rowTitle = row.dataset.title || row.querySelector('.track-name')?.textContent;
+      const rowArtist = row.dataset.artist || row.querySelector('.track-artist')?.textContent;
+      if (rowTitle && rowArtist && rowTitle.includes(trackTitle) && rowArtist.includes(trackArtist)) {
+        const favBtn = row.querySelector('.btn-fav-track');
+        if (favBtn) {
+          favBtn.style.color = isLiked ? '#f43f5e' : 'var(--color-text-secondary)';
+          const svg = favBtn.querySelector('svg');
+          if (svg) {
+            svg.setAttribute('fill', isLiked ? '#f43f5e' : 'none');
+          }
+          favBtn.setAttribute('title', isLiked ? 'Remove from Favourites' : 'Add to Favourites');
+        }
+      }
+    });
+
+    const locationRows = document.querySelectorAll('#playlist-tracks-body tr');
+    locationRows.forEach(row => {
+      const nameEl = row.querySelector('.track-name');
+      const artistEl = row.querySelector('.track-artist');
+      if (nameEl && artistEl) {
+        const rowTitle = nameEl.textContent.trim();
+        const rowArtist = artistEl.textContent.trim();
+        if (rowTitle.includes(trackTitle) && rowArtist.includes(trackArtist)) {
+          const favBtn = row.querySelector('.btn-fav-track');
+          if (favBtn) {
+            favBtn.style.color = isLiked ? '#f43f5e' : 'var(--color-text-secondary)';
+            const svg = favBtn.querySelector('svg');
+            if (svg) {
+              svg.setAttribute('fill', isLiked ? '#f43f5e' : 'none');
+            }
+            favBtn.setAttribute('title', isLiked ? 'Remove from Favourites' : 'Add to Favourites');
+          }
+        }
+      }
+    });
+  }
+
+  function toggleTrackFavorite(track, favBtn) {
+    const isAlreadyOwned = ownedSongs.some(s => s.title === track.title && s.artist === track.artist);
+    if (isAlreadyOwned) {
+      const matched = ownedSongs.find(s => s.title === track.title && s.artist === track.artist);
+      if (matched) {
+        removeTrackFromLibrary(matched.id);
+      }
+    } else {
+      const newTrack = {
+        id: track.id || Date.now(),
+        title: track.title,
+        artist: track.artist,
+        album: track.album || "Custom Favorite",
+        category: track.category || "flow",
+        bpm: track.bpm || 95,
+        duration: track.duration || "3:30",
+        durationSeconds: track.durationSeconds || 210,
+        coverUrl: track.coverUrl || 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=150&auto=format&fit=crop'
+      };
+      addTrackToLibrary(newTrack);
+    }
+  }
+
   function addTrackToLibrary(track) {
     if (!track) return;
     const isAlreadyOwned = ownedSongs.some(s => s.title === track.title && s.artist === track.artist);
@@ -10058,6 +10893,14 @@ document.addEventListener('DOMContentLoaded', () => {
       ownedSongs = [track, ...ownedSongs];
       saveOwnedSongs();
       renderLibraryTracks();
+      syncAllVisibleFavButtons(track.title, track.artist, true);
+      
+      // Also update player bar if playing
+      if (activePlaylistTrack && activePlaylistTrack.title === track.title && activePlaylistTrack.artist === track.artist) {
+        const playerLikeBtn = document.querySelector('.player-like-btn');
+        if (playerLikeBtn) playerLikeBtn.classList.add('liked');
+      }
+      
       showToast("Added to Favourites", `"${track.title}" has been saved to Favourites.`, "success");
     }
   }
@@ -10491,12 +11334,94 @@ JSON schema:
     generateNext();
   }
 
+  function renderSuggestedRadioPlaylists() {
+    const container = document.getElementById('suggested-radio-row-container');
+    if (!container) return;
+    container.innerHTML = "";
+
+    cadyRadioSeedConfigs();
+
+    cadyRadioConfigs.forEach(playlist => {
+      const tracks = cadyRadioTracks.filter(t => t.playlist_id === playlist.id);
+      
+      const card = document.createElement('div');
+      card.className = "spotify-cover-card radio-playlist-card";
+      card.setAttribute('data-playlist', playlist.id);
+      card.setAttribute('data-category', 'radio');
+      if (!playlist.active) {
+        card.style.opacity = '0.5';
+      }
+
+      const coverImages = {
+        'cady-chill': '1518241353330-0f7941c2d9b5',
+        'cady-mood-booster': '1528605248644-14dd04022da1',
+        'cady-happy-hits': '1494232410401-ad00d5433cfa',
+        'cady-good-vibes': '1501386761578-eac5c94b800a',
+        'cady-feelin-good': '1511671782779-c97d3d27a1d4',
+        'cady-happy-beats': '1514525253161-7a46d19cd819',
+        'cady-sunny-day': '1507525428034-b723cf961d3e',
+        'cady-emotional': '1495446815901-a7297e633e8d',
+        'cady-confident': '1506157786151-b8491531f063',
+        'cady-party': '1470225620780-dba8ba36b745',
+        'cady-romantic': '1516589178581-6cd7833ae3b2',
+        'cady-reflective': '1482440308425-276ad0f28b19',
+        'cady-lo-fi-focus': '1515378791036-0648a3ef77b2',
+        'cady-nordic-pop': '1517411032315-54ef2cb783bb',
+        'cady-afrobeats-good-vibes': '1508700115892-45ecd05ae2ad',
+        'cady-edm-energy': '1470229722913-7c0e2dbbafd3',
+        'cady-rock-indie': '1459749411175-04bf5292ceea',
+        'cady-bars-beats': '1515462277126-2dd0c162007a',
+        'cady-jazz-lounge': '1511192336575-5a79af67a629',
+        'cady-reggaeton-latin': '1533174072545-7a4b6ad7a6c3',
+        'cady-neon-synthwave': '1508739773434-c26b3d09e071',
+        'cady-country-roads': '1447752875215-b2761acb3c5d',
+        'cady-classical-focus': '1520523839897-bd0b52f945a0'
+      };
+      const imageId = coverImages[playlist.id] || "1518241353330-0f7941c2d9b5";
+      const coverSrc = `https://images.unsplash.com/photo-${imageId}?q=80&w=200&auto=format&fit=crop`;
+
+      card.innerHTML = `
+        <div class="cover-art-container" style="position: relative; width: 100%; aspect-ratio: 1; border-radius: 6px; overflow: hidden; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+          <img src="${coverSrc}" style="width: 100%; height: 100%; object-fit: cover;" alt="${playlist.name}">
+          <span style="position: absolute; top: 8px; left: 8px; background: var(--color-purple-primary); color: #fff; font-size: 0.65rem; font-weight: 700; padding: 3px 8px; border-radius: 4px; letter-spacing: 0.05em; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 2px 6px rgba(0,0,0,0.2);">AI Radio</span>
+        </div>
+        <div class="spotify-cover-card-title" style="font-weight: 600; font-size: 0.95rem; color: #fff; margin-bottom: 4px;">${playlist.name}</div>
+        <div class="spotify-cover-card-desc" style="font-size: 0.78rem; color: var(--color-text-secondary); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 38px;">${playlist.primary_vibe} • ${playlist.secondary_vibe} vibe. ${playlist.genre_mix}.</div>
+        <button class="play-btn" style="border: none; outline: none; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.45);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 2px;"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+      `;
+
+      card.addEventListener('click', (e) => {
+        if (e.target.closest('.play-btn')) return;
+        switchPage('library');
+        showLibraryDetail(playlist.id, coverSrc, playlist.name, `${playlist.primary_vibe} & ${playlist.secondary_vibe} AI Radio Mix. Context: ${playlist.listener_context}. Themes: ${playlist.themes}.`);
+      });
+
+      const playBtn = card.querySelector('.play-btn');
+      if (playBtn) {
+        playBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isActive = activePlaylistTrack && activePlaylistTrack.playlist_id === playlist.id;
+          if (isActive) {
+            playPlaylistTrack(activePlaylistTrack);
+          } else {
+            playCadyRadioPlaylist(playlist.id);
+          }
+        });
+      }
+
+      container.appendChild(card);
+    });
+  }
+
   function renderRadioPlaylists() {
     const container = document.getElementById('radio-playlists-container');
     if (!container) return;
     container.innerHTML = "";
 
     cadyRadioSeedConfigs();
+    renderSuggestedRadioPlaylists();
 
     cadyRadioConfigs.forEach(playlist => {
       const tracks = cadyRadioTracks.filter(t => t.playlist_id === playlist.id);
@@ -11452,6 +12377,239 @@ JSON schema:
     return String(lyrics);
   }
 
+  function getPlaylistDetails(playlistId) {
+    if (playlistId === 'library') {
+      return {
+        id: 'library',
+        title: 'Favourites',
+        coverUrl: 'my_library_cover.png',
+        desc: 'Your owned tracks and custom synthesized mixes',
+        category: 'library'
+      };
+    }
+    if (playlistId === 'new-music-daily') {
+      return {
+        id: 'new-music-daily',
+        title: 'New Music Daily',
+        coverUrl: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&w=200&h=200&q=80',
+        desc: 'Playlist • Cady AI',
+        category: 'shared'
+      };
+    }
+    if (playlistId === 'calm' || playlistId === 'flow' || playlistId === 'drive' || playlistId === 'after') {
+      const titles = { calm: 'Morning calm', flow: 'Midday flow', drive: 'Peak Drive', after: 'After hours' };
+      const descriptions = {
+        calm: 'Relaxed acoustic and ambient textures to start the day.',
+        flow: 'Upbeat, focused tempos for active shopping hours.',
+        drive: 'High-energy beats to drive conversions and momentum.',
+        after: 'Slow-tempo ambient waves for wind-down and closing.'
+      };
+      const covers = {
+        calm: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=200&h=200&q=80',
+        flow: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=200&h=200&q=80',
+        drive: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=200&h=200&q=80',
+        after: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?auto=format&fit=crop&w=200&h=200&q=80'
+      };
+      return {
+        id: playlistId,
+        title: titles[playlistId],
+        coverUrl: covers[playlistId],
+        desc: descriptions[playlistId],
+        category: 'shared'
+      };
+    }
+    if (playlistId.startsWith('cady-')) {
+      const config = cadyRadioConfigs.find(c => c.id === playlistId);
+      if (config) {
+        const covers = {
+          'cady-chill': '1518241353330-0f7941c2d9b5',
+          'cady-mood-booster': '1528605248644-14dd04022da1',
+          'cady-happy-hits': '1494232410401-ad00d5433cfa',
+          'cady-good-vibes': '1501386761578-eac5c94b800a',
+          'cady-feelin-good': '1511671782779-c97d3d27a1d4',
+          'cady-happy-beats': '1514525253161-7a46d19cd819',
+          'cady-sunny-day': '1507525428034-b723cf961d3e',
+          'cady-emotional': '1495446815901-a7297e633e8d',
+          'cady-confident': '1506157786151-b8491531f063',
+          'cady-party': '1470225620780-dba8ba36b745',
+          'cady-romantic': '1516589178581-6cd7833ae3b2',
+          'cady-reflective': '1482440308425-276ad0f28b19',
+          'cady-lo-fi-focus': '1515378791036-0648a3ef77b2',
+          'cady-nordic-pop': '1517411032315-54ef2cb783bb',
+          'cady-afrobeats-good-vibes': '1508700115892-45ecd05ae2ad',
+          'cady-edm-energy': '1470229722913-7c0e2dbbafd3',
+          'cady-rock-indie': '1459749411175-04bf5292ceea',
+          'cady-bars-beats': '1515462277126-2dd0c162007a',
+          'cady-jazz-lounge': '1511192336575-5a79af67a629',
+          'cady-reggaeton-latin': '1533174072545-7a4b6ad7a6c3',
+          'cady-neon-synthwave': '1508739773434-c26b3d09e071',
+          'cady-country-roads': '1447752875215-b2761acb3c5d',
+          'cady-classical-focus': '1520523839897-bd0b52f945a0'
+        };
+        const coverId = covers[playlistId] || '1518241353330-0f7941c2d9b5';
+        return {
+          id: playlistId,
+          title: config.name,
+          coverUrl: `https://images.unsplash.com/photo-${coverId}?q=80&w=200&auto=format&fit=crop`,
+          desc: `Playlist • Cady AI`,
+          category: 'radio'
+        };
+      }
+    }
+    if (playlistId === 'summer' || playlistId === 'sunday' || playlistId === 'synth' || playlistId === 'focus') {
+      const titles = { summer: 'Summer Stems', sunday: 'Sunday Lounge', synth: 'Retro Futurism', focus: 'Deep Focus' };
+      const covers = {
+        summer: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=200&h=200&q=80',
+        sunday: 'https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=200&h=200&q=80',
+        synth: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=200&h=200&q=80',
+        focus: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=200&h=200&q=80'
+      };
+      return {
+        id: playlistId,
+        title: titles[playlistId],
+        coverUrl: covers[playlistId],
+        desc: 'Playlist • Spotify',
+        category: 'shared'
+      };
+    }
+    const titles = {
+      workout: 'Rap & Hip Hop for gym',
+      sensual: 'Sensual Tantric Healing',
+      sleep: 'Sleep',
+      happy: 'Happy Music',
+      radar: 'Release Radar',
+      kaskade: 'Kaskade Radio',
+      singer: 'Singer-Songwriter Mix',
+      synthwave: 'Synthwave Chill',
+      'friday-new': 'New Music Friday',
+      'futurs-hits': 'Futurs Hits',
+      retrowave: 'Retrowave // Outrun',
+      italian: 'Italian Synthwave'
+    };
+    const artists = {
+      workout: 'Playlist • Mario Romero',
+      kaskade: 'Playlist • Kaskade & Friends',
+      singer: 'Playlist • Spotify',
+      sleep: 'Playlist • Spotify',
+      retrowave: 'Playlist • Spotify',
+      italian: 'Album • Various Artists'
+    };
+    const covers = {
+      workout: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=200&h=200&q=80',
+      sensual: 'https://images.unsplash.com/photo-1518241353330-0f7941c2d9b5?auto=format&fit=crop&w=200&h=200&q=80',
+      sleep: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=200&h=200&q=80',
+      happy: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=200&h=200&q=80',
+      radar: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=200&h=200&q=80',
+      kaskade: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=200&h=200&q=80',
+      singer: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=200&h=200&q=80',
+      synthwave: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&w=200&h=200&q=80',
+      'friday-new': 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&w=200&h=200&q=80',
+      'futurs-hits': 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=200&h=200&q=80',
+      retrowave: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=200&h=200&q=80',
+      italian: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&w=200&h=200&q=80'
+    };
+    if (titles[playlistId]) {
+      return {
+        id: playlistId,
+        title: titles[playlistId],
+        coverUrl: covers[playlistId] || 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=200&h=200&q=80',
+        desc: artists[playlistId] || 'Playlist • Spotify',
+        category: 'shared'
+      };
+    }
+    return null;
+  }
+
+  function recordPlaylistPlay(playlistId) {
+    if (!playlistId) return;
+    const details = getPlaylistDetails(playlistId);
+    if (!details) return;
+    
+    let recents = [];
+    try {
+      recents = JSON.parse(localStorage.getItem('cady-recents-played')) || [];
+    } catch(e) {
+      recents = [];
+    }
+    
+    recents = recents.filter(item => item.id !== playlistId);
+    recents.unshift(details);
+    if (recents.length > 10) {
+      recents = recents.slice(0, 10);
+    }
+    localStorage.setItem('cady-recents-played', JSON.stringify(recents));
+    renderRecentsRow();
+  }
+
+  function renderRecentsRow() {
+    const rowContainer = document.getElementById('recents-row-container');
+    if (!rowContainer) return;
+    
+    let recents = [];
+    try {
+      recents = JSON.parse(localStorage.getItem('cady-recents-played')) || [];
+    } catch(e) {
+      recents = [];
+    }
+    
+    if (recents.length === 0) {
+      const defaults = ['library', 'kaskade', 'singer', 'workout', 'sleep', 'retrowave', 'italian'];
+      defaults.forEach(id => {
+        const det = getPlaylistDetails(id);
+        if (det) recents.push(det);
+      });
+      localStorage.setItem('cady-recents-played', JSON.stringify(recents));
+    }
+    
+    rowContainer.innerHTML = '';
+    
+    recents.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'spotify-cover-card mood-playlist-card';
+      card.dataset.playlist = item.id;
+      card.dataset.category = item.category;
+      
+      card.innerHTML = `
+        <img src="${item.coverUrl}" alt="${item.title}">
+        <div class="spotify-cover-card-title">${item.title}</div>
+        <div class="spotify-cover-card-desc">${item.desc}</div>
+        <button class="play-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 2px;"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+      `;
+      
+      card.addEventListener('click', () => {
+        if (item.id === 'library') {
+          switchPage('library');
+          showLibraryDetail();
+        } else {
+          switchPage('library');
+          showLibraryDetail(item.id, item.coverUrl, item.title, item.desc);
+        }
+      });
+      
+      const playBtn = card.querySelector('.play-btn');
+      if (playBtn) {
+        playBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (item.id === 'library') {
+            if (ownedSongs.length > 0) {
+              playlistSongs = [...ownedSongs];
+              playPlaylistTrack(ownedSongs[0]);
+              showToast("Playing Playlist", "Started playing Favourites", "success");
+            } else {
+              showToast("Favourites Empty", "Add some songs to your favourites first.", "warning");
+            }
+          } else {
+            playMoodPlaylist(item.id);
+          }
+        });
+      }
+      
+      rowContainer.appendChild(card);
+    });
+  }
+
   function cleanJsonResponse(str) {
     let cleaned = str.trim();
     if (cleaned.startsWith("```json")) {
@@ -11468,6 +12626,8 @@ JSON schema:
   // Load active user data and initialize schedule / events
   loadUserData();
   bindPlayerEvents();
+  renderRecentsRow();
+  renderSuggestedRadioPlaylists();
 
   // Mobile Plus (+) Bottom Sheet navigation actions
   const plusLink = document.getElementById('sidebar-link-plus');

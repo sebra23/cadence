@@ -54,7 +54,7 @@
 
     .container {
       width: 100%;
-      max-width: 900px;
+      max-width: 1100px;
       display: flex;
       flex-direction: column;
       gap: 24px;
@@ -74,16 +74,32 @@
       font-size: 1.6rem;
       font-weight: 800;
       letter-spacing: -0.5px;
-      color: #fff;
+      color: #ffffff !important;
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
     .brand-logo span {
-      background: linear-gradient(135deg, var(--color-purple-light), #f472b6);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: #ffffff !important;
+    }
+
+    /* Active track highlighting */
+    .playlist-table tbody tr.active-track td {
+      background: rgba(124, 58, 237, 0.08) !important;
+      color: var(--color-purple-light) !important;
+    }
+    
+    .playlist-table tbody tr.active-track td.col-title {
+      color: var(--color-purple-light) !important;
+      font-weight: 600;
+    }
+    
+    .btn-play-pause svg.play-icon {
+      transform: translateX(1.5px) !important;
+    }
+    .btn-play-pause svg.pause-icon {
+      transform: none !important;
     }
 
     .node-badge {
@@ -233,15 +249,54 @@
       text-transform: uppercase;
     }
 
-    .vibe-badge.calm { background: rgba(6, 182, 212, 0.1); border: 1px solid rgba(6, 182, 212, 0.2); color: var(--color-calm); }
-    .vibe-badge.flow { background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); color: var(--color-flow); }
-    .vibe-badge.drive { background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.2); color: var(--color-drive); }
-    .vibe-badge.after { background: rgba(236, 72, 153, 0.1); border: 1px solid rgba(236, 72, 153, 0.2); color: var(--color-after); }
-    .vibe-badge.closed { background: rgba(100, 116, 139, 0.1); border: 1px solid rgba(100, 116, 139, 0.2); color: var(--color-closed); }
+    .category-tag, .vibe-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .category-tag.calm, .vibe-badge.calm {
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(8, 145, 178, 0.15));
+      color: #22d3ee;
+      border-color: rgba(6, 182, 212, 0.25);
+    }
+    .category-tag.flow, .vibe-badge.flow {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(5, 150, 105, 0.15));
+      color: #34d399;
+      border-color: rgba(16, 185, 129, 0.25);
+    }
+    .category-tag.drive, .vibe-badge.drive {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(124, 58, 237, 0.15));
+      color: #a78bfa;
+      border-color: rgba(139, 92, 246, 0.25);
+    }
+    .category-tag.after, .vibe-badge.after {
+      background: linear-gradient(135deg, rgba(236, 72, 153, 0.15), rgba(219, 39, 119, 0.15));
+      color: #f472b6;
+      border-color: rgba(236, 72, 153, 0.25);
+    }
+    .category-tag.closed, .vibe-badge.closed {
+      background: rgba(100, 116, 139, 0.1);
+      border: 1px solid rgba(100, 116, 139, 0.2);
+      color: var(--color-closed);
+      border-radius: 12px;
+    }
 
     .schedule-badge {
-      background: rgba(255, 255, 255, 0.04);
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
       border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.04);
       color: var(--color-text-secondary);
     }
 
@@ -323,25 +378,33 @@
     }
 
     .btn-play-pause {
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
       width: 52px;
       height: 52px;
       border-radius: 50%;
-      background: #fff;
-      color: var(--color-bg);
-      box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+      background: #fff !important;
+      color: #040406 !important;
+      border: none !important;
+      cursor: pointer !important;
+      box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2) !important;
+      transition: var(--transition-smooth);
+      padding: 0 !important;
     }
 
     .btn-play-pause:hover {
       transform: scale(1.05);
-      background: #fff;
-      color: var(--color-bg);
-      box-shadow: 0 4px 20px rgba(255, 255, 255, 0.3);
+      background: #fff !important;
+      box-shadow: 0 4px 20px rgba(255, 255, 255, 0.3) !important;
     }
 
     .btn-play-pause svg {
-      width: 24px;
-      height: 24px;
-      fill: currentColor;
+      width: 24px !important;
+      height: 24px !important;
+      fill: currentColor !important;
+      margin: 0 !important;
+      padding: 0 !important;
     }
 
     .btn-play-pause .pause-icon {
@@ -353,7 +416,7 @@
     }
 
     .btn-play-pause.playing .pause-icon {
-      display: block;
+      display: inline-block !important;
     }
 
     .volume-control {
@@ -439,50 +502,53 @@
       overflow-y: auto;
     }
 
-    table {
+    /* Playlist Table */
+    .playlist-table {
       width: 100%;
       border-collapse: collapse;
       text-align: left;
     }
 
-    th {
+    .playlist-table th {
       font-size: 0.72rem;
       font-weight: 600;
       color: var(--color-text-muted);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      padding: 10px 12px;
+      letter-spacing: 0.08em;
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-    td {
-      padding: 12px;
-      font-size: 0.85rem;
+    .playlist-table td {
+      padding: 12px 16px;
+      font-size: 0.88rem;
       border-bottom: 1px solid rgba(255, 255, 255, 0.02);
       transition: var(--transition-smooth);
       color: var(--color-text-secondary);
+      vertical-align: middle;
     }
 
-    tr:hover td {
-      background: rgba(255, 255, 255, 0.02);
-      color: #fff;
+    .playlist-table tbody tr {
       cursor: pointer;
+      transition: background-color 0.2s ease;
     }
 
-    tr.active-track td {
-      background: rgba(124, 58, 237, 0.08);
-      color: var(--color-purple-light);
+    .playlist-table tbody tr:hover td {
+      background-color: rgba(255, 255, 255, 0.03) !important;
+      color: #fff !important;
+    }
+
+    .playlist-table tbody tr.active-track td {
+      background: rgba(124, 58, 237, 0.08) !important;
+      color: var(--color-purple-light) !important;
     }
 
     .col-index { width: 40px; text-align: center; }
-    .col-title { font-weight: 500; color: #fff; }
-    .col-artist {}
-    .col-vibe { width: 100px; }
-    .col-bpm { width: 80px; font-family: monospace; }
-    .col-duration { width: 70px; text-align: right; font-family: monospace; }
-
-    tr.active-track .col-title {
-      color: var(--color-purple-light);
-    }
+    .col-title { font-weight: 600; color: #fff; }
+    .col-artist { color: var(--color-text-secondary); }
+    .col-vibe { width: 120px; }
+    .col-bpm { width: 90px; font-family: monospace; }
+    .col-duration { width: 80px; text-align: right; font-family: monospace; }
 
     /* Scrollbar */
     ::-webkit-scrollbar {
@@ -531,27 +597,279 @@
     .hidden {
       display: none !important;
     }
+
+    .player-split-layout {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 24px;
+      width: 100%;
+    }
+
+    @media (max-width: 900px) {
+      .player-split-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Zones Sidebar */
+    .zones-sidebar {
+      background: var(--color-card-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius-lg);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      height: fit-content;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .sidebar-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .zones-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Zone Item Card */
+    .zone-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: var(--border-radius-md);
+      padding: 14px;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .zone-card:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(124, 58, 237, 0.2);
+    }
+
+    .zone-card.active {
+      background: rgba(124, 58, 237, 0.08);
+      border-color: rgba(124, 58, 237, 0.4);
+      box-shadow: 0 0 15px rgba(124, 58, 237, 0.05);
+    }
+
+    .zone-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .zone-card-name {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #fff;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .zone-card-play-btn {
+      background: none;
+      border: none;
+      padding: 0;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.04);
+      transition: var(--transition-smooth);
+      flex-shrink: 0;
+    }
+
+    .zone-card-play-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      transform: scale(1.08);
+    }
+
+    .zone-card-play-btn.playing {
+      color: var(--color-purple-light);
+      background: rgba(124, 58, 237, 0.15);
+    }
+
+    .zone-card-vibe-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .zone-card-select {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--color-text-secondary);
+      font-size: 0.65rem;
+      border-radius: 4px;
+      padding: 2px 4px;
+      outline: none;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      width: 80px;
+    }
+
+    .zone-card-select:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+      color: #fff;
+    }
+
+    .zone-card-now-playing {
+      display: none !important;
+    }
+
+    .zone-song-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      border-radius: var(--border-radius-md);
+      padding: 8px 12px;
+      margin-top: 4px;
+      transition: var(--transition-smooth);
+    }
+    
+    .zone-card:hover .zone-song-row {
+      background: rgba(0, 0, 0, 0.4);
+      border-color: rgba(255, 255, 255, 0.06);
+    }
+    
+    .zone-card.active .zone-song-row {
+      background: rgba(0, 0, 0, 0.5);
+      border-color: rgba(124, 58, 237, 0.25);
+    }
+    
+    .zone-song-play-status {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      flex-shrink: 0;
+    }
+    
+    .zone-song-play-status svg {
+      display: block;
+    }
+    .zone-song-play-status:not(.playing) svg {
+      transform: translateX(0.5px) !important;
+    }
+    
+    .zone-song-play-status:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      transform: scale(1.1);
+    }
+
+    .zone-song-play-status.playing {
+      color: var(--color-purple-light);
+      background: rgba(124, 58, 237, 0.12);
+    }
+    
+    .zone-song-cover {
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1rem;
+      font-weight: 800;
+      color: rgba(255, 255, 255, 0.9);
+      flex-shrink: 0;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: linear-gradient(135deg, #1e1b4b, #311042);
+    }
+    
+    .zone-song-details {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      min-width: 0;
+      flex-grow: 1;
+    }
+    
+    .zone-song-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #fff;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      transition: var(--transition-smooth);
+    }
+    
+    .zone-song-title.active {
+      color: var(--color-purple-light);
+    }
+    
+    .zone-song-meta {
+      font-size: 0.68rem;
+      color: var(--color-text-secondary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    .zone-song-brand {
+      color: #c084fc;
+      font-weight: 600;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <header>
       <div class="brand-logo">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#logo-grad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-          <defs>
-            <linearGradient id="logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#a78bfa" />
-              <stop offset="100%" stop-color="#ec4899" />
-            </linearGradient>
-          </defs>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
           <path d="M12 2v20M17 5v14M22 9v6M7 8v8M2 10v4"/>
         </svg>
-        <span>CADY</span> Store Node
+        <span style="color: #ffffff; font-weight: 800;">CADY</span> <span style="color: #ffffff; font-weight: 400; opacity: 0.95;">Store Node</span>
       </div>
       <div class="node-badge" id="node-status-badge">AuraFlow Node #01</div>
     </header>
 
-    <main class="player-card">
+    <div class="player-split-layout">
+      <!-- LEFT SIDEBAR: ZONES LIST -->
+      <aside class="zones-sidebar">
+        <h3 class="sidebar-title">Store Zones</h3>
+        <div id="zones-list-container" class="zones-list">
+          <!-- Populated dynamically -->
+        </div>
+      </aside>
+      
+      <!-- RIGHT PANEL: ACTIVE ZONE PLAYER -->
+      <div class="active-zone-panel" style="display: flex; flex-direction: column; gap: 24px; width: 100%; overflow: hidden;">
+        <main class="player-card">
       <!-- Store Closed Overlay -->
       <div id="closed-store-overlay" class="closed-overlay hidden">
         <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--color-closed)" stroke-width="2">
@@ -573,8 +891,8 @@
           <div class="song-artist" id="lbl-track-artist">Ambient Focus</div>
           
           <div class="badges-row">
-            <span class="badge vibe-badge calm" id="lbl-active-vibe">Calm Vibe</span>
-            <span class="badge schedule-badge" id="lbl-timezone-time">GMT • 9:00 AM</span>
+            <span class="category-tag calm" id="lbl-active-vibe">Calm Vibe</span>
+            <span class="schedule-badge" id="lbl-timezone-time">GMT • 9:00 AM</span>
           </div>
         </div>
       </div>
@@ -631,12 +949,12 @@
         <span class="playlist-count">50 Tracks Adaptable</span>
       </div>
       <div class="tracks-table-wrapper">
-        <table>
+        <table class="playlist-table">
           <thead>
             <tr>
               <th class="col-index">#</th>
-              <th>Title</th>
-              <th>Artist</th>
+              <th class="col-title">Title</th>
+              <th class="col-artist">Artist</th>
               <th class="col-vibe">Acoustic Vibe</th>
               <th class="col-bpm">Tempo</th>
               <th class="col-duration">Duration</th>
@@ -648,6 +966,8 @@
         </table>
       </div>
     </section>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -762,8 +1082,8 @@
     document.getElementById('lbl-playlist-title').textContent = `${activeStore.name} Adaptive Playlist`;
     document.getElementById('node-status-badge').textContent = `Node: ${activeStore.id.slice(0, 15)}`;
 
-    // Generate mock playlist seeded by store name
-    function generateMockPlaylist(brand) {
+    // Generate mock playlist seeded by store name and zone
+    function generateMockPlaylist(brand, zoneSeed = 'default') {
       let currentPersonaId = "persona-abc123";
       try {
         const savedPersona = localStorage.getItem(getScopedKey('cady-suno-persona'));
@@ -838,7 +1158,7 @@
       ];
 
       const mappedRawSongs = rawSongs.map(song => {
-        const promptText = `brand="${brand}" + prompt="[PERSONA: ${currentPersonaId}] ${song.basePrompt}"`;
+        const promptText = `brand="${brand}" + zone="${zoneSeed}" + prompt="[PERSONA: ${currentPersonaId}] ${song.basePrompt}"`;
         const durationSeconds = 210;
         const durationString = "3:30";
         return {
@@ -863,12 +1183,48 @@
         }
       } catch (e) {}
 
+      let radioTracks = [];
+      try {
+        const savedRadio = localStorage.getItem(getScopedKey('cady-radio-tracks'));
+        if (savedRadio) {
+          radioTracks = JSON.parse(savedRadio);
+        }
+      } catch (e) {}
+
       const customSunoSongs = ownedSongs.filter(s => s && s.audioUrl);
-      const seenTitles = new Set(customSunoSongs.map(s => s.title.toLowerCase().trim()));
+      const activeRadioSongs = radioTracks.filter(s => s && !s.generating).map(song => {
+        return {
+          id: song.id,
+          title: song.title,
+          artist: song.artist,
+          album: song.album || "Radio Archive",
+          category: song.category || "calm",
+          bpm: song.bpm || 68,
+          duration: song.duration || "2:30",
+          durationSeconds: song.durationSeconds || 150,
+          audioUrl: song.audioUrl,
+          coverUrl: song.coverUrl || "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=150&auto=format&fit=crop"
+        };
+      });
+
+      const seenTitles = new Set([
+        ...customSunoSongs.map(s => s.title.toLowerCase().trim()),
+        ...activeRadioSongs.map(s => s.title.toLowerCase().trim())
+      ]);
+
       const filteredRawSongs = mappedRawSongs.filter(s => !seenTitles.has(s.title.toLowerCase().trim()));
 
-      const combinedSongs = [...customSunoSongs, ...filteredRawSongs].slice(0, 120);
-      return combinedSongs.map((song, index) => {
+      const combinedSongs = [...customSunoSongs, ...activeRadioSongs, ...filteredRawSongs].slice(0, 120);
+      
+      // Shuffle combinedSongs based on zoneSeed
+      let seedVal = 0;
+      for (let i = 0; i < zoneSeed.length; i++) {
+        seedVal += zoneSeed.charCodeAt(i);
+      }
+      const rotation = seedVal % combinedSongs.length;
+      const rotatedSongs = [...combinedSongs.slice(rotation), ...combinedSongs.slice(0, rotation)];
+
+      return rotatedSongs.map((song, index) => {
         return {
           ...song,
           id: index + 1
@@ -876,11 +1232,8 @@
       });
     }
 
-    const playlistSongs = generateMockPlaylist(activeStore.name);
-    if (document.querySelector('.playlist-count')) {
-      document.querySelector('.playlist-count').textContent = `${playlistSongs.length} Tracks Adaptable`;
-    }
-    let activeTrack = playlistSongs[0];
+    let playlistSongs = [];
+    let activeTrack = null;
     let isPlaying = false;
     let playbackSeconds = 0;
     let playbackInterval = null;
@@ -1640,25 +1993,74 @@
       }
     }
 
-    function getActiveScheduleBlock(storeObj) {
-      const zoneId = urlParams.get('zone');
-      let zone = null;
-      if (storeObj.zones && storeObj.zones.length > 0) {
-        if (zoneId) {
-          zone = storeObj.zones.find(z => z.id === zoneId);
+    // Ensure activeStore has zones or fallback zones
+    if (!activeStore.zones || activeStore.zones.length === 0) {
+      activeStore.zones = [
+        {
+          id: 'zone-main',
+          name: 'Main Area',
+          schedules: JSON.parse(JSON.stringify(activeStore.schedules || {}))
+        },
+        {
+          id: 'zone-terrace',
+          name: 'Terrace Bar',
+          schedules: JSON.parse(JSON.stringify(activeStore.schedules || {}))
+        },
+        {
+          id: 'zone-vip',
+          name: 'VIP Lounge',
+          schedules: JSON.parse(JSON.stringify(activeStore.schedules || {}))
         }
-        if (!zone) {
-          zone = storeObj.zones[0];
-        }
+      ];
+    }
+
+    // Initialize zone states dictionary
+    let zoneStates = {};
+    activeStore.zones.forEach(zone => {
+      const playlist = generateMockPlaylist(activeStore.name, zone.id === 'zone-main' ? 'Main Area' : zone.id === 'zone-terrace' ? 'Terrace Bar' : zone.id === 'zone-vip' ? 'VIP Lounge' : zone.name);
+      zoneStates[zone.id] = {
+        id: zone.id,
+        name: zone.name,
+        playlist: playlist,
+        activeTrack: playlist[0],
+        isPlaying: false,
+        playbackSeconds: 0,
+        vibeOverride: zone.vibeOverride || 'auto'
+      };
+    });
+
+    let activeZoneId = urlParams.get('zone');
+    if (!activeZoneId || !zoneStates[activeZoneId]) {
+      activeZoneId = activeStore.zones[0].id;
+    }
+
+    playlistSongs = zoneStates[activeZoneId].playlist;
+    activeTrack = zoneStates[activeZoneId].activeTrack;
+    isPlaying = zoneStates[activeZoneId].isPlaying;
+    playbackSeconds = zoneStates[activeZoneId].playbackSeconds;
+
+    function syncActiveZoneState() {
+      if (activeZoneId && zoneStates[activeZoneId]) {
+        const state = zoneStates[activeZoneId];
+        state.isPlaying = isPlaying;
+        state.playbackSeconds = playbackSeconds;
+        state.activeTrack = activeTrack;
       }
+    }
+
+    function getActiveZoneScheduleBlock(storeObj, zone) {
+      if (!zone) return 'closed';
       
-      // If there's a manual vibe override set on the zone (and it's not 'auto'), respect it!
-      if (zone && zone.vibeOverride && zone.vibeOverride !== 'auto') {
+      const state = zoneStates[zone.id];
+      if (state && state.vibeOverride && state.vibeOverride !== 'auto') {
+        return state.vibeOverride;
+      }
+      if (zone.vibeOverride && zone.vibeOverride !== 'auto') {
         return zone.vibeOverride;
       }
       
       const details = getStoreTimeDetails(storeObj.timezone);
-      const schedule = (zone && zone.schedules) ? zone.schedules[details.day] : storeObj.schedules[details.day];
+      const schedule = zone.schedules ? zone.schedules[details.day] : (storeObj.schedules ? storeObj.schedules[details.day] : null);
       
       if (!schedule || !schedule.open) {
         return 'closed';
@@ -1676,6 +2078,8 @@
 
     // UI state render
     function updatePlayerStateUI() {
+      if (!activeTrack) return;
+      
       const titleEl = document.getElementById('lbl-track-title');
       const artistEl = document.getElementById('lbl-track-artist');
       const coverArt = document.getElementById('player-cover-art');
@@ -1702,25 +2106,26 @@
       else if (activeTrack.category === 'after') gradient = 'linear-gradient(135deg, #ec4899, #db2777)';
       
       coverArt.style.background = gradient;
-      coverArt.textContent = activeTrack.category.charAt(0).toUpperCase();
+      coverArt.textContent = activeTrack.category ? activeTrack.category.charAt(0).toUpperCase() : 'C';
       coverGlow.style.background = gradient;
       
-      // Calculate active store schedules
-      const currentBlock = getActiveScheduleBlock(activeStore);
+      // Calculate active zone schedule block
+      const currentZone = activeStore.zones.find(z => z.id === activeZoneId);
+      const currentBlock = getActiveZoneScheduleBlock(activeStore, currentZone);
       const timeDetails = getStoreTimeDetails(activeStore.timezone);
       
       lblTimezoneTime.textContent = `${activeStore.timezone} • ${timeDetails.formattedTime}`;
       
       // Active Vibe Badge
-      lblActiveVibe.className = `badge vibe-badge ${currentBlock}`;
+      lblActiveVibe.className = `category-tag ${currentBlock}`;
       
       let displayBlockName = currentBlock;
       let emoji = '🎵';
-      if (currentBlock === 'calm') { displayBlockName = 'Morning Calm'; emoji = '🧘'; }
-      else if (currentBlock === 'flow') { displayBlockName = 'Midday Flow'; emoji = '🌿'; }
-      else if (currentBlock === 'drive') { displayBlockName = 'Peak Drive'; emoji = '⚡'; }
-      else if (currentBlock === 'after') { displayBlockName = 'After Hours'; emoji = '🌙'; }
-      else if (currentBlock === 'closed') { displayBlockName = 'Standby'; emoji = '💤'; }
+      if (currentBlock === 'calm') { displayBlockName = 'MORNING CALM'; emoji = '🧘'; }
+      else if (currentBlock === 'flow') { displayBlockName = 'MIDDAY FLOW'; emoji = '🌿'; }
+      else if (currentBlock === 'drive') { displayBlockName = 'PEAK DRIVE'; emoji = '⚡'; }
+      else if (currentBlock === 'after') { displayBlockName = 'AFTER HOURS'; emoji = '🌙'; }
+      else if (currentBlock === 'closed') { displayBlockName = 'STANDBY'; emoji = '💤'; }
       
       lblActiveVibe.textContent = `${emoji} ${displayBlockName}`;
       
@@ -1737,16 +2142,12 @@
         const id = parseInt(row.dataset.id);
         if (id === activeTrack.id) {
           row.className = 'active-track';
-          const indexCol = row.querySelector('.col-index');
-          if (indexCol) {
-            indexCol.innerHTML = isPlaying ? '🎵' : id;
-          }
         } else {
           row.className = '';
-          const indexCol = row.querySelector('.col-index');
-          if (indexCol) {
-            indexCol.innerHTML = id;
-          }
+        }
+        const indexCol = row.querySelector('.col-index');
+        if (indexCol) {
+          indexCol.innerHTML = id; // Always show row number, exactly matching the screenshot
         }
       });
 
@@ -1766,28 +2167,207 @@
       return `${m}:${s < 10 ? '0' + s : s}`;
     }
 
-    // Load track rows in DOM
-    const tbody = document.getElementById('playlist-tracks-body');
-    playlistSongs.forEach(track => {
-      const tr = document.createElement('tr');
-      tr.dataset.id = track.id;
-      tr.innerHTML = `
-        <td class="col-index">${track.id}</td>
-        <td class="col-title">${track.title}</td>
-        <td class="col-artist">${track.artist} • <span class="track-company" style="color: var(--color-primary, #c084fc); opacity: 0.8; font-weight: 500;">${companyName}</span></td>
-        <td class="col-vibe">
-          <span class="badge vibe-badge ${track.category}" style="font-size: 0.65rem; padding: 2px 6px;">
-            ${track.category === 'calm' ? '🧘 calm' : track.category === 'flow' ? '🌿 flow' : track.category === 'drive' ? '⚡ drive' : '🌙 after'}
-          </span>
-        </td>
-        <td class="col-bpm">${track.bpm} BPM</td>
-        <td class="col-duration">${track.duration}</td>
-      `;
-      tr.addEventListener('click', () => {
-        playTrack(track);
+    // Load track rows in DOM dynamically
+    function renderPlaylistTracksTable() {
+      const tbody = document.getElementById('playlist-tracks-body');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      
+      if (document.querySelector('.playlist-count')) {
+        document.querySelector('.playlist-count').textContent = `${playlistSongs.length} Tracks Adaptable`;
+      }
+      
+      playlistSongs.forEach(track => {
+        const tr = document.createElement('tr');
+        tr.dataset.id = track.id;
+        tr.innerHTML = `
+          <td class="col-index">${track.id}</td>
+          <td class="col-title">${track.title}</td>
+          <td class="col-artist">${track.artist} • <span class="track-company" style="color: var(--color-primary, #c084fc); opacity: 0.8; font-weight: 500;">${companyName}</span></td>
+          <td class="col-vibe">
+            <span class="category-tag ${track.category}" style="font-size: 0.65rem; padding: 2px 6px;">
+              ${track.category === 'calm' ? '🧘 CALM' : track.category === 'flow' ? '🌿 FLOW' : track.category === 'drive' ? '⚡ DRIVE' : '🌙 AFTER'}
+            </span>
+          </td>
+          <td class="col-bpm">${track.bpm} BPM</td>
+          <td class="col-duration">${track.duration}</td>
+        `;
+        tr.addEventListener('click', () => {
+          playTrack(track);
+        });
+        tbody.appendChild(tr);
       });
-      tbody.appendChild(tr);
-    });
+    }
+
+    function getVibeGradient(category) {
+      if (category === 'calm') return 'linear-gradient(135deg, #06b6d4, #0891b2)';
+      if (category === 'flow') return 'linear-gradient(135deg, #10b981, #059669)';
+      if (category === 'drive') return 'linear-gradient(135deg, #8b5cf6, #7c3aed)';
+      if (category === 'after') return 'linear-gradient(135deg, #ec4899, #db2777)';
+      return 'linear-gradient(135deg, #1e1b4b, #311042)';
+    }
+
+    // Render zones list in sidebar
+    function renderZonesList() {
+      const container = document.getElementById('zones-list-container');
+      if (!container) return;
+      
+      container.innerHTML = '';
+      
+      activeStore.zones.forEach(zone => {
+        const state = zoneStates[zone.id];
+        if (!state) return;
+        
+        const isFocused = zone.id === activeZoneId;
+        const currentVibe = getActiveZoneScheduleBlock(activeStore, zone);
+        
+        const card = document.createElement('div');
+        card.className = `zone-card ${isFocused ? 'active' : ''}`;
+        card.dataset.zoneId = zone.id;
+        
+        const playBtnHtml = state.isPlaying
+          ? `<button class="zone-card-play-btn playing" title="Pause Zone">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+             </button>`
+          : `<button class="zone-card-play-btn" title="Play Zone">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+             </button>`;
+
+        const activeTrackCategory = state.activeTrack ? state.activeTrack.category : 'calm';
+        const zoneGradient = getVibeGradient(activeTrackCategory);
+
+        const songRowHtml = state.activeTrack
+          ? `<div class="zone-song-row">
+              <div class="zone-song-play-status ${state.isPlaying ? 'playing' : ''}" title="${state.isPlaying ? 'Pause' : 'Play'}">
+                ${state.isPlaying
+                  ? `<svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`
+                  : `<svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>`
+                }
+              </div>
+              <div class="zone-song-cover" style="background: ${zoneGradient};">C</div>
+              <div class="zone-song-details">
+                <div class="zone-song-title ${isFocused ? 'active' : ''}">${state.activeTrack.title}</div>
+                <div class="zone-song-meta">${state.activeTrack.artist} • <span class="zone-song-brand">${companyName}</span></div>
+              </div>
+            </div>`
+          : `<div class="zone-song-row">
+              <div style="font-size: 0.72rem; color: var(--color-text-muted);">Standby</div>
+            </div>`;
+             
+        card.innerHTML = `
+          <div class="zone-card-header">
+            <span class="zone-card-name" title="${zone.name}">${zone.name}</span>
+            ${playBtnHtml}
+          </div>
+          <div class="zone-card-vibe-row">
+            <span class="category-tag ${currentVibe}" style="font-size: 0.6rem; padding: 2px 6px;">
+              ${currentVibe === 'calm' ? '🧘 CALM' : currentVibe === 'flow' ? '🌿 FLOW' : currentVibe === 'drive' ? '⚡ DRIVE' : currentVibe === 'after' ? '🌙 AFTER' : '💤 CLOSED'}
+            </span>
+            <select class="zone-card-select" data-zone-id="${zone.id}">
+              <option value="auto" ${state.vibeOverride === 'auto' ? 'selected' : ''}>Auto</option>
+              <option value="calm" ${state.vibeOverride === 'calm' ? 'selected' : ''}>Calm</option>
+              <option value="flow" ${state.vibeOverride === 'flow' ? 'selected' : ''}>Flow</option>
+              <option value="drive" ${state.vibeOverride === 'drive' ? 'selected' : ''}>Drive</option>
+              <option value="after" ${state.vibeOverride === 'after' ? 'selected' : ''}>After</option>
+            </select>
+          </div>
+          ${songRowHtml}
+        `;
+        
+        card.addEventListener('click', (e) => {
+          if (e.target.closest('.zone-song-play-status') || e.target.closest('.zone-card-play-btn') || e.target.closest('.zone-card-select')) {
+            return;
+          }
+          switchActiveZone(zone.id);
+        });
+        
+        const playBtn = card.querySelector('.zone-song-play-status');
+        if (playBtn) {
+          playBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleZonePlayback(zone.id);
+          });
+        }
+
+        const topPlayBtn = card.querySelector('.zone-card-play-btn');
+        if (topPlayBtn) {
+          topPlayBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleZonePlayback(zone.id);
+          });
+        }
+        
+        const select = card.querySelector('.zone-card-select');
+        select.addEventListener('change', (e) => {
+          state.vibeOverride = e.target.value;
+          // Persist to local storage if store matches
+          const storeIdx = locations.findIndex(l => l.id === activeStore.id);
+          if (storeIdx !== -1) {
+            const zIdx = locations[storeIdx].zones.findIndex(z => z.id === zone.id);
+            if (zIdx !== -1) {
+              locations[storeIdx].zones[zIdx].vibeOverride = state.vibeOverride;
+              localStorage.setItem(getScopedKey('cady-locations'), JSON.stringify(locations));
+            }
+          }
+          
+          updatePlayerStateUI();
+          renderZonesList();
+        });
+        
+        container.appendChild(card);
+      });
+    }
+
+    function toggleZonePlayback(zoneId) {
+      const state = zoneStates[zoneId];
+      if (!state) return;
+      
+      if (zoneId === activeZoneId) {
+        if (isPlaying) {
+          stopPlayback();
+        } else {
+          resumePlayback();
+        }
+      } else {
+        state.isPlaying = !state.isPlaying;
+        renderZonesList();
+      }
+    }
+
+    function switchActiveZone(zoneId) {
+      if (zoneId === activeZoneId) return;
+      
+      syncActiveZoneState();
+      
+      if (nativeAudio) {
+        nativeAudio.pause();
+        nativeAudio = null;
+      }
+      synthEngine.stop();
+      
+      activeZoneId = zoneId;
+      
+      const state = zoneStates[zoneId];
+      playlistSongs = state.playlist;
+      activeTrack = state.activeTrack;
+      isPlaying = state.isPlaying;
+      playbackSeconds = state.playbackSeconds;
+      
+      const newUrl = new URL(window.location.href);
+      newUrl.searchParams.set('zone', zoneId);
+      window.history.pushState({}, '', newUrl);
+      
+      renderPlaylistTracksTable();
+      
+      if (isPlaying) {
+        isPlaying = false;
+        playTrackAtCurrentSeconds(activeTrack, playbackSeconds);
+      } else {
+        updatePlayerStateUI();
+      }
+      
+      renderZonesList();
+    }
 
     // Synth engine arpeggiator
     const synthEngine = {
@@ -2005,13 +2585,13 @@
         
         // Dynamic category color gradient
         const gradient = canvasCtx.createLinearGradient(0, height, 0, 0);
-        if (activeTrack.category === 'calm') {
+        if (activeTrack && activeTrack.category === 'calm') {
           gradient.addColorStop(0, 'rgba(6, 182, 212, 0.02)');
           gradient.addColorStop(1, 'rgba(6, 182, 212, 0.8)');
-        } else if (activeTrack.category === 'flow') {
+        } else if (activeTrack && activeTrack.category === 'flow') {
           gradient.addColorStop(0, 'rgba(16, 185, 129, 0.02)');
           gradient.addColorStop(1, 'rgba(16, 185, 129, 0.8)');
-        } else if (activeTrack.category === 'drive') {
+        } else if (activeTrack && activeTrack.category === 'drive') {
           gradient.addColorStop(0, 'rgba(124, 58, 237, 0.02)');
           gradient.addColorStop(1, 'rgba(167, 139, 250, 0.8)');
         } else {
@@ -2030,23 +2610,24 @@
 
     // Playback state controller
     function playTrack(track) {
-      stopPlayback();
+      playTrackAtCurrentSeconds(track, 0);
+    }
+
+    function playTrackAtCurrentSeconds(track, seconds = 0) {
       if (nativeAudio) {
         nativeAudio.pause();
         nativeAudio = null;
       }
       activeTrack = track;
-      playbackSeconds = 0;
+      playbackSeconds = seconds;
       isPlaying = true;
       
       if (track.audioUrl) {
         nativeAudio = new Audio(encodeURI(track.audioUrl));
         nativeAudio.volume = volumeLevel;
+        nativeAudio.currentTime = seconds;
         nativeAudio.addEventListener('ended', () => {
-          if (playbackSeconds < track.durationSeconds) {
-            nativeAudio.currentTime = 0;
-            nativeAudio.play().catch(e => console.warn("Failed to loop native audio in player:", e));
-          }
+          // Handled by central timer
         });
         nativeAudio.play().catch(e => console.warn("Failed to play native audio in player:", e));
 
@@ -2066,100 +2647,56 @@
         }
       }
 
-      playbackInterval = setInterval(() => {
-        if (playbackSeconds < activeTrack.durationSeconds) {
-          playbackSeconds++;
-          document.getElementById('lbl-time-current').textContent = formatTime(playbackSeconds);
-          document.getElementById('player-scrubber-fill').style.width = `${(playbackSeconds / activeTrack.durationSeconds) * 100}%`;
-        } else {
-          playNext();
-        }
-      }, 1000);
-
+      syncActiveZoneState();
       updatePlayerStateUI();
+      renderZonesList();
     }
 
     function stopPlayback() {
       isPlaying = false;
-      clearInterval(playbackInterval);
       if (nativeAudio) {
         nativeAudio.pause();
       }
       synthEngine.stop();
+      syncActiveZoneState();
       updatePlayerStateUI();
+      renderZonesList();
     }
 
     function resumePlayback() {
       if (isPlaying) return;
-      isPlaying = true;
-      
-      if (activeTrack && activeTrack.audioUrl) {
-        if (!nativeAudio) {
-          nativeAudio = new Audio(encodeURI(activeTrack.audioUrl));
-          nativeAudio.currentTime = playbackSeconds;
-          nativeAudio.volume = volumeLevel;
-          nativeAudio.addEventListener('ended', () => {
-            if (playbackSeconds < activeTrack.durationSeconds) {
-              nativeAudio.currentTime = 0;
-              nativeAudio.play().catch(e => console.warn("Failed to loop native audio:", e));
-            }
-          });
-        }
-        nativeAudio.play().catch(e => console.warn("Failed to resume native audio:", e));
-
-        if (synthEngine.audioCtx) {
-          if (synthEngine.audioCtx.state === 'suspended') {
-            synthEngine.audioCtx.resume();
-          }
-          if (synthEngine.nodes.masterVolume) {
-            synthEngine.nodes.masterVolume.gain.setValueAtTime(0, synthEngine.audioCtx.currentTime);
-          }
-          synthEngine.start();
-        }
-      } else {
-        synthEngine.start();
-        if (synthEngine.audioCtx && synthEngine.nodes.masterVolume) {
-          synthEngine.nodes.masterVolume.gain.setValueAtTime(volumeLevel * 0.22, synthEngine.audioCtx.currentTime);
-        }
+      if (!activeTrack && playlistSongs.length > 0) {
+        activeTrack = playlistSongs[0];
       }
-
-      playbackInterval = setInterval(() => {
-        if (playbackSeconds < activeTrack.durationSeconds) {
-          playbackSeconds++;
-          document.getElementById('lbl-time-current').textContent = formatTime(playbackSeconds);
-          document.getElementById('player-scrubber-fill').style.width = `${(playbackSeconds / activeTrack.durationSeconds) * 100}%`;
-        } else {
-          playNext();
-        }
-      }, 1000);
-
-      updatePlayerStateUI();
+      if (activeTrack) {
+        playTrackAtCurrentSeconds(activeTrack, playbackSeconds);
+      }
     }
 
     function playNext() {
       const idx = playlistSongs.findIndex(s => s.id === activeTrack.id);
+      let nextTrack = null;
       if (idx !== -1 && idx < playlistSongs.length - 1) {
-        playTrack(playlistSongs[idx + 1]);
+        nextTrack = playlistSongs[idx + 1];
       } else {
-        // Replay songs based on user, location, time of day and store traffic data
-        const block = getActiveScheduleBlock(activeStore);
+        const currentZone = activeStore.zones.find(z => z.id === activeZoneId);
+        const block = getActiveZoneScheduleBlock(activeStore, currentZone);
         const targetCategory = (block === 'closed' || block === 'Store Closed') ? 'calm' : block;
         const matchingSongs = playlistSongs.filter(s => s.category === targetCategory);
-        if (matchingSongs.length > 0) {
-          playTrack(matchingSongs[0]);
-        } else {
-          playTrack(playlistSongs[0]);
-        }
+        nextTrack = matchingSongs.length > 0 ? matchingSongs[0] : playlistSongs[0];
       }
+      playTrack(nextTrack);
     }
 
     function playPrev() {
       const idx = playlistSongs.findIndex(s => s.id === activeTrack.id);
+      let prevTrack = null;
       if (idx > 0) {
-        playTrack(playlistSongs[idx - 1]);
+        prevTrack = playlistSongs[idx - 1];
       } else {
-        playTrack(playlistSongs[playlistSongs.length - 1]);
+        prevTrack = playlistSongs[playlistSongs.length - 1];
       }
+      playTrack(prevTrack);
     }
 
     // Bind Player Controls Click
@@ -2192,20 +2729,60 @@
     // Scrubber Adjust
     const scrubberBar = document.getElementById('player-scrubber-bar');
     scrubberBar.addEventListener('click', (e) => {
-      if (!isPlaying) return;
       const rect = scrubberBar.getBoundingClientRect();
       const pct = (e.clientX - rect.left) / rect.width;
       playbackSeconds = Math.round(pct * activeTrack.durationSeconds);
+      if (nativeAudio) {
+        nativeAudio.currentTime = playbackSeconds;
+      }
       document.getElementById('lbl-time-current').textContent = formatTime(playbackSeconds);
       document.getElementById('player-scrubber-fill').style.width = `${pct * 100}%`;
+      syncActiveZoneState();
     });
 
-    // Clock Interval to update clocks and schedules dynamically
+    // Central ticking loop (runs every second)
     setInterval(() => {
+      activeStore.zones.forEach(zone => {
+        const state = zoneStates[zone.id];
+        if (!state) return;
+        
+        if (zone.id === activeZoneId) {
+          if (isPlaying) {
+            if (playbackSeconds < activeTrack.durationSeconds) {
+              playbackSeconds++;
+            } else {
+              playNext();
+            }
+            syncActiveZoneState();
+          }
+        } else {
+          if (state.isPlaying) {
+            if (state.playbackSeconds < state.activeTrack.durationSeconds) {
+              state.playbackSeconds++;
+            } else {
+              // Background zone auto-skips to next song
+              const idx = state.playlist.findIndex(s => s.id === state.activeTrack.id);
+              if (idx !== -1 && idx < state.playlist.length - 1) {
+                state.activeTrack = state.playlist[idx + 1];
+              } else {
+                const currentBlock = getActiveZoneScheduleBlock(activeStore, zone);
+                const targetCategory = currentBlock === 'closed' ? 'calm' : currentBlock;
+                const matchingSongs = state.playlist.filter(s => s.category === targetCategory);
+                state.activeTrack = matchingSongs.length > 0 ? matchingSongs[0] : state.playlist[0];
+              }
+              state.playbackSeconds = 0;
+            }
+          }
+        }
+      });
+      
       updatePlayerStateUI();
-    }, 5000);
+      renderZonesList();
+    }, 1000);
 
     // Initial load
+    renderPlaylistTracksTable();
+    renderZonesList();
     updatePlayerStateUI();
   </script>
 </body>
