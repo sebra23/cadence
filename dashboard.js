@@ -10536,62 +10536,6 @@ document.addEventListener('DOMContentLoaded', () => {
   function cadyRadioSeedConfigs(force = false) {
     loadCadyRadioData();
 
-    // Seed default radio tracks if empty
-    if (cadyRadioTracks.length === 0) {
-      const seedTracksData = [
-        // calm (Morning Calm category)
-        { playlistId: 'cady-chill', title: 'Sunset Breeze', artist: 'Cady Chill Collective', album: 'Cady Chill', category: 'calm', bpm: 72, cover: '1518241353330-0f7941c2d9b5' },
-        { playlistId: 'cady-chill', title: 'Late Night Reflection', artist: 'Quiet Echo', album: 'Cady Chill', category: 'calm', bpm: 68, cover: '1482440308425-276ad0f28b19' },
-        { playlistId: 'cady-chill', title: 'Dreamy Stems', artist: 'Rhodes & Calm', album: 'Cady Chill', category: 'calm', bpm: 70, cover: '1515378791036-0648a3ef77b2' },
-        { playlistId: 'cady-classical-focus', title: 'Grand Cello Coda', artist: 'Neo-Classical Piano', album: 'Classical Focus', category: 'calm', bpm: 65, cover: '1515378791036-0648a3ef77b2' },
-        { playlistId: 'cady-classical-focus', title: 'Spacious Mind Ambient', artist: 'Delicate Keys', album: 'Classical Focus', category: 'calm', bpm: 62, cover: '1475113548554-5a36f1f523d6' },
-
-        // flow (Midday Flow category)
-        { playlistId: 'cady-good-vibes', title: 'Acoustic Sunset', artist: 'Campfire Duo', album: 'Cady Good Vibes', category: 'flow', bpm: 95, cover: '1501386761578-eac5c94b800a' },
-        { playlistId: 'cady-good-vibes', title: 'Positive Outlook', artist: 'Uplifting Plucks', album: 'Cady Good Vibes', category: 'flow', bpm: 92, cover: '1506157786151-b8491531f063' },
-        { playlistId: 'cady-good-vibes', title: 'Sunlight Rays', artist: 'Sunkissed Acoustic', album: 'Cady Good Vibes', category: 'flow', bpm: 98, cover: '1528605248644-14dd04022da1' },
-        { playlistId: 'cady-neon-synthwave', title: 'Retro Saw Highway', artist: 'Cyber Synthwave', album: 'Neon Synthwave', category: 'flow', bpm: 104, cover: '1470229722913-7c0e2dbbafd3' },
-        
-        // drive (Peak Drive category)
-        { playlistId: 'cady-mood-booster', title: 'Uplifting Rhythm', artist: 'Mood Boosters', album: 'Cady Mood Booster', category: 'drive', bpm: 112, cover: '1528605248644-14dd04022da1' },
-        { playlistId: 'cady-mood-booster', title: 'Morning Confident', artist: 'The Groovers', album: 'Cady Mood Booster', category: 'drive', bpm: 116, cover: '1506157786151-b8491531f063' },
-        { playlistId: 'cady-mood-booster', title: 'Starting Over', artist: 'Bright Female Vocals', album: 'Cady Mood Booster', category: 'drive', bpm: 114, cover: '1511671782779-c97d3d27a1d4' },
-        { playlistId: 'cady-happy-hits', title: 'Summer Solstice', artist: 'Pop Anthems', album: 'Cady Happy Hits', category: 'drive', bpm: 120, cover: '1494232410401-ad00d5433cfa' },
-        { playlistId: 'cady-happy-hits', title: 'Living In Focus', artist: 'Power Pop Group', album: 'Cady Happy Hits', category: 'drive', bpm: 122, cover: '1494232410401-ad00d5433cfa' },
-
-        // after (After Hours category)
-        { playlistId: 'cady-jazz-lounge', title: 'Smoky Sax Lounge', artist: 'City Lights Trio', album: 'Cady Jazz Lounge', category: 'after', bpm: 74, cover: '1459749411175-04bf5292ceea' },
-        { playlistId: 'cady-jazz-lounge', title: 'Velvet Plucks', artist: 'Smooth Jazz Coda', album: 'Cady Jazz Lounge', category: 'after', bpm: 72, cover: '1482440308425-276ad0f28b19' },
-        { playlistId: 'cady-lo-fi-focus', title: 'Dusty Keys Study', artist: 'Chillhop Bedroom', album: 'Lo-fi Focus', category: 'after', bpm: 80, cover: '1515378791036-0648a3ef77b2' },
-        { playlistId: 'cady-lo-fi-focus', title: 'Study Session Rain', artist: 'Jazz Hop Project', album: 'Lo-fi Focus', category: 'after', bpm: 76, cover: '1475113548554-5a36f1f523d6' }
-      ];
-
-      const localMp3s = ["Apple_tune.mp3", "Proof of Sweat.mp3", "Starbucks_tune.mp3", "swarowski.mp3"];
-
-      seedTracksData.forEach((s, idx) => {
-        const audioUrl = localMp3s[idx % localMp3s.length];
-        cadyRadioTracks.push({
-          id: "ai-track-seeded-" + idx,
-          playlist_id: s.playlistId,
-          title: s.title,
-          artist: s.artist,
-          album: s.album,
-          category: s.category,
-          bpm: s.bpm,
-          duration: "3:30",
-          durationSeconds: 210,
-          audioUrl: audioUrl,
-          coverUrl: `https://images.unsplash.com/photo-${s.cover}?q=80&w=150&auto=format&fit=crop`,
-          generating: false,
-          status: "ready",
-          created_at: Date.now()
-        });
-      });
-
-      saveCadyRadioTracks();
-      console.log(`Seeded ${cadyRadioTracks.length} default Cady Radio tracks.`);
-    }
-
     if (!force && cadyRadioConfigs.length >= 24) {
       return;
     }
