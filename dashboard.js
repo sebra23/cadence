@@ -1295,6 +1295,25 @@ document.addEventListener('DOMContentLoaded', () => {
   const loginOverlay = document.getElementById('login-overlay');
   const loginForm = document.getElementById('login-form');
 
+  // Login Account Type Selectors Toggle
+  const labelLoginIndividual = document.getElementById('label-login-individual');
+  const labelLoginBusiness = document.getElementById('label-login-business');
+  
+  if (labelLoginIndividual && labelLoginBusiness) {
+    labelLoginIndividual.addEventListener('click', () => {
+      labelLoginIndividual.classList.add('active');
+      labelLoginBusiness.classList.remove('active');
+      const radio = labelLoginIndividual.querySelector('input');
+      if (radio) radio.checked = true;
+    });
+    labelLoginBusiness.addEventListener('click', () => {
+      labelLoginBusiness.classList.add('active');
+      labelLoginIndividual.classList.remove('active');
+      const radio = labelLoginBusiness.querySelector('input');
+      if (radio) radio.checked = true;
+    });
+  }
+
   loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
     
@@ -1304,9 +1323,30 @@ document.addEventListener('DOMContentLoaded', () => {
       activeUserEmail = emailVal;
       localStorage.setItem('cady-active-email', emailVal);
     }
+
+    // Read selected account type
+    const selectedRadio = document.querySelector('input[name="login-account-type"]:checked');
+    const accType = selectedRadio ? selectedRadio.value : 'individual';
+    localStorage.setItem(getScopedKey('cady-account-type'), accType);
+    
+    if (accType === 'individual') {
+      // Force onboarding bypass immediately for Individual
+      localStorage.setItem(getScopedKey('cady-onboarding-completed'), 'true');
+      localStorage.setItem('cady-onboarding-completed', 'true');
+      localStorage.setItem(getScopedKey('cady-onboarding-step'), '3');
+      trafficScheduleActive = true;
+      curationTracksGenerated = true;
+
+      // Update locations status
+      if (typeof locations !== 'undefined' && locations && typeof activeLocationId !== 'undefined') {
+        const currentStore = locations.find(l => l.id === activeLocationId);
+        if (currentStore) currentStore.status = 'deployed';
+      }
+    }
     
     extractBrandName();
     loadUserData();
+    switchPage('dashboard');
     
     // Play transition animations
     loginOverlay.style.opacity = '0';
@@ -1316,13 +1356,14 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
       loginOverlay.classList.add('hidden');
       
-      // If onboarding is not completed for this user, automatically open the pre-onboarding modal
+      // If onboarding is not completed for this user, automatically open the onboarding modal
       const isCompleted = localStorage.getItem(getScopedKey('cady-onboarding-completed')) === 'true';
       if (!isCompleted) {
         if (synthEngine && synthEngine.isPlaying) {
           synthEngine.stop();
         }
-        updateFormStep(0);
+        // Since Business account is selected at login, open directly to Step 1 (Brand Discovery)
+        updateFormStep(1);
         openModal(modals.dnaForm);
       }
     }, 500);
@@ -1703,7 +1744,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (currentFormStep === 1) {
       formModalCard.classList.remove('modal-card-wide');
       formModalFooter.style.display = 'flex';
-      btnFormPrev.removeAttribute('disabled'); // Allow going back to step 0
+      btnFormPrev.setAttribute('disabled', 'true'); // Lock on step 1
       btnFormNext.textContent = 'Next';
     } else if (currentFormStep === 2) {
       formModalCard.classList.add('modal-card-wide');

@@ -7694,3 +7694,25 @@ ul {
   color: #fff;
   box-shadow: 0 0 10px var(--color-purple-glow);
 }
+
+/* ==========================================================================
+   7.6 Login Panel Account Type Labels
+   ========================================================================== */
+.login-acc-type-label {
+  transition: all 0.2s ease !important;
+}
+
+.login-acc-type-label.active {
+  border-color: var(--color-purple-primary) !important;
+  background: rgba(124, 58, 237, 0.05) !important;
+  box-shadow: 0 0 10px rgba(124, 58, 237, 0.2);
+}
+
+.login-acc-type-label.active span {
+  color: #fff !important;
+}
+
+.login-acc-type-label:hover {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
