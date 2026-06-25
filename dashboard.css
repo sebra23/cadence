@@ -7446,3 +7446,64 @@ ul {
   color: var(--color-text-primary);
   box-shadow: 0 0 10px var(--color-purple-glow);
 }
+
+/* ==========================================================================
+   7.4 Bottom Player Bar Mobile Responsive Adjustments
+   ========================================================================== */
+@media (max-width: 1023px) {
+  .bottom-player-bar {
+    bottom: 64px; /* Position directly above mobile bottom menu bar */
+    height: 72px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+  }
+}
+
+@media (max-width: 768px) {
+  .bottom-player-bar {
+    bottom: 64px;
+    height: 72px;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 16px;
+  }
+  
+  .player-left {
+    flex-grow: 1;
+    max-width: calc(100% - 60px);
+  }
+
+  .player-track-info {
+    max-width: calc(100% - 100px);
+  }
+
+  .player-center {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    width: auto;
+    max-width: none;
+    flex-shrink: 0;
+  }
+
+  .player-progress-container,
+  .player-control-icon:not(.player-btn-play) {
+    display: none !important;
+  }
+
+  .player-btn-play {
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px;
+    border-radius: 50%;
+  }
+
+  .player-right {
+    display: none !important;
+  }
+  
+  .main-dashboard {
+    padding-bottom: 160px !important; /* menu bar (64px) + player bar (72px) + buffer */
+  }
+}
