@@ -1750,7 +1750,7 @@
       <!-- Multi-step form header -->
       <div class="modal-header">
         <div class="form-header-top">
-          <div class="form-steps-indicator">
+          <div class="form-steps-indicator" id="form-steps-indicator-row">
             <span class="step-indicator active" data-step="1">1</span>
             <span class="step-line"></span>
             <span class="step-indicator" data-step="2">2</span>
@@ -1779,6 +1779,29 @@
       
       <!-- Modal Main Scrollable Content -->
       <div class="modal-body form-body-scroll">
+
+        <!-- ==========================================
+           FORM STEP 0: ACCOUNT TYPE SELECTION
+           ========================================== -->
+        <div class="form-step-content" data-step="0">
+          <div class="account-type-grid">
+            <!-- Choice 1: Individual -->
+            <button type="button" class="account-type-card" id="btn-account-individual">
+              <div class="account-type-icon">👤</div>
+              <h3>Individual</h3>
+              <p>For personal listening and single workspace. Quick setup, bypasses brand onboarding.</p>
+              <span class="account-type-badge">Fast Track</span>
+            </button>
+
+            <!-- Choice 2: Business -->
+            <button type="button" class="account-type-card" id="btn-account-business">
+              <div class="account-type-icon">🏢</div>
+              <h3>Business</h3>
+              <p>For retail, dining, hotels, or offices. Unlock full scheduled vibe controls and custom branding.</p>
+              <span class="account-type-badge badge-purple">Proceed to Form</span>
+            </button>
+          </div>
+        </div>
         
         <!-- ==========================================
            FORM STEP 1: ATMOSPHERE & BASICS

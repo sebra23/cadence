@@ -1382,7 +1382,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (synthEngine && synthEngine.isPlaying) {
           synthEngine.stop();
         }
-        updateFormStep(1);
+        updateFormStep(0);
         openModal(modals.dnaForm);
       } catch (err) {
         showToast("Error Opening Form", err.message, "error");
@@ -1464,12 +1464,14 @@ document.addEventListener('DOMContentLoaded', () => {
   
   let currentFormStep = 1;
   const formHeadings = {
+    0: { title: "Choose Your Account Type", subtitle: "Select the mode that best fits how you will be using Cady." },
     1: { title: "Establish Your Sonic Identity", subtitle: "Tell us about the atmosphere you want to cultivate. Our AI uses these parameters to curate your custom music ecosystem." },
     2: { title: "Brand Resonance Mapping", subtitle: "Define the sensory boundaries of your commercial audio identity." },
     3: { title: "Step 3 of 3 - Synthesis", subtitle: "Neural processing is mapping your brand DNA to acoustic frequencies." }
   };
 
   const formHelpTexts = {
+    0: "<strong>Account Type Selection</strong><br>Select <strong>Individual</strong> for personal projects or simple spaces where you don't need scheduling and traffic mapping. Choose <strong>Business</strong> if you want to configure multi-zone scheduling, brand resonance parameter mappings, and live traffic-level playlist adaptation.",
     1: "<strong>Why Vibe Selection & Atmosphere?</strong> We ask for your vibe, tempo, and instrumentation to anchor our Web Audio synthesis engine. Setting the correct mood maps direct chords, while entering reference playlist links gives the AI reference anchors. Answer by toggling your primary sonic elements.",
     2: "<strong>Why Brand Resonance Mapping?</strong> These sliders define the aesthetic traits of your brand's voice. High modernism triggers newer patterns, serious focus triggers minimalist structures, and rich levels increase voice overlays. Adjust the sliders to see our real-time heatmap display frequency weightings.",
     3: "<strong>Why Synthesis?</strong> This final view compiles your inputs to trigger neural processing parameters. Confirm your details, specify your brand's sonic mission vision statement, and generate your custom report. The AI will immediately run live acoustics tests."
@@ -1675,11 +1677,26 @@ document.addEventListener('DOMContentLoaded', () => {
       helpPanelText.innerHTML = formHelpTexts[currentFormStep];
     }
 
-    // Modal card sizing
-    if (currentFormStep === 1) {
+    // Toggle steps indicator row and help toggle visibility
+    const stepsIndicatorRow = document.getElementById('form-steps-indicator-row');
+    if (stepsIndicatorRow) {
+      stepsIndicatorRow.style.display = currentFormStep === 0 ? 'none' : '';
+    }
+    if (btnHelpToggle) {
+      btnHelpToggle.style.display = currentFormStep === 0 ? 'none' : '';
+    }
+    if (currentFormStep === 0 && formHelpPanel && !formHelpPanel.classList.contains('hidden')) {
+      formHelpPanel.classList.add('hidden');
+    }
+
+    // Modal card sizing and footer controls
+    if (currentFormStep === 0) {
+      formModalCard.classList.remove('modal-card-wide');
+      formModalFooter.style.display = 'none';
+    } else if (currentFormStep === 1) {
       formModalCard.classList.remove('modal-card-wide');
       formModalFooter.style.display = 'flex';
-      btnFormPrev.setAttribute('disabled', 'true');
+      btnFormPrev.removeAttribute('disabled'); // Allow going back to step 0
       btnFormNext.textContent = 'Next';
     } else if (currentFormStep === 2) {
       formModalCard.classList.add('modal-card-wide');
@@ -1735,8 +1752,130 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // Account type selection handlers (Step 0)
+  const btnAccountIndividual = document.getElementById('btn-account-individual');
+  const btnAccountBusiness = document.getElementById('btn-account-business');
+
+  if (btnAccountIndividual) {
+    btnAccountIndividual.addEventListener('click', () => {
+      try {
+        // 1. Set completion flags in localStorage
+        localStorage.setItem(getScopedKey('cady-onboarding-completed'), 'true');
+        localStorage.setItem('cady-onboarding-completed', 'true');
+        localStorage.setItem(getScopedKey('cady-onboarding-step'), '3');
+
+        // 2. Update runtime variable
+        trafficScheduleActive = true;
+        curationTracksGenerated = true;
+
+        // 3. Update dashboard layout to completed state
+        const container = document.getElementById('onboarding-page-container');
+        if (container) {
+          container.classList.add('onboarding-completed');
+        }
+
+        // Reveal dashboard sections
+        const dnaSection = document.getElementById('generated-dna-section');
+        if (dnaSection) dnaSection.classList.remove('hidden');
+
+        const curationSection = document.querySelector('.curation-card');
+        if (curationSection) curationSection.classList.remove('hidden');
+
+        const trafficSection = document.getElementById('store-traffic-section');
+        if (trafficSection) trafficSection.classList.remove('hidden');
+
+        // Accordion states: collapse DNA reveal, expand curation and traffic
+        document.querySelectorAll('.dash-card').forEach(c => {
+          if (c.classList.contains('dna-reveal-card')) {
+            c.classList.remove('expanded');
+          } else if (c.classList.contains('curation-card') || c.classList.contains('store-traffic-card')) {
+            c.classList.add('expanded');
+          }
+        });
+
+        // Run updates
+        updateAccordionSummaries();
+        syncCurationVisibility();
+        syncBrandNamePlaceholders();
+
+        // 4. Update store location status
+        if (typeof locations !== 'undefined' && locations && typeof activeLocationId !== 'undefined') {
+          const currentStore = locations.find(l => l.id === activeLocationId);
+          if (currentStore) {
+            currentStore.status = 'deployed';
+          }
+          renderLocationsList();
+        }
+
+        // Start playlist generation
+        startPlaylistGeneration("", true);
+
+        // 5. Complete roadmap steps
+        const step1 = document.getElementById('step-roadmap-1');
+        const step2 = document.getElementById('step-roadmap-2');
+        const step3 = document.getElementById('step-roadmap-3');
+        const step4 = document.getElementById('step-roadmap-4');
+
+        if (step1) {
+          step1.classList.remove('active');
+          const w1 = step1.querySelector('.step-icon-wrapper');
+          if (w1) { w1.innerHTML = '✓'; w1.style.backgroundColor = '#10b981'; w1.style.borderColor = '#10b981'; }
+        }
+        if (step2) {
+          step2.classList.remove('locked', 'active');
+          const w2 = step2.querySelector('.step-icon-wrapper');
+          if (w2) { w2.innerHTML = '✓'; w2.style.backgroundColor = '#10b981'; w2.style.borderColor = '#10b981'; }
+          const c2 = step2.querySelector('.step-content');
+          if (c2) {
+            c2.innerHTML = `
+              <h3>Find Your Sound</h3>
+              <p><span style="color:#10b981; font-weight:500;">✓ Sound Profile Bypassed!</span><br>Using standard individual listening mode.</p>
+            `;
+          }
+        }
+        if (step3) {
+          step3.classList.remove('locked', 'active');
+          const w3 = step3.querySelector('.step-icon-wrapper');
+          if (w3) { w3.innerHTML = '✓'; w3.style.backgroundColor = '#10b981'; w3.style.borderColor = '#10b981'; }
+          const c3 = step3.querySelector('.step-content');
+          if (c3) {
+            c3.innerHTML = `
+              <h3>Connect Your Store</h3>
+              <p><span style="color:#10b981; font-weight:500;">✓ Playback Activated!</span><br>Standard listening model activated.</p>
+            `;
+          }
+        }
+        if (step4) {
+          step4.classList.remove('locked', 'active');
+          const w4 = step4.querySelector('.step-icon-wrapper');
+          if (w4) { w4.innerHTML = '✓'; w4.style.backgroundColor = '#10b981'; w4.style.borderColor = '#10b981'; }
+          const c4 = step4.querySelector('.step-content');
+          if (c4) {
+            c4.innerHTML = `
+              <h3>Go Live</h3>
+              <p><span style="color:#10b981; font-weight:500;">✓ Go Live!</span><br>Your personal adaptive soundscape is live and playing.</p>
+            `;
+          }
+        }
+
+        // Close modal and toast success
+        closeModal(modals.dnaForm);
+        showToast("Welcome to Cady!", "Individual account setup complete. Dashboard unlocked.", "success");
+      } catch (err) {
+        showToast("Error processing account choice", err.message, "error");
+        console.error(err);
+      }
+    });
+  }
+
+  if (btnAccountBusiness) {
+    btnAccountBusiness.addEventListener('click', () => {
+      updateFormStep(1);
+    });
+  }
+
   btnFormPrev.addEventListener('click', () => {
-    if (currentFormStep > 1) {
+    if (currentFormStep > 0) {
       updateFormStep(currentFormStep - 1);
     }
   });
