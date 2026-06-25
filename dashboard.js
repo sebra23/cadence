@@ -1770,6 +1770,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem(getScopedKey('cady-onboarding-completed'), 'true');
         localStorage.setItem('cady-onboarding-completed', 'true');
         localStorage.setItem(getScopedKey('cady-onboarding-step'), '3');
+        localStorage.setItem(getScopedKey('cady-account-type'), 'individual');
 
         // 2. Update runtime variable
         trafficScheduleActive = true;
@@ -1804,6 +1805,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updateAccordionSummaries();
         syncCurationVisibility();
         syncBrandNamePlaceholders();
+        syncDashboardViews();
 
         // 4. Update store location status
         if (typeof locations !== 'undefined' && locations && typeof activeLocationId !== 'undefined') {
@@ -1877,7 +1879,218 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (btnAccountBusiness) {
     btnAccountBusiness.addEventListener('click', () => {
+      localStorage.setItem(getScopedKey('cady-account-type'), 'business');
       updateFormStep(1);
+    });
+  }
+
+  function syncDashboardViews() {
+    const accountType = localStorage.getItem(getScopedKey('cady-account-type')) || 'business';
+    const indivView = document.getElementById('dashboard-view-individual');
+    const bizView = document.getElementById('dashboard-view-business');
+    const gridSection = document.getElementById('completed-dashboard-grid-section');
+
+    const container = document.getElementById('onboarding-page-container');
+    const isCompleted = container && container.classList.contains('onboarding-completed');
+
+    if (isCompleted) {
+      if (gridSection) gridSection.style.display = 'block';
+      if (accountType === 'individual') {
+        if (indivView) indivView.classList.remove('hidden');
+        if (bizView) bizView.classList.add('hidden');
+      } else {
+        if (bizView) bizView.classList.remove('hidden');
+        if (indivView) indivView.classList.add('hidden');
+      }
+    } else {
+      if (gridSection) gridSection.style.display = 'none';
+      if (indivView) indivView.classList.add('hidden');
+      if (bizView) bizView.classList.add('hidden');
+    }
+  }
+
+  // Individual Cards Action Listeners
+  const cardIndivCady = document.getElementById('card-indiv-cady');
+  if (cardIndivCady) {
+    cardIndivCady.addEventListener('click', () => {
+      openModal(document.getElementById('modal-cady-profile'));
+    });
+  }
+
+  const btnCloseCadyModal = document.getElementById('btn-close-cady-modal');
+  const btnCloseCadyPopup = document.getElementById('btn-close-cady-popup');
+  const modalCadyProfile = document.getElementById('modal-cady-profile');
+  if (btnCloseCadyModal) {
+    btnCloseCadyModal.addEventListener('click', () => closeModal(modalCadyProfile));
+  }
+  if (btnCloseCadyPopup) {
+    btnCloseCadyPopup.addEventListener('click', () => closeModal(modalCadyProfile));
+  }
+
+  const cardIndivDaily = document.getElementById('card-indiv-daily');
+  if (cardIndivDaily) {
+    cardIndivDaily.addEventListener('click', (e) => {
+      const trackList = (playlistSongs && playlistSongs.length > 0) ? playlistSongs : workspaceSongs;
+      if (trackList && trackList.length > 0) {
+        const randomTrack = trackList[Math.floor(Math.random() * trackList.length)];
+        playPlaylistTrack(randomTrack);
+        showToast("Playing Daily Beat", `Now playing: ${randomTrack.title} by ${randomTrack.artist}`, "success");
+      } else {
+        showToast("No Tracks Available", "Try generating some tracks first.", "warning");
+      }
+    });
+  }
+
+  const cardIndivTop40 = document.getElementById('card-indiv-top40');
+  if (cardIndivTop40) {
+    cardIndivTop40.addEventListener('click', () => {
+      const listEl = document.getElementById('top40-playlist-list');
+      if (listEl) {
+        listEl.innerHTML = '';
+        const trackList = (playlistSongs && playlistSongs.length > 0) ? playlistSongs.slice(0, 10) : workspaceSongs.slice(0, 10);
+        if (trackList.length === 0) {
+          listEl.innerHTML = '<p style="text-align:center; padding:20px; color:var(--color-text-muted);">No tracks in charts yet.</p>';
+        } else {
+          trackList.forEach((track, index) => {
+            const row = document.createElement('div');
+            row.className = 'top40-track-row';
+            row.style.cssText = `
+              display: flex;
+              align-items: center;
+              gap: 12px;
+              padding: 10px 14px;
+              background: rgba(255,255,255,0.02);
+              border: 1px solid rgba(255,255,255,0.05);
+              border-radius: 6px;
+              cursor: pointer;
+              transition: all 0.2s ease;
+              margin-bottom: 6px;
+            `;
+            row.innerHTML = `
+              <span style="font-weight:700; color:var(--color-purple-light); width:20px;">#${index + 1}</span>
+              <div style="flex-grow:1; display:flex; flex-direction:column; min-width:0;">
+                <strong style="color:#fff; font-size:0.88rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${track.title}</strong>
+                <span style="font-size:0.75rem; color:var(--color-text-secondary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${track.artist}</span>
+              </div>
+              <span style="font-size:0.8rem; color:var(--color-text-muted);">${track.duration || '3:00'}</span>
+            `;
+            row.addEventListener('mouseenter', () => {
+              row.style.background = 'rgba(124, 58, 237, 0.08)';
+              row.style.borderColor = 'rgba(124, 58, 237, 0.2)';
+            });
+            row.addEventListener('mouseleave', () => {
+              row.style.background = 'rgba(255,255,255,0.02)';
+              row.style.borderColor = 'rgba(255,255,255,0.05)';
+            });
+            row.addEventListener('click', () => {
+              playPlaylistTrack(track);
+              closeModal(document.getElementById('modal-top40-charts'));
+            });
+            listEl.appendChild(row);
+          });
+        }
+      }
+      openModal(document.getElementById('modal-top40-charts'));
+    });
+  }
+
+  const btnCloseTop40Modal = document.getElementById('btn-close-top40-modal');
+  const btnCloseTop40Popup = document.getElementById('btn-close-top40-popup');
+  const modalTop40Charts = document.getElementById('modal-top40-charts');
+  if (btnCloseTop40Modal) {
+    btnCloseTop40Modal.addEventListener('click', () => closeModal(modalTop40Charts));
+  }
+  if (btnCloseTop40Popup) {
+    btnCloseTop40Popup.addEventListener('click', () => closeModal(modalTop40Charts));
+  }
+
+  // Ambient Vibe Controller buttons inside card
+  document.querySelectorAll('.btn-vibe-pill').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const vibeType = btn.dataset.vibeType;
+      
+      // Update pills UI
+      document.querySelectorAll('.btn-vibe-pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      // Update synth variables
+      if (vibeType === 'calm') {
+        generatedBrandDna.wrm = 90; generatedBrandDna.nrg = 20; generatedBrandDna.soph = 80; generatedBrandDna.bpm = 70;
+      } else if (vibeType === 'flow') {
+        generatedBrandDna.wrm = 70; generatedBrandDna.nrg = 50; generatedBrandDna.soph = 70; generatedBrandDna.bpm = 95;
+      } else if (vibeType === 'drive') {
+        generatedBrandDna.wrm = 30; generatedBrandDna.nrg = 85; generatedBrandDna.soph = 45; generatedBrandDna.bpm = 120;
+      }
+
+      // Update synth master parameters
+      if (synthEngine.updateParameters) {
+        synthEngine.updateParameters();
+      }
+
+      // Play sample tone arpeggio chord for instant acoustic feedback
+      if (!synthEngine.audioCtx) {
+        synthEngine.init();
+      }
+      if (synthEngine.audioCtx) {
+        if (synthEngine.audioCtx.state === 'suspended') {
+          synthEngine.audioCtx.resume();
+        }
+        const now = synthEngine.audioCtx.currentTime;
+        const volume = 0.05;
+        const type = vibeType === 'calm' ? 'sine' : vibeType === 'flow' ? 'triangle' : 'sawtooth';
+        
+        synthEngine.playTone(261.63, now, 0.4, type, volume); // C4
+        synthEngine.playTone(329.63, now + 0.15, 0.4, type, volume); // E4
+        synthEngine.playTone(392.00, now + 0.3, 0.5, type, volume); // G4
+        synthEngine.playTone(523.25, now + 0.45, 0.8, type, volume); // C5
+      }
+
+      showToast("Vibe Shifted", `Workspace synthesized to ${vibeType.toUpperCase()} preset (${generatedBrandDna.bpm} BPM).`, "success");
+    });
+  });
+
+  // Business Cards Action Listeners
+  const cardBizAdaptive = document.getElementById('card-biz-adaptive');
+  if (cardBizAdaptive) {
+    cardBizAdaptive.addEventListener('click', () => {
+      const target = document.getElementById('playlist-tracks-body');
+      if (target && typeof target.scrollIntoView === 'function') {
+        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+  }
+
+  const cardBizAddStore = document.getElementById('card-biz-addstore');
+  if (cardBizAddStore) {
+    cardBizAddStore.addEventListener('click', () => {
+      openModal(modals.addLocation);
+    });
+  }
+
+  const cardBizCatSpace = document.getElementById('card-biz-catspace');
+  if (cardBizCatSpace) {
+    cardBizCatSpace.addEventListener('click', () => {
+      const card = document.querySelector('.curation-card');
+      if (card) {
+        card.classList.add('expanded');
+        if (typeof card.scrollIntoView === 'function') {
+          card.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    });
+  }
+
+  const cardBizBrandDNA = document.getElementById('card-biz-branddna');
+  if (cardBizBrandDNA) {
+    cardBizBrandDNA.addEventListener('click', () => {
+      const card = document.querySelector('.dna-reveal-card');
+      if (card) {
+        card.classList.add('expanded');
+        if (typeof card.scrollIntoView === 'function') {
+          card.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
     });
   }
 
@@ -4339,6 +4552,7 @@ document.addEventListener('DOMContentLoaded', () => {
           trafficScheduleActive = true;
           localStorage.setItem(getScopedKey('cady-onboarding-completed'), 'true');
           syncCurationVisibility();
+          syncDashboardViews();
           
           // Toggle accordion completed state on container
           const container = document.getElementById('onboarding-page-container');
@@ -10187,6 +10401,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderSidebarLocations();
     renderLocationsList();
     syncBrandNamePlaceholders();
+    syncDashboardViews();
 
     if (typeof loadSongCreatorHistory === 'function') {
       loadSongCreatorHistory();

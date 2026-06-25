@@ -213,6 +213,113 @@
           </div>
         </section>
 
+        <!-- ==========================================
+           15. COMPLETED ONBOARDING FEATURE GRIDS (INDIVIDUAL VS BUSINESS)
+           ========================================== -->
+        <section id="completed-dashboard-grid-section" class="completed-dashboard-grid-section">
+          <!-- INDIVIDUAL VIEW -->
+          <div id="dashboard-view-individual" class="dashboard-view-grid hidden">
+            <h2 class="grid-section-title">Your Personal Listening Space</h2>
+            <div class="dashboard-feature-grid">
+              <!-- Card 1: Meet Cady -->
+              <div class="dash-feature-card" id="card-indiv-cady">
+                <div class="card-glow-bg glow-purple"></div>
+                <div class="card-icon-box">🧠</div>
+                <h3>Meet Cady</h3>
+                <p>Discover how Cady customizes generative listening profiles for your daily focus, relaxation, and energy.</p>
+                <div class="card-action-bar">
+                  <span class="btn-card-action">Read Strategic Profile</span>
+                </div>
+              </div>
+
+              <!-- Card 2: New Music Daily -->
+              <div class="dash-feature-card" id="card-indiv-daily">
+                <div class="card-glow-bg glow-emerald"></div>
+                <div class="card-icon-box">🎵</div>
+                <h3>New Music Daily</h3>
+                <p>Listen to your fresh batch of personalized, AI-generated tracks tailored to your signature mood.</p>
+                <div class="card-action-bar">
+                  <span class="btn-card-action btn-green">Play Today's Mix</span>
+                </div>
+              </div>
+
+              <!-- Card 3: Top 40 Charts -->
+              <div class="dash-feature-card" id="card-indiv-top40">
+                <div class="card-glow-bg glow-amber"></div>
+                <div class="card-icon-box">🏆</div>
+                <h3>Top 40 Charts</h3>
+                <p>Browse the top trending tracks in your personal library and play signature workspace sounds.</p>
+                <div class="card-action-bar">
+                  <span class="btn-card-action btn-amber">Open Top 40 Playlist</span>
+                </div>
+              </div>
+
+              <!-- Card 4: Ambient Vibe Controller -->
+              <div class="dash-feature-card" id="card-indiv-vibe">
+                <div class="card-glow-bg glow-pink"></div>
+                <div class="card-icon-box">🎛️</div>
+                <h3>Ambient Vibe Studio</h3>
+                <p>Change the tempo and acoustic vibe of your generative soundscape instantly.</p>
+                <div class="vibe-control-pills">
+                  <button type="button" class="btn-vibe-pill" data-vibe-type="calm">Calm</button>
+                  <button type="button" class="btn-vibe-pill" data-vibe-type="flow">Flow</button>
+                  <button type="button" class="btn-vibe-pill" data-vibe-type="drive">Drive</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- BUSINESS VIEW -->
+          <div id="dashboard-view-business" class="dashboard-view-grid hidden">
+            <h2 class="grid-section-title">Commercial Music Dashboard</h2>
+            <div class="dashboard-feature-grid">
+              <!-- Card 1: Adaptive Playlist -->
+              <div class="dash-feature-card" id="card-biz-adaptive">
+                <div class="card-glow-bg glow-purple"></div>
+                <div class="card-icon-box">📈</div>
+                <h3>Adaptive Playlist</h3>
+                <p>Learn how Cady's real-time tempo shifting adjusts to your store's hourly traffic and drives engagement.</p>
+                <div class="card-action-bar">
+                  <span class="btn-card-action">View Playlist Manager</span>
+                </div>
+              </div>
+
+              <!-- Card 2: Add Store -->
+              <div class="dash-feature-card" id="card-biz-addstore">
+                <div class="card-glow-bg glow-emerald"></div>
+                <div class="card-icon-box">🏬</div>
+                <h3>Add Retail Store</h3>
+                <p>Register another retail space, map local timezones, and sync custom business operating hours.</p>
+                <div class="card-action-bar">
+                  <span class="btn-card-action btn-green">Register New Location</span>
+                </div>
+              </div>
+
+              <!-- Card 3: Categorize Space -->
+              <div class="dash-feature-card" id="card-biz-catspace">
+                <div class="card-glow-bg glow-amber"></div>
+                <div class="card-icon-box">💼</div>
+                <h3>Categorize Your Space</h3>
+                <p>Update your space category (Hotel, Cafe, Retail) to train Cady's business acoustic mapping models.</p>
+                <div class="card-action-bar">
+                  <span class="btn-card-action btn-amber">Configure Space Profile</span>
+                </div>
+              </div>
+
+              <!-- Card 4: Brand Discovery -->
+              <div class="dash-feature-card" id="card-biz-branddna">
+                <div class="card-glow-bg glow-pink"></div>
+                <div class="card-icon-box">🧬</div>
+                <h3>Brand DNA Mapping</h3>
+                <p>Adjust the sensory sliders of your commercial audio identity (modernism, focus, voice richness).</p>
+                <div class="card-action-bar">
+                  <span class="btn-card-action btn-pink">Map Brand Resonance</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <!-- Dynamic Brand Sonic Identity slider preview box (Reveals after form is filled!) -->
         <section id="generated-dna-section" class="dash-dna-preview-section hidden">
           <div class="dash-card dna-reveal-card expanded">
@@ -1736,6 +1843,70 @@
         <button id="btn-confirm-booking" class="btn-primary w-full" disabled>
           <span>Confirm Selection</span>
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+     16. MEET CADY & TOP 40 PLAYLIST MODALS
+     ========================================== -->
+  <div id="modal-cady-profile" class="modal-overlay">
+    <div class="modal-card" style="max-width: 500px;">
+      <button class="modal-close" id="btn-close-cady-modal" aria-label="Close Modal">&times;</button>
+      <div class="modal-header" style="text-align: center;">
+        <div class="strategist-avatar-wrapper" style="margin: 0 auto 16px auto; width: 80px; height: 80px; position: relative; border-radius: 50%; overflow: hidden;">
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&h=150&q=80" alt="Cady" style="width: 100%; height: 100%; object-fit: cover; border: 2px solid var(--color-purple-primary); border-radius: 50%;">
+          <div class="online-indicator" style="position: absolute; bottom: 4px; right: 4px; width: 12px; height: 12px; background: #10b981; border-radius: 50%; border: 2px solid #000;"></div>
+        </div>
+        <h2>Meet Cady</h2>
+        <p class="strategist-title" style="color: var(--color-purple-light); font-weight: 600; margin-top: 4px;">Your AI Sonic Strategist</p>
+      </div>
+      <div class="modal-body" style="display: flex; flex-direction: column; gap: 16px; margin-top: 16px; color: var(--color-text-secondary); line-height: 1.5; font-size: 0.9rem;">
+         <p>
+           Hello! I'm Cady, your personalized acoustic intelligence assistant. I generate custom ambient soundscapes using mathematical chord structures and neural parameter mappings.
+         </p>
+         <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: var(--border-radius-sm); padding: 14px; display: flex; flex-direction: column; gap: 10px;">
+           <div style="display: flex; align-items: flex-start; gap: 10px;">
+             <span style="font-size: 1.2rem;">⚡</span>
+             <div>
+               <strong style="color: #fff; display: block;">Real-Time Audio Synthesis</strong>
+               Chords are calculated dynamically using Web Audio oscillators for zero buffering and infinite variation.
+             </div>
+           </div>
+           <div style="display: flex; align-items: flex-start; gap: 10px;">
+             <span style="font-size: 1.2rem;">🧘</span>
+             <div>
+               <strong style="color: #fff; display: block;">Mood Alignment</strong>
+               Adjusts frequency densities and scale intervals for study, relaxation, or high energy.
+             </div>
+           </div>
+           <div style="display: flex; align-items: flex-start; gap: 10px;">
+             <span style="font-size: 1.2rem;">📈</span>
+             <div>
+               <strong style="color: #fff; display: block;">Traffic Synchronization</strong>
+               For businesses, matches store foot-traffic to acoustic arousal levels to influence basket size.
+             </div>
+           </div>
+         </div>
+         <button id="btn-close-cady-popup" class="btn-primary w-full" style="margin-top: 10px;">Great, let's play!</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-top40-charts" class="modal-overlay">
+    <div class="modal-card" style="max-width: 550px;">
+      <button class="modal-close" id="btn-close-top40-modal" aria-label="Close Modal">&times;</button>
+      <div class="modal-header">
+        <h2>🏆 Top 40 Personal Charts</h2>
+        <p style="color: var(--color-text-secondary); margin-top: 4px;">The most popular generative tracks in your personal catalog. Click any track to start playing.</p>
+      </div>
+      <div class="modal-body" style="margin-top: 16px;">
+        <div id="top40-playlist-list" style="display: flex; flex-direction: column; gap: 8px; max-height: 350px; overflow-y: auto; padding-right: 4px;">
+          <!-- Dynamic tracks loaded in JS -->
+        </div>
+      </div>
+      <div class="modal-footer" style="margin-top: 16px;">
+        <button id="btn-close-top40-popup" class="btn-secondary w-full">Close Charts</button>
       </div>
     </div>
   </div>
