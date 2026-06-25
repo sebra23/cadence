@@ -5051,6 +5051,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const buttonIconSvg = isCurrent && isPlaylistPlaying ? pauseIconSvg : playIconSvg;
         const buttonTitle = isCurrent && isPlaylistPlaying ? "Pause" : "Play";
 
+        const isAlreadyOwned = ownedSongs.some(s => s.id === track.id || (s.title === track.title && s.artist === track.artist));
+        const heartColor = isAlreadyOwned ? '#f43f5e' : 'var(--color-text-secondary)';
+        const heartClass = isAlreadyOwned ? 'btn-fav-track liked' : 'btn-fav-track';
+        const heartFill = isAlreadyOwned ? '#f43f5e' : 'none';
+        const heartTitle = isAlreadyOwned ? 'Remove from Favourites' : 'Add to Favourites';
+
         row.innerHTML = `
           <td class="col-num">
             <div class="track-index-wrapper">
@@ -5073,8 +5079,8 @@ document.addEventListener('DOMContentLoaded', () => {
           <td class="col-duration">${track.duration || '3:30'}</td>
           <td style="text-align: right; width: 100px; display: table-cell; vertical-align: middle;">
             <div style="display: inline-flex; align-items: center; justify-content: flex-end; gap: 12px; width: 100%;">
-              <button class="btn-fav-track liked" title="Remove from Favourites" style="background: transparent; border: none; color: #f43f5e; cursor: pointer; padding: 6px; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s;">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="#f43f5e" stroke="currentColor" stroke-width="2">
+              <button class="${heartClass}" title="${heartTitle}" style="background: transparent; border: none; color: ${heartColor}; cursor: pointer; padding: 6px; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="${heartFill}" stroke="currentColor" stroke-width="2">
                   <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
                 </svg>
               </button>
@@ -8127,10 +8133,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (btnRegen) btnRegen.classList.add('hidden');
       }
 
-      // Hide or show B2B category filters for Cady Radio
+      // Hide or show B2B category filters for Cady Radio or tag playlists
       const filtersEl = document.querySelector('.library-category-filters');
       if (filtersEl) {
-        if (playlistId.startsWith('cady-')) {
+        const isTagPlay = (playlistId === 'calm' || playlistId === 'flow' || playlistId === 'drive' || playlistId === 'after');
+        if (playlistId.startsWith('cady-') || isTagPlay) {
           filtersEl.classList.add('hidden');
         } else {
           filtersEl.classList.remove('hidden');
