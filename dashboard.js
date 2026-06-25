@@ -4818,21 +4818,16 @@ document.addEventListener('DOMContentLoaded', () => {
       // Apply space profile skews
       if (spaceProfile === 'hotel') {
         bpm = Math.round(bpm * 0.92);
-        title = title + " (Lounge Mix)";
         artist = `Hotel Lounge Project ft. ${artist}`;
       } else if (spaceProfile === 'restaurant') {
         bpm = Math.round(bpm * 0.96);
-        title = title + " (Bistro Edit)";
         artist = `Bistro Jazz Syndicate ft. ${artist}`;
       } else if (spaceProfile === 'retailer') {
         bpm = Math.round(bpm * 1.06);
-        title = title + " (Retail Mix)";
         artist = `Retail Beats Collective ft. ${artist}`;
       } else if (spaceProfile === 'private') {
-        title = title + " (Personal Mix)";
         artist = `Lo-Fi Study Club ft. ${artist}`;
       } else if (spaceProfile === 'public') {
-        title = title + " (Ambient Edit)";
         artist = `Ambient Space Group ft. ${artist}`;
         if (category === 'calm' || category === 'after') {
           bpm = Math.max(68, Math.min(bpm, 80));
@@ -4900,21 +4895,16 @@ document.addEventListener('DOMContentLoaded', () => {
       // Apply space profile skews
       if (spaceProfile === 'hotel') {
         bpm = Math.round(bpm * 0.92);
-        title = title + " (Lounge Mix)";
         artist = `Hotel Lounge Project ft. ${artist}`;
       } else if (spaceProfile === 'restaurant') {
         bpm = Math.round(bpm * 0.96);
-        title = title + " (Bistro Edit)";
         artist = `Bistro Jazz Syndicate ft. ${artist}`;
       } else if (spaceProfile === 'retailer') {
         bpm = Math.round(bpm * 1.06);
-        title = title + " (Retail Mix)";
         artist = `Retail Beats Collective ft. ${artist}`;
       } else if (spaceProfile === 'private') {
-        title = title + " (Personal Mix)";
         artist = `Lo-Fi Study Club ft. ${artist}`;
       } else if (spaceProfile === 'public') {
-        title = title + " (Ambient Edit)";
         artist = `Ambient Space Group ft. ${artist}`;
         if (category === 'calm' || category === 'after') {
           bpm = Math.max(68, Math.min(bpm, 80));
@@ -10380,7 +10370,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Force clear & reload tag playlists from seed file once
-    const clearKey = 'cady-tag-playlists-cleared-v3';
+    const clearKey = 'cady-tag-playlists-cleared-v4';
     const categories = ['calm', 'flow', 'drive', 'after'];
     const forceReload = localStorage.getItem(clearKey) !== 'true';
     categories.forEach(cat => {
