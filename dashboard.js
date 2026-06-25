@@ -11064,6 +11064,54 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  function loadFallbackRadioTracks() {
+    const stations = [
+      { id: 'cady-chill', name: 'Cady Chill' },
+      { id: 'cady-mood-booster', name: 'Cady Mood Booster' },
+      { id: 'cady-happy-hits', name: 'Cady Happy Hits' },
+      { id: 'cady-good-vibes', name: 'Cady Good Vibes' },
+      { id: 'cady-feelin-good', name: 'Cady Feelin’ Good' },
+      { id: 'cady-happy-beats', name: 'Cady Happy Beats' }
+    ];
+    const trackNames = [
+      ["Catching The Sun", "Glitter In The Speakers", "Breezy Company", "Technicolor Weekend", "Neon Daylight", "Quiet Morning", "Ethereal Path", "Study Session", "Vinyl Crackle", "Dreamy Afternoon"],
+      ["Confetti Skies", "Golden Hour Glow", "Lemonade Afternoon", "Gravity Free", "Sunny Horizon", "Morning Boost", "Self Belief", "Commute Groove", "Groovy Bassline", "Positive Energy"],
+      ["Electric Heartbeat", "Speaker Shine", "Summer Daylight", "Euphoric Beats", "Dancing Clouds", "Joyful Chorus", "Sparkling Arpeggio", "Summer Vibe", "Anthemic Melody", "Power Pop Hook"],
+      ["Acoustic Breeze", "Sunset Pluck", "Tropical Shaker", "Warm Camaraderie", "Weekend Picnic", "Sunkissed Guitar", "Positive Outlook", "Picnic Plucks", "Mellow Acoustic", "Campfire Groove"],
+      ["Neo Disco", "Funky Groove", "Self Love Rhythm", "Horn Strums", "Get Ready Beat", "Nu Disco Dance", "Rhythmic Horns", "Cooking Rhythm", "Funk Bass Pluck", "Groovy Times"],
+      ["EDM Energy", "House Structure", "Future Synths", "Four on Floor", "Party Release", "Workout Future", "EDM Dance Beat", "Shimmering Synth", "Pre Party Rhythm", "Celebration House"]
+    ];
+    const localMp3s = ["Apple_tune.mp3", "Proof of Sweat.mp3", "Starbucks_tune.mp3", "swarowski.mp3"];
+    
+    const fallbackList = [];
+    let trackIdCounter = 10000;
+    
+    stations.forEach((station, sIdx) => {
+      const names = trackNames[sIdx];
+      names.forEach((name, nIdx) => {
+        const category = ['calm', 'flow', 'drive', 'after'][(sIdx + nIdx) % 4];
+        const bpm = 70 + (nIdx * 5);
+        const hash = sIdx * 10 + nIdx;
+        fallbackList.push({
+          id: 'ai-track-fallback-' + trackIdCounter++,
+          playlist_id: station.id,
+          title: name,
+          artist: 'Cady AI Radio',
+          album: station.name,
+          category: category,
+          bpm: bpm,
+          duration: "3:15",
+          durationSeconds: 195,
+          audioUrl: localMp3s[hash % localMp3s.length],
+          coverUrl: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=150&auto=format&fit=crop',
+          isFromRadioArchive: true
+        });
+      });
+    });
+    
+    return fallbackList;
+  }
+
   function fetchSeedTracks() {
     fetch('cady_radio_tracks_seed.json')
       .then(res => {
@@ -11090,7 +11138,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       })
       .catch(err => {
-        console.log("No cady_radio_tracks_seed.json found or failed to load. Using localStorage only.", err.message);
+        console.log("No cady_radio_tracks_seed.json found or failed to load. Using local fallback tracks.", err.message);
+        if (cadyRadioTracks.length === 0) {
+          cadyRadioTracks = loadFallbackRadioTracks();
+          saveCadyRadioTracks();
+          renderRadioPlaylists();
+          reseedTagPlaylistsFromJSON(false);
+          renderLibraryTracks();
+        }
       });
   }
 
