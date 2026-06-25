@@ -10581,7 +10581,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const deleteBtn = document.getElementById('btn-sheet-delete');
     if (deleteBtn) {
-      const isTagPlay = (activeDetailPlaylist === 'calm' || activeDetailPlaylist === 'flow' || activeDetailPlaylist === 'drive' || activeDetailPlaylist === 'after');
+      const detailTitle = document.getElementById('detail-playlist-title')?.textContent?.trim()?.toLowerCase() || '';
+      const isTagPlay = (activeDetailPlaylist === 'calm' || activeDetailPlaylist === 'flow' || activeDetailPlaylist === 'drive' || activeDetailPlaylist === 'after')
+        || (detailTitle === 'morning calm' || detailTitle === 'midday flow' || detailTitle === 'peak drive' || detailTitle === 'after hours');
       if ((track.playlist_id && track.playlist_id.startsWith('cady-')) || isTagPlay) {
         deleteBtn.classList.remove('hidden');
         const span = deleteBtn.querySelector('span');
@@ -10722,14 +10724,23 @@ document.addEventListener('DOMContentLoaded', () => {
   if (sheetDeleteBtn) {
     sheetDeleteBtn.addEventListener('click', () => {
       if (activeSheetTrack) {
-        const isTagPlay = (activeDetailPlaylist === 'calm' || activeDetailPlaylist === 'flow' || activeDetailPlaylist === 'drive' || activeDetailPlaylist === 'after');
+        const detailTitle = document.getElementById('detail-playlist-title')?.textContent?.trim()?.toLowerCase() || '';
+        const isTagPlay = (activeDetailPlaylist === 'calm' || activeDetailPlaylist === 'flow' || activeDetailPlaylist === 'drive' || activeDetailPlaylist === 'after')
+          || (detailTitle === 'morning calm' || detailTitle === 'midday flow' || detailTitle === 'peak drive' || detailTitle === 'after hours');
         if (isTagPlay) {
+          let activeCat = activeDetailPlaylist;
+          if (activeCat !== 'calm' && activeCat !== 'flow' && activeCat !== 'drive' && activeCat !== 'after') {
+            if (detailTitle === 'morning calm') activeCat = 'calm';
+            else if (detailTitle === 'midday flow') activeCat = 'flow';
+            else if (detailTitle === 'peak drive') activeCat = 'drive';
+            else if (detailTitle === 'after hours') activeCat = 'after';
+          }
           if (confirm(`Remove "${activeSheetTrack.title}" from this playlist?`)) {
-            const key = getScopedKey('cady-tag-playlist-' + activeDetailPlaylist);
+            const key = getScopedKey('cady-tag-playlist-' + activeCat);
             let saved = JSON.parse(localStorage.getItem(key)) || [];
             saved = saved.filter(t => t.title !== activeSheetTrack.title || t.artist !== activeSheetTrack.artist);
             localStorage.setItem(key, JSON.stringify(saved));
-            showToast("Track Removed", `"${activeSheetTrack.title}" removed from ${activeDetailPlaylist.toUpperCase()} playlist.`, "success");
+            showToast("Track Removed", `"${activeSheetTrack.title}" removed from ${activeCat.toUpperCase()} playlist.`, "success");
             renderLibraryTracks();
           }
         } else {
