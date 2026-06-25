@@ -1346,7 +1346,11 @@ document.addEventListener('DOMContentLoaded', () => {
     
     extractBrandName();
     loadUserData();
-    switchPage('dashboard');
+    if (accType === 'individual') {
+      switchPage('library');
+    } else {
+      switchPage('dashboard');
+    }
     
     // Play transition animations
     loginOverlay.style.opacity = '0';
