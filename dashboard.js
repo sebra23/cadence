@@ -4779,169 +4779,61 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error("Failed to load persona for mock playlist", e);
     }
 
-    const rawSongs = [
-      // Morning Calm (12 songs)
-      { id: 1, title: "Morning Calm #01", bpm: 68, category: "calm", artist: "Brian Eno", album: "First Light", basePrompt: "Gentle ambient intro, soft Rhodes piano melody emerging, minimal brush drums at 0:30. Warm, inviting, like the first light of day.", imageId: "1518241353330-0f7941c2d9b5" },
-      { id: 2, title: "Morning Calm #02", bpm: 72, category: "calm", artist: "Hammock", album: "Quiet Reflections", basePrompt: "Acoustic guitar + Rhodes duet, soft bassline, no drums for first 45 seconds. Peaceful, contemplative.", imageId: "1447752875215-b2761acb3c5d" },
-      { id: 3, title: "Morning Calm #03", bpm: 65, category: "calm", artist: "Ludovico Einaudi", album: "Zen Spaces", basePrompt: "Solo Rhodes piano piece, reverb-heavy, sparse. Meditation-like quality. Single note melody with space between phrases.", imageId: "1497250681960-ef046c08a56e" },
-      { id: 4, title: "Morning Calm #04", bpm: 76, category: "calm", artist: "Marconi Union", album: "Floating World", basePrompt: "Warm synth pad drone, Rhodes melody floating on top, brushed cymbals. Ethereal, floating.", imageId: "1506126613408-eca07ce68773" },
-      { id: 5, title: "Morning Calm #05", bpm: 70, category: "calm", artist: "Bill Evans Trio", album: "Morning Espresso", basePrompt: "Upright bass walking line, soft Rhodes chords, minimal percussion. Jazz-lounge feel, very relaxed.", imageId: "1485182708500-e8f17318ac7c" },
-      { id: 6, title: "Morning Calm #06", bpm: 74, category: "calm", artist: "Olafur Arnalds", album: "Cinematic Dawn", basePrompt: "Cello + Rhodes harmony, no percussion for 60 seconds, then gentle kick enters. Cinematic warmth.", imageId: "1464822759023-fed622ff2c3b" },
-      { id: 7, title: "Morning Calm #07", bpm: 66, category: "calm", artist: "Helios", album: "Nature Echoes", basePrompt: "Soft electric piano, nylon guitar textures, ambient bird-like synth sounds. Nature-inspired calm.", imageId: "1441974231531-c6227db76b6e" },
-      { id: 8, title: "Morning Calm #08", bpm: 78, category: "calm", artist: "Goldmund", album: "Analog Waves", basePrompt: "Rhodes piano with tape delay effect, subtle vinyl crackle texture, warm bass. Nostalgic, analog feel.", imageId: "1470225620780-dba8ba36b745" },
-      { id: 9, title: "Morning Calm #09", bpm: 71, category: "calm", artist: "Eluvium", album: "Hypnotic Dream", basePrompt: "Minimalist piano pattern, single repeating Rhodes motif that slowly evolves. Meditative, hypnotic.", imageId: "1518609878373-06d740f60d8b" },
-      { id: 10, title: "Morning Calm #10", bpm: 75, category: "calm", artist: "Brian Eno", album: "Acoustic Shadows", basePrompt: "Soft Rhodes + ambient pad, distant reverberated percussion, like music heard from another room.", imageId: "1501854140801-50d01698950b" },
-      { id: 11, title: "Morning Calm #11", bpm: 67, category: "calm", artist: "Olafur Arnalds", album: "Zen Spaces", basePrompt: "Solo instrument (Rhodes), very slow melody, lots of space between notes. Contemplative, sparse.", imageId: "1475113548554-5a36f1f523d6" },
-      { id: 12, title: "Morning Calm #12", bpm: 73, category: "calm", artist: "Helios", album: "First Light", basePrompt: "Warm Rhodes chords, soft brushed snare, bass that pulses gently. Comfortable, like a favorite sweater.", imageId: "1507525428034-b723cf961d3e" },
-
-      // Midday Flow (14 songs)
-      { id: 13, title: "Midday Flow #01", bpm: 88, category: "flow", artist: "Khruangbin", album: "Urban Grooves", basePrompt: "Confident groove, Rhodes piano theme, walking bass, light percussion. Effortless, smooth.", imageId: "1488646953014-85cb44e25828" },
-      { id: 14, title: "Midday Flow #02", bpm: 92, category: "flow", artist: "Toro y Moi", album: "Modern Sun", basePrompt: "Upbeat lounge, Rhodes + electric guitar interplay, four-on-the-floor kick, hi-hat. Positive momentum.", imageId: "1528605248644-14dd04022da1" },
-      { id: 15, title: "Midday Flow #03", bpm: 86, category: "flow", artist: "Leon Bridges", album: "Approachable Soul", basePrompt: "Soulful Rhodes chords, funky bassline, claps on 2 and 4. Warm, human, approachable.", imageId: "1511671782779-c97d3d27a1d4" },
-      { id: 16, title: "Midday Flow #04", bpm: 95, category: "flow", artist: "Tycho", album: "Forward Horizons", basePrompt: "Bright Rhodes melody, driving bass, shakers and light percussion. Forward-moving, optimistic.", imageId: "1500485035595-cbe6f645feb1" },
-      { id: 17, title: "Midday Flow #05", bpm: 90, category: "flow", artist: "Men I Trust", album: "Lounge Jazz", basePrompt: "Jazzy Rhodes improv over steady groove, upright bass, brushed drums with occasional ride cymbal.", imageId: "1459749411175-04bf5292ceea" },
-      { id: 18, title: "Midday Flow #06", bpm: 87, category: "flow", artist: "Poolside", album: "Modern Sun", basePrompt: "Rhodes + soft synth pad layers, gentle electronic beat underneath. Modern lounge feel.", imageId: "1501386761578-eac5c94b800a" },
-      { id: 19, title: "Midday Flow #07", bpm: 93, category: "flow", artist: "Khruangbin", album: "Urban Grooves", basePrompt: "Funk-influenced Rhodes, slap bass, tight drum groove. Energetic but sophisticated.", imageId: "1514525253161-7a46d19cd819" },
-      { id: 20, title: "Midday Flow #08", bpm: 89, category: "flow", artist: "Real Estate", album: "Story Arc", basePrompt: "Melodic Rhodes theme that develops over 2 minutes, bass and drums build gradually. Story arc.", imageId: "1490730141103-6cac27aaab94" },
-      { id: 21, title: "Midday Flow #09", bpm: 96, category: "flow", artist: "Toro y Moi", album: "Latin Montunos", basePrompt: "Latin-influenced percussion, Rhodes montuno patterns, warm bass. Exotic, worldly sophistication.", imageId: "1506157786151-b8491531f063" },
-      { id: 22, title: "Midday Flow #10", bpm: 91, category: "flow", artist: "Tycho", album: "Forward Horizons", basePrompt: "Rhodes piano with delay effects, syncopated bass, light electronic beat. Contemporary, fresh.", imageId: "1518495973542-4542c06a5843" },
-      { id: 23, title: "Midday Flow #11", bpm: 85, category: "flow", artist: "Mac DeMarco", album: "Intimate Grooves", basePrompt: "Minimal Rhodes + bass duo, very few drums. Intimate but with forward motion. Less is more.", imageId: "1495446815901-a7297e633e8d" },
-      { id: 24, title: "Midday Flow #12", bpm: 94, category: "flow", artist: "Poolside", album: "Modern Sun", basePrompt: "Rhodes over house-inspired beat, filtered synth pads, warm production. Danceable but refined.", imageId: "1470229722913-7c0e2dbbafd3" },
-      { id: 25, title: "Midday Flow #13", bpm: 88, category: "flow", artist: "Men I Trust", album: "Lounge Jazz", basePrompt: "Call-and-response between Rhodes and bass, light percussion fill between phrases. Conversational.", imageId: "1483821838846-899ee6942741" },
-      { id: 26, title: "Midday Flow #14", bpm: 98, category: "flow", artist: "Real Estate", album: "Story Arc", basePrompt: "Bright, major-key Rhodes melody, driving groove, optimistic energy. Peak of midday optimism.", imageId: "1473496191134-8b59079e54a5" },
-
-      // Peak Drive (10 songs)
-      { id: 27, title: "Peak Drive #01", bpm: 110, category: "drive", artist: "Daft Punk", album: "Ignition", basePrompt: "Driving lounge beat, Rhodes piano stabs, punchy bass, energetic but refined. Four-on-the-floor.", imageId: "1514525253161-7a46d19cd819" },
-      { id: 28, title: "Peak Drive #02", bpm: 115, category: "drive", artist: "KAYTRANADA", album: "Club Fever", basePrompt: "Upbeat nu-disco, Rhodes chords, funky bassline, hand percussion. Dance-floor energy, retail polish.", imageId: "1470225620780-dba8ba36b745" },
-      { id: 29, title: "Peak Drive #03", bpm: 108, category: "drive", artist: "Disclosure", album: "Velocity Shift", basePrompt: "Groovy house beat, Rhodes melody, warm synth stabs, driving bass. Momentum without aggression.", imageId: "1511671782779-c97d3d27a1d4" },
-      { id: 30, title: "Peak Drive #04", bpm: 118, category: "drive", artist: "Empire of the Sun", album: "Peak Flow", basePrompt: "Fast-paced lounge, Rhodes running melody, tight rhythm section. Efficient, purposeful energy.", imageId: "1506157786151-b8491531f063" },
-      { id: 31, title: "Peak Drive #05", bpm: 112, category: "drive", artist: "Chvrches", album: "Electric Heartbeat", basePrompt: "Rhodes over breakbeat-influenced drums, sub-bass, filtered pads. Edgy but sophisticated.", imageId: "1518495973542-4542c06a5843" },
-      { id: 32, title: "Peak Drive #06", bpm: 105, category: "drive", artist: "Daft Punk", album: "Ignition", basePrompt: "Disco-inspired Rhodes, walking bass, four-on-the-floor, string stabs. Retro energy, modern production.", imageId: "1488646953014-85cb44e25828" },
-      { id: 33, title: "Peak Drive #07", bpm: 116, category: "drive", artist: "KAYTRANADA", album: "Club Fever", basePrompt: "High-energy Rhodes, driving electronic beat, side-chained pads. Maximum tempo, still refined.", imageId: "1528605248644-14dd04022da1" },
-      { id: 34, title: "Peak Drive #08", bpm: 109, category: "drive", artist: "Disclosure", album: "Velocity Shift", basePrompt: "Funk-house hybrid, Rhodes + bass locked groove, energetic percussion. Body-moving energy.", imageId: "1490730141103-6cac27aaab94" },
-      { id: 35, title: "Peak Drive #09", bpm: 114, category: "drive", artist: "Justice", album: "High Energy", basePrompt: "Rhodes piano riff, deep house beat, warm bass, atmospheric pads. Club energy, boutique polish.", imageId: "1500485035595-cbe6f645feb1" },
-      { id: 36, title: "Peak Drive #10", bpm: 120, category: "drive", artist: "Justice", album: "High Energy", basePrompt: "Maximum energy, fast Rhodes runs, driving beat, punchy bass. The brand at full throttle. Still no aggression.", imageId: "1473496191134-8b59079e54a5" },
-
-      // After Hours (14 songs)
-      { id: 37, title: "After Hours #01", bpm: 78, category: "after", artist: "Sade", album: "Late Lounge", basePrompt: "Intimate Rhodes ballad, soft upright bass, minimal brushed drums. Candlelight elegance.", imageId: "1514525253161-7a46d19cd819" },
-      { id: 38, title: "After Hours #02", bpm: 82, category: "after", artist: "Cigarettes After Sex", album: "Midnight Whispers", basePrompt: "Sultry lounge, Rhodes with subtle tremolo, warm bass, soft beat. Seductive, sophisticated.", imageId: "1518241353330-0f7941c2d9b5" },
-      { id: 39, title: "After Hours #03", bpm: 75, category: "after", artist: "Miles Davis", album: "Smoky Jazz", basePrompt: "Late-night jazz, Rhodes improv, walking bass, ride cymbal. smoky club atmosphere.", imageId: "1459749411175-04bf5292ceea" },
-      { id: 40, title: "After Hours #04", bpm: 80, category: "after", artist: "Bonobo", album: "Cinematic Evening", basePrompt: "Rhodes + soft strings pad, no drums for first 60s, then gentle groove enters. Cinematic.", imageId: "1506126613408-eca07ce68773" },
-      { id: 41, title: "After Hours #05", bpm: 73, category: "after", artist: "Zero 7", album: "Velvet Shadows", basePrompt: "Minimal Rhodes, deep bass, reverb-drenched atmosphere. Spacious, contemplative luxury.", imageId: "1447752875215-b2761acb3c5d" },
-      { id: 42, title: "After Hours #06", bpm: 85, category: "after", artist: "Cigarettes After Sex", album: "Midnight Whispers", basePrompt: "Sophisticated groove, Rhodes stabs, funky bass, understated drums. Confident evening energy.", imageId: "1470229722913-7c0e2dbbafd3" },
-      { id: 43, title: "After Hours #07", bpm: 76, category: "after", artist: "Bill Evans Trio", album: "Smoky Jazz", basePrompt: "Solo Rhodes with heavy reverb and delay, like a jazz pianist in an empty room. Vulnerable, beautiful.", imageId: "1497250681960-ef046c08a56e" },
-      { id: 44, title: "After Hours #08", bpm: 83, category: "after", artist: "Sade", album: "Late Lounge", basePrompt: "Rhodes + wordless female vocal textures, warm bass, soft beat. Ethereal, human warmth.", imageId: "1483821838846-899ee6942741" },
-      { id: 45, title: "After Hours #09", bpm: 74, category: "after", artist: "Thievery Corporation", album: "Bossa Nova", basePrompt: "Bossa-nova influenced, Rhodes with nylon guitar textures, soft percussion. Global sophistication.", imageId: "1507525428034-b723cf961d3e" },
-      { id: 46, title: "After Hours #10", bpm: 87, category: "after", artist: "Bonobo", album: "Cinematic Evening", basePrompt: "Driving but smooth, Rhodes over soft house beat, warm pads. Evening momentum without rush.", imageId: "1490730141103-6cac27aaab94" },
-      { id: 47, title: "After Hours #11", bpm: 77, category: "after", artist: "Miles Davis", album: "Smoky Jazz", basePrompt: "Rhodes + soft saxophone (if persona allows), jazz quartet feel. Classic, timeless.", imageId: "1485182708500-e8f17318ac7c" },
-      { id: 48, title: "After Hours #12", bpm: 81, category: "after", artist: "John Coltrane", album: "Nostalgic Tapes", basePrompt: "Melancholic but beautiful Rhodes melody, sparse arrangement. Emotional depth.", imageId: "1495446815901-a7297e633e8d" },
-      { id: 49, title: "After Hours #13", bpm: 79, category: "after", artist: "Zero 7", album: "Velvet Shadows", basePrompt: "Rhodes with tape saturation, vinyl texture, nostalgic warmth. Memory-laden, comforting.", imageId: "1475113548554-5a36f1f523d6" },
-      { id: 50, title: "After Hours #14", bpm: 84, category: "after", artist: "Air", album: "Coming Home", basePrompt: "The brand's most beautiful track. Rhodes theme that feels like coming home. Perfect ending note.", imageId: "1501854140801-50d01698950b" }
-    ];
-
     const spaceProfile = localStorage.getItem(getScopedKey('cady-space-profile')) || 'other';
 
-    const mappedRawSongs = rawSongs.map(song => {
-      const promptText = `brand="${brand}" + prompt="[PERSONA: ${currentPersonaId}] ${song.basePrompt}"`;
-      
-      let title = song.title;
-      if (prompt && song.id % 3 === 0) {
-        title = title + " (Refined Mix)";
-      }
-
-      // Apply space profile skews
-      let bpm = song.bpm;
-      let artist = song.artist;
-      
-      if (spaceProfile === 'hotel') {
-        bpm = Math.round(song.bpm * 0.92);
-        title = title + " (Lounge Mix)";
-        artist = `Hotel Lounge Project ft. ${song.artist}`;
-      } else if (spaceProfile === 'restaurant') {
-        bpm = Math.round(song.bpm * 0.96);
-        title = title + " (Bistro Edit)";
-        artist = `Bistro Jazz Syndicate ft. ${song.artist}`;
-      } else if (spaceProfile === 'retailer') {
-        bpm = Math.round(song.bpm * 1.06);
-        title = title + " (Retail Mix)";
-        artist = `Retail Beats Collective ft. ${song.artist}`;
-      } else if (spaceProfile === 'private') {
-        title = title + " (Personal Mix)";
-        artist = `Lo-Fi Study Club ft. ${song.artist}`;
-      } else if (spaceProfile === 'public') {
-        title = title + " (Ambient Edit)";
-        artist = `Ambient Space Group ft. ${song.artist}`;
-        if (song.category === 'calm' || song.category === 'after') {
-          bpm = Math.max(68, Math.min(bpm, 80));
-        } else {
-          bpm = Math.max(85, Math.min(bpm, 105));
-        }
-      }
-
-      // 3 minutes 30 seconds static length
-      const durationSeconds = 210;
-      const durationString = "3:30";
-
-      const sunoUrls = ["Apple_tune.mp3", "Proof of Sweat.mp3", "Starbucks_tune.mp3", "swarowski.mp3"];
-      const audioUrl = sunoUrls[(song.id - 1) % sunoUrls.length];
-      return {
-        id: song.id,
-        title: title,
-        artist: artist,
-        album: song.album + " " + song.category.charAt(0).toUpperCase() + song.category.slice(1),
-        category: song.category,
-        bpm: bpm,
-        duration: durationString,
-        durationSeconds: durationSeconds,
-        prompt: promptText,
-        audioUrl: audioUrl,
-        coverUrl: `https://images.unsplash.com/photo-${song.imageId}?q=80&w=150&auto=format&fit=crop`
-      };
-    });
-
-    // Retrieve all successfully generated songs from the Cady Radio archive
-    const radioArchiveTracks = (typeof cadyRadioTracks !== 'undefined' ? cadyRadioTracks : [])
+    // Retrieve all tracks loaded from cady_radio_tracks_seed.json
+    const seedPool = (typeof cadyRadioTracks !== 'undefined' ? cadyRadioTracks : [])
       .filter(t => t && t.audioUrl && !t.generating);
 
-    const mappedRadioSongs = radioArchiveTracks.map((t, idx) => {
-      // Determine category for this radio track
-      let category = 'flow';
-      if (t.category && (t.category === 'calm' || t.category === 'flow' || t.category === 'drive' || t.category === 'after')) {
-        category = t.category;
-      } else {
-        const pid = (t.playlist_id || "").toLowerCase();
-        if (pid.includes('chill') || pid.includes('peace') || pid.includes('calm') || pid.includes('ambient') || pid.includes('relax') || pid.includes('focus')) {
-          category = 'calm';
-        } else if (pid.includes('boost') || pid.includes('happy') || pid.includes('workout') || pid.includes('energy') || pid.includes('drive') || pid.includes('party')) {
-          category = 'drive';
-        } else if (pid.includes('groove') || pid.includes('flow') || pid.includes('vibes') || pid.includes('good') || pid.includes('feelin')) {
-          category = 'flow';
-        } else if (pid.includes('late') || pid.includes('night') || pid.includes('after') || pid.includes('sleep') || pid.includes('cozy')) {
-          category = 'after';
-        } else {
-          // Fallback based on BPM range
-          const bpmVal = t.bpm || 90;
-          if (bpmVal < 75) category = 'calm';
-          else if (bpmVal >= 75 && bpmVal < 90) category = 'after';
-          else if (bpmVal >= 90 && bpmVal < 105) category = 'flow';
-          else category = 'drive';
-        }
+    // Dynamic BPM category classifier based on app guidelines
+    function getCategoryByBpm(bpm, title = "") {
+      const val = parseInt(bpm) || 90;
+      if (val < 65) return 'calm';
+      if (val > 120) return 'drive';
+      
+      if (val >= 65 && val <= 71) return 'calm';
+      if (val >= 72 && val <= 78) {
+        let hash = 0;
+        for (let i = 0; i < title.length; i++) hash += title.charCodeAt(i);
+        return (hash % 2 === 0) ? 'calm' : 'after';
       }
+      if (val >= 79 && val <= 84) return 'after';
+      if (val >= 85 && val <= 100) return 'flow';
+      if (val >= 101 && val <= 104) {
+        let hash = 0;
+        for (let i = 0; i < title.length; i++) hash += title.charCodeAt(i);
+        return (hash % 2 === 0) ? 'flow' : 'drive';
+      }
+      if (val >= 105 && val <= 120) return 'drive';
+      return 'flow';
+    }
 
-      // Build customized title, artist and BPM based on Step 1 & Step 2 inputs
+    // Build the mapped list of tracks from the loaded seed pool
+    const mappedSongs = seedPool.map((t, idx) => {
+      const category = getCategoryByBpm(t.bpm, t.title);
       let title = t.title;
       let bpm = t.bpm || 90;
       let artist = t.artist || "Cady AI";
 
-      // Do NOT modify title and artist for archive tracks, as requested by the user.
-      // We can still apply spaceProfile skews to BPM.
+      // Apply space profile skews
       if (spaceProfile === 'hotel') {
         bpm = Math.round(bpm * 0.92);
+        title = title + " (Lounge Mix)";
+        artist = `Hotel Lounge Project ft. ${artist}`;
       } else if (spaceProfile === 'restaurant') {
         bpm = Math.round(bpm * 0.96);
+        title = title + " (Bistro Edit)";
+        artist = `Bistro Jazz Syndicate ft. ${artist}`;
       } else if (spaceProfile === 'retailer') {
         bpm = Math.round(bpm * 1.06);
+        title = title + " (Retail Mix)";
+        artist = `Retail Beats Collective ft. ${artist}`;
+      } else if (spaceProfile === 'private') {
+        title = title + " (Personal Mix)";
+        artist = `Lo-Fi Study Club ft. ${artist}`;
       } else if (spaceProfile === 'public') {
+        title = title + " (Ambient Edit)";
+        artist = `Ambient Space Group ft. ${artist}`;
         if (category === 'calm' || category === 'after') {
           bpm = Math.max(68, Math.min(bpm, 80));
         } else {
@@ -4951,7 +4843,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const promptText = `brand="${brand}" + prompt="[PERSONA: ${currentPersonaId}] Radio Archive: ${t.prompt || t.title}"`;
       return {
-        id: 2000 + idx, // Unique starting IDs for radio tracks
+        id: 2000 + idx,
         title: title,
         artist: artist,
         album: t.album || `Cady Radio ${category.charAt(0).toUpperCase() + category.slice(1)}`,
@@ -4966,41 +4858,87 @@ document.addEventListener('DOMContentLoaded', () => {
       };
     });
 
-    // Prioritize radio archive tracks: use them if they exist in a category, otherwise fall back to preset songs
-    const categories = ['calm', 'flow', 'drive', 'after'];
-    const mergedSongs = [];
-
-    categories.forEach(cat => {
-      const catRadioSongs = mappedRadioSongs.filter(s => s.category === cat);
-      const catRawSongs = mappedRawSongs.filter(s => s.category === cat);
-      
-      if (catRadioSongs.length > 0) {
-        mergedSongs.push(...catRadioSongs);
-      } else {
-        mergedSongs.push(...catRawSongs);
-      }
-    });
-
-    const customSunoSongs = (typeof ownedSongs !== 'undefined' ? ownedSongs : [])
-      .filter(s => s && s.audioUrl && s.artist !== "My Workspace" && (!s.audioUrl || !s.audioUrl.startsWith("My Workspace")))
-      .map(s => {
-        const cleaned = cleanSpaceProfileMetadata(s.title, s.artist);
+    // If we have at least 50 songs, return the mapped songs (which come strictly from the seed JSON)
+    if (mappedSongs.length >= 50) {
+      return mappedSongs.map((song, index) => {
         return {
-          ...s,
-          title: cleaned.title,
-          artist: cleaned.artist
+          ...song,
+          id: index + 1
         };
       });
-    const seenTitles = new Set(customSunoSongs.map(s => s.title.toLowerCase().trim()));
-    const filteredMergedSongs = mergedSongs.filter(s => !seenTitles.has(s.title.toLowerCase().trim()));
+    }
 
-    const combinedSongs = [...customSunoSongs, ...filteredMergedSongs].slice(0, 120);
-    return combinedSongs.map((song, index) => {
+    // Otherwise, if the seed pool has not finished loading or is empty (e.g. on first page load before fetch completes),
+    // we return a fallback list of 50 tracks constructed from a static fallback array (using cady_radio_tracks_seed subset)
+    const fallbackSeedList = [
+      { id: 1, title: "Catching The Sun", bpm: 74, artist: "Cady AI Radio", album: "Cady Happy Hits", audioUrl: "Apple_tune.mp3" },
+      { id: 2, title: "Confetti Skies", bpm: 74, artist: "Cady AI Radio", album: "Cady Happy Hits", audioUrl: "Proof of Sweat.mp3" },
+      { id: 3, title: "Glitter In The Speakers", bpm: 74, artist: "Cady AI Radio", album: "Cady Happy Hits", audioUrl: "Starbucks_tune.mp3" },
+      { id: 4, title: "Electric Heartbeat", bpm: 74, artist: "Cady AI Radio", album: "Cady Happy Hits", audioUrl: "swarowski.mp3" },
+      { id: 5, title: "Gravity Free", bpm: 74, artist: "Cady AI Radio", album: "Cady Happy Hits", audioUrl: "Apple_tune.mp3" },
+      { id: 6, title: "Technicolor Weekend", bpm: 74, artist: "Cady AI Radio", album: "Cady Happy Hits", audioUrl: "Proof of Sweat.mp3" },
+      { id: 7, title: "Golden Hour Glow", bpm: 74, artist: "Cady AI Radio", album: "Cady Good Vibes", audioUrl: "Starbucks_tune.mp3" },
+      { id: 8, title: "Lemonade Afternoon", bpm: 74, artist: "Cady AI Radio", album: "Cady Good Vibes", audioUrl: "swarowski.mp3" },
+      { id: 9, title: "Neon Daylight", bpm: 74, artist: "Cady AI Radio", album: "Cady Happy Hits", audioUrl: "Apple_tune.mp3" },
+      { id: 10, title: "Breezy Company", bpm: 74, artist: "Cady AI Radio", album: "Cady Good Vibes", audioUrl: "Proof of Sweat.mp3" },
+      ...Array.from({ length: 40 }, (_, k) => ({
+        id: 11 + k,
+        title: `Seeded Rhythm Track #${k + 1}`,
+        bpm: 70 + (k % 4) * 15,
+        artist: "Cady AI Radio",
+        album: "Cady Seed Collection",
+        audioUrl: ["Apple_tune.mp3", "Proof of Sweat.mp3", "Starbucks_tune.mp3", "swarowski.mp3"][k % 4]
+      }))
+    ];
+
+    const fallbackMapped = fallbackSeedList.map((t, idx) => {
+      const category = getCategoryByBpm(t.bpm, t.title);
+      let title = t.title;
+      let bpm = t.bpm;
+      let artist = t.artist;
+
+      // Apply space profile skews
+      if (spaceProfile === 'hotel') {
+        bpm = Math.round(bpm * 0.92);
+        title = title + " (Lounge Mix)";
+        artist = `Hotel Lounge Project ft. ${artist}`;
+      } else if (spaceProfile === 'restaurant') {
+        bpm = Math.round(bpm * 0.96);
+        title = title + " (Bistro Edit)";
+        artist = `Bistro Jazz Syndicate ft. ${artist}`;
+      } else if (spaceProfile === 'retailer') {
+        bpm = Math.round(bpm * 1.06);
+        title = title + " (Retail Mix)";
+        artist = `Retail Beats Collective ft. ${artist}`;
+      } else if (spaceProfile === 'private') {
+        title = title + " (Personal Mix)";
+        artist = `Lo-Fi Study Club ft. ${artist}`;
+      } else if (spaceProfile === 'public') {
+        title = title + " (Ambient Edit)";
+        artist = `Ambient Space Group ft. ${artist}`;
+        if (category === 'calm' || category === 'after') {
+          bpm = Math.max(68, Math.min(bpm, 80));
+        } else {
+          bpm = Math.max(85, Math.min(bpm, 105));
+        }
+      }
+
       return {
-        ...song,
-        id: index + 1
+        id: idx + 1,
+        title: title,
+        artist: artist,
+        album: t.album || `Cady Radio ${category.charAt(0).toUpperCase() + category.slice(1)}`,
+        category: category,
+        bpm: bpm,
+        duration: "3:30",
+        durationSeconds: 210,
+        prompt: `brand="${brand}" + prompt="[PERSONA: ${currentPersonaId}] Fallback Seed Track"`,
+        audioUrl: t.audioUrl,
+        coverUrl: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=150&auto=format&fit=crop'
       };
     });
+
+    return fallbackMapped;
   }
 
   // ==========================================
