@@ -8262,7 +8262,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
 
-      // Populate You Might Also Like section dynamically
       const allPlaylistsList = [
         { id: 'calm', title: 'Morning calm', desc: 'Relaxed acoustic and ambient textures', cover: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=200&h=200&q=80' },
         { id: 'flow', title: 'Midday flow', desc: 'Upbeat, focused tempos for active hours', cover: 'https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&w=200&h=200&q=80' },
@@ -8274,7 +8273,6 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'cady-good', title: 'Cady Good Vibes', desc: 'Mellow acoustic and positive grooves', cover: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?auto=format&fit=crop&w=200&h=200&q=80' },
         { id: 'cady-feelin', title: 'Cady Feelin\' Good', desc: 'Soulful rhythms and feel-good beats', cover: 'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=200&h=200&q=80' },
         { id: 'acoustique', title: 'Hit Acoustique', desc: 'Acoustic guitar hits & soft melodies', cover: 'https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee?auto=format&fit=crop&w=200&h=200&q=80' },
-        { id: 'pop', title: 'Sanfter Pop', desc: 'Gentle melodies and acoustic pop sounds', cover: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?auto=format&fit=crop&w=200&h=200&q=80' },
         { id: 'lift', title: 'Daily Lift', desc: 'Upbeat pop and positive electronic beats', cover: 'https://images.unsplash.com/photo-1484712401471-05c7215834eb?auto=format&fit=crop&w=200&h=200&q=80' },
         { id: 'italian', title: 'Italian Synthwave', desc: '80s-inspired retro electronic sounds', cover: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&w=200&h=200&q=80' }
       ];
