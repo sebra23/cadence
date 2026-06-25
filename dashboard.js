@@ -1305,9 +1305,6 @@ document.addEventListener('DOMContentLoaded', () => {
       localStorage.setItem('cady-active-email', emailVal);
     }
     
-    // Always inactivate onboarding flow for now
-    localStorage.setItem(getScopedKey('cady-onboarding-completed'), 'true');
-    
     extractBrandName();
     loadUserData();
     
@@ -1318,6 +1315,16 @@ document.addEventListener('DOMContentLoaded', () => {
     
     setTimeout(() => {
       loginOverlay.classList.add('hidden');
+      
+      // If onboarding is not completed for this user, automatically open the pre-onboarding modal
+      const isCompleted = localStorage.getItem(getScopedKey('cady-onboarding-completed')) === 'true';
+      if (!isCompleted) {
+        if (synthEngine && synthEngine.isPlaying) {
+          synthEngine.stop();
+        }
+        updateFormStep(0);
+        openModal(modals.dnaForm);
+      }
     }, 500);
   });
 
@@ -9991,14 +9998,12 @@ document.addEventListener('DOMContentLoaded', () => {
     storeSchedules = activeLocObj.schedules;
 
     // 3. Load onboarding completed status
-    // Always inactivate onboarding flow for now
-    trafficScheduleActive = true;
     const scopedOnboardingKey = getScopedKey('cady-onboarding-completed');
-    const globalOnboardingKey = 'cady-onboarding-completed';
+    let isCompleted = false;
     try {
-      localStorage.setItem(scopedOnboardingKey, 'true');
-      localStorage.setItem(globalOnboardingKey, 'true');
+      isCompleted = localStorage.getItem(scopedOnboardingKey) === 'true';
     } catch (e) {}
+    trafficScheduleActive = isCompleted;
     curationTracksGenerated = trafficScheduleActive;
     if (!curationTracksGenerated) {
       try {
