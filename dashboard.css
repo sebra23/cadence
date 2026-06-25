@@ -1074,6 +1074,13 @@ ul {
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+@media (max-width: 480px) {
+  .modal-card {
+    padding: 20px 16px;
+    width: 95%;
+  }
+}
+
 .modal-overlay.active .modal-card {
   transform: translateY(0);
 }
@@ -1382,6 +1389,13 @@ ul {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 16px;
+}
+
+@media (max-width: 480px) {
+  .vibe-selection-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
 }
 
 @media (min-width: 600px) {
