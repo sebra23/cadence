@@ -10198,6 +10198,51 @@ document.addEventListener('DOMContentLoaded', () => {
     updateLiveStatusWidget();
   }
 
+  function reseedTagPlaylistsFromJSON(force = false) {
+    const categories = ['calm', 'flow', 'drive', 'after'];
+    let needsReseed = force;
+    
+    // Always trigger if the user hasn't successfully cleared legacy/fallbacks yet
+    const clearKey = 'cady-tag-playlists-cleared-v5';
+    if (localStorage.getItem(clearKey) !== 'true') {
+      needsReseed = true;
+    }
+
+    if (!needsReseed) {
+      for (const cat of categories) {
+        const key = getScopedKey('cady-tag-playlist-' + cat);
+        const stored = localStorage.getItem(key);
+        if (!stored) {
+          needsReseed = true;
+          break;
+        }
+        try {
+          const list = JSON.parse(stored) || [];
+          if (list.length === 0 || list.some(s => s && s.title && s.title.includes("Seeded Rhythm Track"))) {
+            needsReseed = true;
+            break;
+          }
+        } catch (e) {
+          needsReseed = true;
+          break;
+        }
+      }
+    }
+
+    if (needsReseed && typeof cadyRadioTracks !== 'undefined' && cadyRadioTracks.length >= 50) {
+      categories.forEach(cat => {
+        const key = getScopedKey('cady-tag-playlist-' + cat);
+        const allSongs = generateMockPlaylist('Cady');
+        const catSongs = allSongs.filter(s => s.category === cat);
+        localStorage.setItem(key, JSON.stringify(catSongs));
+      });
+      try {
+        localStorage.setItem(clearKey, 'true');
+      } catch (e) {}
+      console.log("Successfully re-seeded tag playlists from loaded JSON pool.");
+    }
+  }
+
   function loadUserData() {
     activeUserEmail = localStorage.getItem('cady-active-email');
     if (!activeUserEmail && emailInput && emailInput.value) {
@@ -10370,22 +10415,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Force clear & reload tag playlists from seed file once
-    const clearKey = 'cady-tag-playlists-cleared-v4';
-    const categories = ['calm', 'flow', 'drive', 'after'];
-    const forceReload = localStorage.getItem(clearKey) !== 'true';
-    categories.forEach(cat => {
-      const key = getScopedKey('cady-tag-playlist-' + cat);
-      if (forceReload || !localStorage.getItem(key)) {
-        const allSongs = generateMockPlaylist('Cady');
-        const catSongs = allSongs.filter(s => s.category === cat);
-        localStorage.setItem(key, JSON.stringify(catSongs));
-      }
-    });
-    if (forceReload) {
-      try {
-        localStorage.setItem(clearKey, 'true');
-      } catch (e) {}
-    }
+    reseedTagPlaylistsFromJSON();
 
     renderLibraryTracks();
 
@@ -11043,8 +11073,9 @@ document.addEventListener('DOMContentLoaded', () => {
             saveCadyRadioTracks();
             console.log(`Merged ${mergedCount} seeded tracks from server.`);
             renderRadioPlaylists();
-            renderLibraryTracks();
           }
+          reseedTagPlaylistsFromJSON(false);
+          renderLibraryTracks();
         }
       })
       .catch(err => {
