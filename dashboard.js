@@ -5007,9 +5007,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (activeDetailPlaylist === 'library' || isTagPlaylist) {
       const targetCategory = isTagPlaylist ? activeDetailPlaylist : activeLibraryCategoryFilter;
       
+      const songPool = isTagPlaylist 
+        ? generateMockPlaylist('Cady') 
+        : ownedSongs;
+
       const filteredSongs = targetCategory === 'all'
-        ? ownedSongs
-        : ownedSongs.filter(track => track.category === targetCategory);
+        ? songPool
+        : songPool.filter(track => track.category === targetCategory);
 
       if (totalSongsBadge) {
         totalSongsBadge.textContent = filteredSongs.length;
