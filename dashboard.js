@@ -10203,7 +10203,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let needsReseed = force;
     
     // Always trigger if the user hasn't successfully cleared legacy/fallbacks yet
-    const clearKey = 'cady-tag-playlists-cleared-v5';
+    const clearKey = 'cady-tag-playlists-cleared-v6';
     if (localStorage.getItem(clearKey) !== 'true') {
       needsReseed = true;
     }
@@ -10218,7 +10218,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         try {
           const list = JSON.parse(stored) || [];
-          if (list.length === 0 || list.some(s => s && s.title && s.title.includes("Seeded Rhythm Track"))) {
+          if (list.length === 0 || list.some(s => s && (s.artist === "Cady AI Radio" || (s.title && s.title.includes("Seeded Rhythm Track"))))) {
             needsReseed = true;
             break;
           }
