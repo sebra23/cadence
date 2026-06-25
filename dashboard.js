@@ -10956,28 +10956,35 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(`Migrated ${migratedConfigsCount} configs from legacy user-scoped keys.`);
       }
       
-      // Always migrate any track with an expired/broken media.evolink.ai URL to a local MP3
+      // Migrate all tracks in the top 6 stations to use local MP3s if they are empty or point to media.evolink.ai
       let migrated = false;
+      const top6StationIds = [
+        'cady-chill',
+        'cady-mood-booster',
+        'cady-happy-hits',
+        'cady-good-vibes',
+        'cady-feelin-good',
+        'cady-happy-beats'
+      ];
       const localMp3s = ["Apple_tune.mp3", "Proof of Sweat.mp3", "Starbucks_tune.mp3", "swarowski.mp3"];
       if (cadyRadioTracks && cadyRadioTracks.length > 0) {
         cadyRadioTracks = cadyRadioTracks.map(t => {
-          if (t.audioUrl && (
-            t.audioUrl === "https://media.evolink.ai/aHR0cHM6Ly90ZW1wZmlsZS5haXF1aWNrZHJhdy5jb20vci9jYjU4ZTZlODI4ZGY0MzY2YTFmZTk0MDMxNWM3MmZlMS5tcDM=.mp3" ||
-            t.audioUrl === "https://media.evolink.ai/aHR0cHM6Ly90ZW1wZmlsZS5haXF1aWNrZHJhdy5jb20vci82MjljOTRlOTI3YWM0OWI5OWIwNzZhNTQxODRmMGYyYi5tcDM=.mp3"
-          )) {
-            let hash = 0;
-            const str = t.title || "";
-            for (let i = 0; i < str.length; i++) {
-              hash += str.charCodeAt(i);
+          if (top6StationIds.includes(t.playlist_id)) {
+            if (!t.audioUrl || t.audioUrl.startsWith('https://media.evolink.ai') || t.audioUrl.includes('tempfile.aiquickdraw.com')) {
+              let hash = 0;
+              const str = t.title || "";
+              for (let i = 0; i < str.length; i++) {
+                hash += str.charCodeAt(i);
+              }
+              t.audioUrl = localMp3s[hash % localMp3s.length];
+              migrated = true;
             }
-            t.audioUrl = localMp3s[hash % localMp3s.length];
-            migrated = true;
           }
           return t;
         });
         if (migrated) {
           saveCadyRadioTracks();
-          console.log("Migrated expired media.evolink.ai radio track URLs to local MP3s.");
+          console.log("Migrated expired media.evolink.ai radio track URLs in top 6 stations to local MP3s.");
         }
       }
 
@@ -11027,6 +11034,33 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function saveCadyRadioTracks() {
+    // Migrate tracks in the top 6 stations to use local MP3s if they are empty or point to media.evolink.ai
+    const top6StationIds = [
+      'cady-chill',
+      'cady-mood-booster',
+      'cady-happy-hits',
+      'cady-good-vibes',
+      'cady-feelin-good',
+      'cady-happy-beats'
+    ];
+    const localMp3s = ["Apple_tune.mp3", "Proof of Sweat.mp3", "Starbucks_tune.mp3", "swarowski.mp3"];
+    
+    if (cadyRadioTracks && cadyRadioTracks.length > 0) {
+      cadyRadioTracks = cadyRadioTracks.map(t => {
+        if (top6StationIds.includes(t.playlist_id)) {
+          if (!t.audioUrl || t.audioUrl.startsWith('https://media.evolink.ai') || t.audioUrl.includes('tempfile.aiquickdraw.com')) {
+            let hash = 0;
+            const str = t.title || "";
+            for (let i = 0; i < str.length; i++) {
+              hash += str.charCodeAt(i);
+            }
+            t.audioUrl = localMp3s[hash % localMp3s.length];
+          }
+        }
+        return t;
+      });
+    }
+
     localStorage.setItem(KEY_RADIO_TRACKS, JSON.stringify(cadyRadioTracks));
     const cachePrefix = getScopedKey('cady-playlist-cache-');
     Object.keys(localStorage).forEach(key => {
