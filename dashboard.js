@@ -13394,6 +13394,14 @@ JSON schema:
       updateSidebarMargin();
     });
   }
+
+  const btnSongCreatorMobileClose = document.getElementById('btn-song-creator-mobile-close');
+  if (btnSongCreatorMobileClose && songCreatorSidebar) {
+    btnSongCreatorMobileClose.addEventListener('click', () => {
+      songCreatorSidebar.classList.add('collapsed');
+      updateSidebarMargin();
+    });
+  }
   
   if (btnHeaderToggleCreator && songCreatorSidebar) {
     btnHeaderToggleCreator.addEventListener('click', () => {
@@ -13401,8 +13409,8 @@ JSON schema:
         songCreatorSidebar.classList.toggle('collapsed');
         updateSidebarMargin();
       } else {
-        // On mobile/tablet, scroll smoothly to the song creator widget
-        songCreatorSidebar.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // On mobile/tablet, open it by removing collapsed class (slide out from right)
+        songCreatorSidebar.classList.remove('collapsed');
       }
     });
   }
