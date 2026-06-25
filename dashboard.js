@@ -4837,6 +4837,17 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const promptText = `brand="${brand}" + prompt="[PERSONA: ${currentPersonaId}] Radio Archive: ${t.prompt || t.title}"`;
+      let audioUrl = t.audioUrl;
+      if (!audioUrl || audioUrl.startsWith('https://media.evolink.ai') || audioUrl.includes('tempfile.aiquickdraw.com')) {
+        const localMp3s = ["Apple_tune.mp3", "Proof of Sweat.mp3", "Starbucks_tune.mp3", "swarowski.mp3"];
+        let hash = 0;
+        const str = title || "";
+        for (let i = 0; i < str.length; i++) {
+          hash += str.charCodeAt(i);
+        }
+        audioUrl = localMp3s[hash % localMp3s.length];
+      }
+
       return {
         id: 2000 + idx,
         title: title,
@@ -4847,7 +4858,7 @@ document.addEventListener('DOMContentLoaded', () => {
         duration: t.duration || "3:30",
         durationSeconds: t.durationSeconds || 210,
         prompt: promptText,
-        audioUrl: t.audioUrl,
+        audioUrl: audioUrl,
         coverUrl: t.coverUrl || 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=150&auto=format&fit=crop',
         isFromRadioArchive: true
       };
@@ -10203,7 +10214,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let needsReseed = force;
     
     // Always trigger if the user hasn't successfully cleared legacy/fallbacks yet
-    const clearKey = 'cady-tag-playlists-cleared-v6';
+    const clearKey = 'cady-tag-playlists-cleared-v7';
     if (localStorage.getItem(clearKey) !== 'true') {
       needsReseed = true;
     }
@@ -10218,7 +10229,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         try {
           const list = JSON.parse(stored) || [];
-          if (list.length === 0 || list.some(s => s && (s.artist === "Cady AI Radio" || (s.title && s.title.includes("Seeded Rhythm Track"))))) {
+          if (list.length === 0 || list.some(s => s && !s.isFromRadioArchive)) {
             needsReseed = true;
             break;
           }
