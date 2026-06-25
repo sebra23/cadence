@@ -1939,9 +1939,25 @@ document.addEventListener('DOMContentLoaded', () => {
       if (accountType === 'individual') {
         if (indivView) indivView.classList.remove('hidden');
         if (bizView) bizView.classList.add('hidden');
+
+        // Hide Business onboarding accordions for Individuals
+        const dnaSection = document.getElementById('generated-dna-section');
+        if (dnaSection) dnaSection.classList.add('hidden');
+        const curationCard = document.querySelector('.curation-card');
+        if (curationCard) curationCard.classList.add('hidden');
+        const trafficSection = document.getElementById('store-traffic-section');
+        if (trafficSection) trafficSection.classList.add('hidden');
       } else {
         if (bizView) bizView.classList.remove('hidden');
         if (indivView) indivView.classList.add('hidden');
+
+        // Show Business onboarding accordions for Business
+        const dnaSection = document.getElementById('generated-dna-section');
+        if (dnaSection) dnaSection.classList.remove('hidden');
+        const curationCard = document.querySelector('.curation-card');
+        if (curationCard) curationCard.classList.remove('hidden');
+        const trafficSection = document.getElementById('store-traffic-section');
+        if (trafficSection) trafficSection.classList.remove('hidden');
       }
     } else {
       if (gridSection) gridSection.style.display = 'none';
