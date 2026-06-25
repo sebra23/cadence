@@ -1185,7 +1185,10 @@
 
       let radioTracks = [];
       try {
-        const savedRadio = localStorage.getItem(getScopedKey('cady-radio-tracks'));
+        let savedRadio = localStorage.getItem('cady-radio-tracks');
+        if (!savedRadio) {
+          savedRadio = localStorage.getItem(getScopedKey('cady-radio-tracks'));
+        }
         if (savedRadio) {
           radioTracks = JSON.parse(savedRadio);
         }
