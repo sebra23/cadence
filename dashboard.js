@@ -5007,9 +5007,21 @@ document.addEventListener('DOMContentLoaded', () => {
     if (activeDetailPlaylist === 'library' || isTagPlaylist) {
       const targetCategory = isTagPlaylist ? activeDetailPlaylist : activeLibraryCategoryFilter;
       
-      const songPool = isTagPlaylist 
-        ? generateMockPlaylist('Cady') 
-        : ownedSongs;
+      let songPool = [];
+      if (isTagPlaylist) {
+        const key = getScopedKey('cady-tag-playlist-' + activeDetailPlaylist);
+        const saved = localStorage.getItem(key);
+        if (!saved) {
+          const allSongs = generateMockPlaylist('Cady');
+          const catSongs = allSongs.filter(s => s.category === activeDetailPlaylist);
+          localStorage.setItem(key, JSON.stringify(catSongs));
+          songPool = catSongs;
+        } else {
+          songPool = JSON.parse(saved);
+        }
+      } else {
+        songPool = ownedSongs;
+      }
 
       const filteredSongs = targetCategory === 'all'
         ? songPool
@@ -8181,6 +8193,16 @@ document.addEventListener('DOMContentLoaded', () => {
       const btnAddTrack = document.getElementById('btn-show-add-track');
       const btnPopulate = document.getElementById('btn-populate-playlist');
       const addForm = document.getElementById('add-track-form-container');
+      const btnClearReload = document.getElementById('btn-playlist-clear-reload');
+      const isTagPlaylist = (playlistId === 'calm' || playlistId === 'flow' || playlistId === 'drive' || playlistId === 'after');
+
+      if (btnClearReload) {
+        if (isTagPlaylist) {
+          btnClearReload.classList.remove('hidden');
+        } else {
+          btnClearReload.classList.add('hidden');
+        }
+      }
       
       if (playlistId === 'library') {
         if (btnAddTrack) btnAddTrack.classList.remove('hidden');
@@ -10357,6 +10379,24 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
+    // Force clear & reload tag playlists from seed file once
+    const clearKey = 'cady-tag-playlists-cleared-v3';
+    const categories = ['calm', 'flow', 'drive', 'after'];
+    const forceReload = localStorage.getItem(clearKey) !== 'true';
+    categories.forEach(cat => {
+      const key = getScopedKey('cady-tag-playlist-' + cat);
+      if (forceReload || !localStorage.getItem(key)) {
+        const allSongs = generateMockPlaylist('Cady');
+        const catSongs = allSongs.filter(s => s.category === cat);
+        localStorage.setItem(key, JSON.stringify(catSongs));
+      }
+    });
+    if (forceReload) {
+      try {
+        localStorage.setItem(clearKey, 'true');
+      } catch (e) {}
+    }
+
     renderLibraryTracks();
 
     // 7. Update UI layout depending on whether onboarding is complete
@@ -10541,8 +10581,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const deleteBtn = document.getElementById('btn-sheet-delete');
     if (deleteBtn) {
-      if (track.playlist_id && track.playlist_id.startsWith('cady-')) {
+      const isTagPlay = (activeDetailPlaylist === 'calm' || activeDetailPlaylist === 'flow' || activeDetailPlaylist === 'drive' || activeDetailPlaylist === 'after');
+      if ((track.playlist_id && track.playlist_id.startsWith('cady-')) || isTagPlay) {
         deleteBtn.classList.remove('hidden');
+        const span = deleteBtn.querySelector('span');
+        if (span) {
+          span.textContent = isTagPlay ? "Remove from Playlist" : "Delete song (Admin)";
+        }
       } else {
         deleteBtn.classList.add('hidden');
       }
@@ -10672,21 +10717,51 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Admin Delete action
+  // Admin Delete or Playlist Removal action
   const sheetDeleteBtn = document.getElementById('btn-sheet-delete');
   if (sheetDeleteBtn) {
     sheetDeleteBtn.addEventListener('click', () => {
       if (activeSheetTrack) {
-        if (confirm(`Are you sure you want to delete "${activeSheetTrack.title}" from Cady Radio?`)) {
-          loadCadyRadioData();
-          cadyRadioTracks = cadyRadioTracks.filter(t => t.id !== activeSheetTrack.id);
-          saveCadyRadioTracks();
-          showToast("Song Deleted", `"${activeSheetTrack.title}" removed from Cady Radio database.`, "success");
-          renderRadioAdminPanel();
-          renderLibraryTracks();
+        const isTagPlay = (activeDetailPlaylist === 'calm' || activeDetailPlaylist === 'flow' || activeDetailPlaylist === 'drive' || activeDetailPlaylist === 'after');
+        if (isTagPlay) {
+          if (confirm(`Remove "${activeSheetTrack.title}" from this playlist?`)) {
+            const key = getScopedKey('cady-tag-playlist-' + activeDetailPlaylist);
+            let saved = JSON.parse(localStorage.getItem(key)) || [];
+            saved = saved.filter(t => t.title !== activeSheetTrack.title || t.artist !== activeSheetTrack.artist);
+            localStorage.setItem(key, JSON.stringify(saved));
+            showToast("Track Removed", `"${activeSheetTrack.title}" removed from ${activeDetailPlaylist.toUpperCase()} playlist.`, "success");
+            renderLibraryTracks();
+          }
+        } else {
+          if (confirm(`Are you sure you want to delete "${activeSheetTrack.title}" from Cady Radio?`)) {
+            loadCadyRadioData();
+            cadyRadioTracks = cadyRadioTracks.filter(t => t.id !== activeSheetTrack.id);
+            saveCadyRadioTracks();
+            showToast("Song Deleted", `"${activeSheetTrack.title}" removed from Cady Radio database.`, "success");
+            renderRadioAdminPanel();
+            renderLibraryTracks();
+          }
         }
       }
       closeTrackMenu();
+    });
+  }
+
+  // Playlist Clear and Reload listener
+  const btnClearReload = document.getElementById('btn-playlist-clear-reload');
+  if (btnClearReload) {
+    btnClearReload.addEventListener('click', () => {
+      const isTagPlay = (activeDetailPlaylist === 'calm' || activeDetailPlaylist === 'flow' || activeDetailPlaylist === 'drive' || activeDetailPlaylist === 'after');
+      if (isTagPlay) {
+        if (confirm(`Clear this playlist and reload all songs from the seed file?`)) {
+          const key = getScopedKey('cady-tag-playlist-' + activeDetailPlaylist);
+          const allSongs = generateMockPlaylist('Cady');
+          const catSongs = allSongs.filter(s => s.category === activeDetailPlaylist);
+          localStorage.setItem(key, JSON.stringify(catSongs));
+          showToast("Playlist Reloaded", `Cleared and reloaded ${catSongs.length} tracks from seed file.`, "success");
+          renderLibraryTracks();
+        }
+      }
     });
   }
 
