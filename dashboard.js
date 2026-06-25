@@ -10559,6 +10559,29 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.removeItem(key);
       }
     });
+    syncTracksToLocalDisk();
+  }
+
+  function syncTracksToLocalDisk() {
+    fetch('/.netlify/functions/sync-tracks', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(cadyRadioTracks)
+    })
+    .then(res => {
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      return res.json();
+    })
+    .then(data => {
+      if (data.success) {
+        console.log(`[Auto-Sync] Synchronized ${data.count} tracks to local disk seed file.`);
+      }
+    })
+    .catch(err => {
+      console.warn("[Auto-Sync] Local file sync not available (running in production or offline).", err.message);
+    });
   }
 
   function saveCadyRadioFeedback() {
